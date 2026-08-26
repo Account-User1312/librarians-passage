@@ -60,11 +60,6 @@ function sysPrompt() {
 }
 
 exports.handler = async function (event) {
-  if (event.httpMethod === 'GET') {
-    var names = Object.keys(process.env).filter(function (k) { return /GEMINI/i.test(k); });
-    var K = process.env.GEMINI_API_KEY || process.env.GEMINI_KEY;
-    return json(200, { diag: true, hasKey: !!K, keyLen: (K || '').length, model: process.env.GEMINI_MODEL || 'gemini-3.6-flash', geminiVarNames: names, totalEnvVars: Object.keys(process.env).length });
-  }
   if (event.httpMethod !== 'POST') return json(405, { error: 'method', reply: 'POST only.' });
   const KEY = process.env.GEMINI_API_KEY || process.env.GEMINI_KEY;
   if (!KEY) return json(200, { error: 'no_key', reply: 'No GEMINI_API_KEY is set on the server yet. In Netlify: Site configuration → Environment variables → add GEMINI_API_KEY, then redeploy.' });
@@ -75,6 +70,8 @@ exports.handler = async function (event) {
   const instruction = String(body.instruction || '').slice(0, 6000);
   const data = body.data || {};
   if (!instruction.trim()) return json(400, { error: 'empty', reply: 'No orders given.' });
+  const PASS = process.env.CQ_PASSCODE || 'neal-admin';
+  if (String(body.passcode || '') !== PASS) return json(200, { error: 'bad_pass', reply: 'Wrong or missing passcode for the Captain\'s Quarters.' });
 
   const payload = {
     systemInstruction: { parts: [{ text: sysPrompt() }] },

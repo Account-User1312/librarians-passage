@@ -502,10 +502,12 @@
   function cqSend(){
     var inp=document.getElementById('cq-input');if(!inp)return;var instruction=(inp.value||'').trim();if(!instruction)return;
     cqMsg='<em>Consulting the Quartermaster\u2026</em>';var out=document.querySelector('.cq-out');if(out)out.innerHTML=cqMsg;
+    var pass=localStorage.getItem('cq-passcode');if(!pass){pass=window.prompt('Captain\'s Quarters passcode:');if(pass===null){cqMsg='';var o2=document.querySelector('.cq-out');if(o2)o2.innerHTML='';return;}pass=pass.trim();localStorage.setItem('cq-passcode',pass);}
     var data={schools:state.schools,opportunities:state.opportunities,companies:state.companies,people:state.people,ledger:state.ledger};
-    fetch('/.netlify/functions/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({instruction:instruction,data:data})})
+    fetch('/.netlify/functions/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({instruction:instruction,data:data,passcode:pass})})
       .then(function(r){return r.json();})
       .then(function(res){
+        if(res&&res.error==='bad_pass'){localStorage.removeItem('cq-passcode');cqMsg='<span class="cq-err">Wrong passcode \u2014 try again.</span>';render();return;}
         if(res&&res.error){cqMsg='<span class="cq-err">'+esc(res.reply||res.error)+'</span>';render();return;}
         var sum=applyOps(res.ops);inp.value='';
         cqMsg='<strong>'+esc((res&&res.reply)||'Done.')+'</strong>'+(sum&&sum.length?'<br><span style="color:#8a7250">'+esc(sum.join(' \u00b7 '))+'</span> \u2014 <em>use \u21b6 Undo to revert</em>':'');

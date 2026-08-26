@@ -107,6 +107,7 @@
   .csub{display:block;width:100%;padding:.05rem .7rem .45rem 2.25rem;font-family:Lora,serif;font-style:italic;
     font-size:.82rem;color:#7a5f3c;background:transparent;border:none;border-bottom:1px dashed transparent;border-radius:2px}
   .csub:focus{outline:none;background:#fffaeb;border-bottom-color:var(--brass-dark)}
+  textarea.csub{resize:none;overflow:hidden;line-height:1.35;min-width:0}
   .cbody{display:none;padding:.5rem .9rem 1rem;border-top:1px solid #e0cf9c;
     grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.7rem .9rem}
   .cbody.open{display:grid}
@@ -141,6 +142,7 @@
   .ltable td.act{text-align:right;width:40px;padding-right:1rem}
   .ltable .f{width:100%}
   .ltable td .lkind-in{margin-top:.25rem;font-style:italic;font-size:.72rem;color:#8a7250}
+  .ltable td .lname-in,.ltable td .lkind-in{resize:none;overflow:hidden;line-height:1.3;min-width:0}
   .lkind{display:block;font-style:italic;font-size:.68rem;color:#8a7250;margin-top:.05rem}
   .share{width:26%}
   .sbar{height:6px;background:#e5d5ae;border-radius:1px;overflow:hidden}
@@ -254,6 +256,7 @@
   .pt-hybrid{color:#5a3208;background:#f2dcb0;border-color:#c39a4a}
   .pt-inperson{color:#37214f;background:#e2d5f2;border-color:#8a6fb0}
   .pt-unconfirmed{color:#6a2410;background:#f0dcc4;border-color:#c06f8a}
+  .scroller{overflow-x:auto;-webkit-overflow-scrolling:touch}
   table.ports{min-width:1080px}
   table.ports textarea.f{min-width:6.5rem}
   table.ports td:nth-child(1){min-width:11rem}
@@ -308,7 +311,45 @@
     .tab{flex:1 1 30%;padding:.62rem .4rem;font-size:.78rem;min-height:46px}
     .ctitle{flex-basis:100%}
     .csub{padding-left:.7rem}
-    .ltable td,.ltable th{padding-left:.9rem;padding-right:.9rem}
+    .ltable td,.ltable th{padding-left:.55rem;padding-right:.55rem}
+    /* Give the entry name the room; the amount and strike columns were hogging it. */
+    .ltable td.share,.ltable th.share{width:2.9rem;padding-left:.25rem;padding-right:.25rem}
+    .ltable td.num,.ltable th.num{width:6rem;padding-left:.25rem;padding-right:.3rem}
+    .ltable td.num .f{max-width:5.1rem}
+    .ltable td.act,.ltable th.act{width:2rem;padding-left:.1rem;padding-right:.35rem}
+    .ltable td.act .del{padding:.2rem .25rem}
+    .linkcell{min-width:0}
+    .linkcell .f{min-width:0}
+    /* a badge chip wider than its cell was pushing whole rows out at 320px */
+    /* the 2.25rem indent under a card title left no room for company names */
+    .csub{padding-left:.85rem;padding-right:.5rem}
+    .tagsel{max-width:100%;min-width:0}
+    .tagsel .badge,.chead .badge{white-space:normal;overflow-wrap:anywhere}
+    .badge{max-width:100%}
+    .ltable td{padding-top:.45rem;padding-bottom:.45rem}
+    /* The chart of ports is 8 columns wide; on a phone each port becomes a
+       stacked label/value card instead of something you scroll sideways. */
+    .scroller{overflow-x:visible}
+    table.ports{min-width:0;width:100%;display:block}
+    table.ports tbody{display:block}
+    table.ports tr.colhead{display:none}
+    table.ports tr.region{display:block}
+    table.ports tr.region td{display:block;width:auto;min-width:0}
+    table.ports tr.drow{display:block;margin:.55rem;border:1px solid var(--parchment-dark);
+      border-radius:3px;background:#fbf3dc;overflow:hidden}
+    table.ports tr.drow td{display:flex;gap:.55rem;align-items:flex-start;width:auto;min-width:0;
+      padding:.5rem .75rem !important;border-bottom:1px solid #ece0bd}
+    table.ports tr.drow td:last-child{border-bottom:0}
+    table.ports tr.drow td::before{content:attr(data-label);flex:0 0 7.2rem;
+      font-family:'IM Fell English SC',Georgia,serif;font-size:.56rem;letter-spacing:.09em;
+      text-transform:uppercase;color:var(--brass-dark);padding-top:.5rem;line-height:1.3}
+    table.ports tr.drow td.pn{display:block;background:#f4e8c6}
+    table.ports tr.drow td.pn::before{display:none}
+    table.ports tr.drow td.act{justify-content:flex-end}
+    table.ports tr.drow td.act::before{display:none}
+    table.ports tr.drow td>*{flex:1 1 auto;min-width:0}
+    table.ports td:nth-child(1){min-width:0}
+    table.ports textarea.f,table.ports .f{min-width:0}
     .share{width:20%}.sbar{display:none}
     .lmoney .f{width:5.5rem}
     .barlabel{flex-basis:42%;max-width:42%;font-size:.76rem}
@@ -422,11 +463,11 @@
   var OPTIONS=Object.assign({region:REGION_ORDER.slice(),passage:['Fully online','Online + on-campus','Hybrid','In-person','Unconfirmed']}, SEED.options||{});
 
   var FMETA={
-    name:{label:'Name',type:'text'},company:{label:'Company',type:'text'},title:{label:'Title',type:'text'},
-    contactType:{label:'Contact type',type:'select',opt:'contactType'},email:{label:'Work email',type:'text'},
-    phone:{label:'Phone',type:'text'},website:{label:'Website',type:'link'},address:{label:'Address',type:'text'},
+    name:{label:'Name',type:'area'},company:{label:'Company',type:'area'},title:{label:'Title',type:'area'},
+    contactType:{label:'Contact type',type:'select',opt:'contactType'},email:{label:'Work email',type:'area'},
+    phone:{label:'Phone',type:'text'},website:{label:'Website',type:'link'},address:{label:'Address',type:'area'},
     city:{label:'City',type:'text'},state:{label:'State',type:'text'},zip:{label:'Zip',type:'text'},
-    country:{label:'Country',type:'text'},linkedin:{label:'LinkedIn',type:'link'},emailDomain:{label:'Email domain',type:'text'},
+    country:{label:'Country',type:'text'},linkedin:{label:'LinkedIn',type:'link'},emailDomain:{label:'Email domain',type:'area'},
     description:{label:'Notes / log',type:'area',wide:true},stage:{label:'Stage',type:'select',opt:'stage'},status:{label:'Status',type:'select',opt:'status'},
     priority:{label:'Priority',type:'select',opt:'priority'},source:{label:'Source',type:'select',opt:'source'},
     lossReason:{label:'Loss reason',type:'select',opt:'lossReason'},payHourly:{label:'Pay — hourly',type:'text'},
@@ -609,7 +650,7 @@
         '<button class="chev'+(open?' open':'')+'" data-toggle="'+ds+':'+i+'" aria-label="Expand">▶</button>'+
         '<textarea class="ctitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.title+'" placeholder="(untitled)">'+esc(rec[cfg.title]||'')+'</textarea>'+
         badge+dchip+'<button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></div>'+
-        '<input class="csub" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.sub+'" value="'+esc(rec[cfg.sub]||'')+'" placeholder="—">'+
+        '<textarea class="csub" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.sub+'" placeholder="—">'+esc(rec[cfg.sub]||'')+'</textarea>'+
         '<div class="cbody'+(open?' open':'')+'" id="cbody-'+ds+'-'+i+'">'+fields+'</div></div>';
     }
     var body='<div class="cards">';
@@ -674,7 +715,7 @@
           var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
             '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
             '<input class="f pberth" data-ds="'+ds+'" data-i="'+i+'" data-k="berth" value="'+esc(rec.berth||'')+'" placeholder="location"></td>';
-          body+='<tr class="drow">'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td>'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
+          body+='<tr class="drow">'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td data-label="'+esc(c[1])+'">'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
         });
       }
     });
@@ -821,7 +862,7 @@
     return media+'<div class="docacts">'+acts+'</div>';}
   function docCard(i){var d=state.employment[i];var op=(EXP.employment[i]!==undefined)?EXP.employment[i]:false;
     return '<div class="card"><div class="chead"><button class="chev'+(op?' open':'')+'" data-toggle="employment:'+i+'" type="button">▶</button>'+
-      '<input class="ctitle" data-ds="employment" data-i="'+i+'" data-k="title" value="'+esc(d.title||'')+'" placeholder="(untitled)">'+
+      '<textarea class="ctitle" rows="1" data-ds="employment" data-i="'+i+'" data-k="title" placeholder="(untitled)">'+esc(d.title||'')+'</textarea>'+
       '<span class="badge '+(CAT_COLOR[d.category]||'b-neutral')+'">'+esc(d.category||'')+'</span>'+
       '<button class="del" data-del="employment:'+i+'" title="Strike">&times;</button></div>'+
       '<div class="cbody'+(op?' open':'')+'" id="cbody-employment-'+i+'">'+
@@ -870,7 +911,7 @@
       '<td class="act"></td></tr>';
     idxs.forEach(function(i){var e=exps[i], amt=half?r2(e.amount/2):e.amount;
       rows+='<tr><td>'+(half?esc(e.name)+(e.kind?'<span class="lkind">'+esc(e.kind)+'</span>':'')
-          :'<input class="f" data-ledger="exp" data-i="'+i+'" data-k="name" value="'+esc(e.name)+'"><input class="f lkind-in" data-ledger="exp" data-i="'+i+'" data-k="kind" value="'+esc(e.kind||'')+'" placeholder="what it really is">')+'</td>'+
+          :'<textarea class="f lname-in" rows="1" data-ledger="exp" data-i="'+i+'" data-k="name">'+esc(e.name)+'</textarea><textarea class="f lkind-in" rows="1" data-ledger="exp" data-i="'+i+'" data-k="kind" placeholder="what it really is">'+esc(e.kind||'')+'</textarea>')+'</td>'+
         shareCell(e.amount)+
         (half?'<td class="num">'+money(amt)+'</td><td class="act"></td>'
              :'<td class="num"><span class="lmoney"><span class="cur">$</span><input class="f" data-ledger="exp" data-i="'+i+'" data-k="amount" type="number" step="0.01" min="0" value="'+e.amount.toFixed(2)+'"></span></td><td class="act"><button class="del" data-ledger-del="'+i+'" title="Strike">&times;</button></td>')+

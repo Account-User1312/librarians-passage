@@ -80,7 +80,15 @@ possible, since titles can change (the .heic entry was retitled "(photo)").
 Styling drops the ship's livery on purpose: Times New Roman 12pt, 1.15 line-height, 1in letter margins, Google-Docs link blue, **no injected title heading**. Units stay in pt/in so Word honours them. Note `docSanitize` strips `class`, so document CSS must be **element-keyed**; class-keyed rules silently do nothing.
 
 ## Mobile (iOS + Android)
-Verified at 375×812: no horizontal overflow on any tab, `.docrich` forced to **16px** on small screens (below 16px iOS zooms the page on focus), toolbar and action buttons at a 44px minimum, and the embedded `<object>` PDF preview is **hidden under 700px** (iOS Safari renders it blank) leaving the Open/Download buttons.
+**The root bug was that `.scroller` had no CSS rule at all.** Both wide tables sit in `<div class="scroller">`, but with no `overflow-x` the 1080px ports table was simply *clipped* by `body{overflow-x:hidden}` — those columns were unreachable on a phone, not merely off-screen. `.scroller` now has `overflow-x:auto`.
+
+Under 700px the chart of ports **stops being a table**: `display:block` on the rows and cells, the column-header row hidden, and each `td` renders its column name from `data-label` via `::before`, so a port reads as a stacked label/value card with no sideways scrolling. Desktop is untouched — real table, real headers, `::before` set to `none`.
+
+Fields that hold long values are now autosizing textareas rather than single-line inputs, which is the only way text wraps in a form control: the Employment doc title, the CRM card subtitle (`.csub`), ledger expense name/kind, and the `name` / `company` / `title` / `email` / `emailDomain` / `address` entries in `FMETA` (address genuinely contains a newline that an `<input>` silently ate). Ledger columns were rebalanced so the amount stops eating the entry column.
+
+Long **URLs** are still truncated on purpose — some run 200+ chars, wrapping them would swamp the card, and every one has a ↗ to open it.
+
+Audited by walking every element on every tab and flagging `scrollWidth > clientWidth` or anything past the viewport edge, with all cards expanded, at **320 / 360 / 414** — zero non-URL clipping at every width. Also verified at 375×812: no horizontal overflow on any tab, `.docrich` forced to **16px** on small screens (below 16px iOS zooms the page on focus), toolbar and action buttons at a 44px minimum, and the embedded `<object>` PDF preview is **hidden under 700px** (iOS Safari renders it blank) leaving the Open/Download buttons.
 
 ## Neal's preferences (this session)
 - Wants clean **tag/chip** styling matching the badges; **honest** data (never fabricate tuition — mark "verify"); **collapsible** sections; **mobile-friendly**; keep **Gemini 3.6 Flash**.

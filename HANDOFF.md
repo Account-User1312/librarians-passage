@@ -60,6 +60,20 @@ Binary credentials live as **real files in the repo**, not in `localStorage` (a 
 
 **Still Drive-only:** `Neal SCC Degree Chapman Univ.pdf` (27 MB) — byte-for-byte the same document as the 80 KB compressed copy, so it is deliberately not committed. Its card shows a "not aboard yet" note plus the Drive link. To add any asset later: drop the file in `assets/` and set the matching `asset.file` path in `emp/gen.py`, then regenerate.
 
+## Migrating saved copies — read this before changing seed data
+Every migration is gated on its own one-shot flag on the saved object (`portsMerged`,
+`employmentImported`, `employmentAssets`, `ledgerProvisions`). **A flag that is already
+true blocks every later change to that slice of seed data.** This bit us once: the asset
+cards shipped after `employmentImported` was already set, so browsers that had loaded the
+previous deploy kept rendering the six credentials as ordinary editable docs with a
+placeholder paragraph. The fix was a *new* flag (`employmentAssets`) that re-matches saved
+records against `DEFAULTS.employment` by Drive `source` first, then by title, and rewrites
+them in place.
+
+So: when you change seeded content that users may already have saved, **add a new flag and
+a migration** — never just edit the seed and assume it propagates. Match on `source` where
+possible, since titles can change (the .heic entry was retitled "(photo)").
+
 ## Document export
 `docPrint` / `docWord` deliberately drop the ship's livery: Times New Roman 12pt, 1.15 line-height, 1in letter margins, Google-Docs link blue, **no injected title heading** — the aim is a page that looks like the Drive original, not like the site. Note `docSanitize` strips `class`, so print CSS must be **element-keyed**; class-keyed rules silently do nothing.
 

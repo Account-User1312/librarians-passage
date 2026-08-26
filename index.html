@@ -472,6 +472,22 @@
       d.employment=d.employment.filter(function(x){return !(x&&x.title==='How this tab works'&&/^Add your resumes/.test(x.body||''));});
       d.employmentImported=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
+    if(!d.employmentAssets){
+      /* Copies saved before the asset cards existed hold those six credentials as
+         ordinary editable docs with a description paragraph. Match them back up by
+         Drive link (stable) or title, attach the asset and drop the placeholder text. */
+      DEFAULTS.employment.forEach(function(x){
+        if(!x.asset)return;
+        var m=null,i,y;
+        for(i=0;i<d.employment.length;i++){y=d.employment[i];
+          if(y&&y.source&&x.source&&y.source===x.source){m=y;break;}}
+        if(!m)for(i=0;i<d.employment.length;i++){y=d.employment[i];
+          if(y&&(y.title||'')===(x.title||'')){m=y;break;}}
+        if(m){m.asset=clone(x.asset);m.title=x.title;m.category=x.category;m.html='';m.body='';}
+        else d.employment.push(clone(x));
+      });
+      d.employmentAssets=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
     if(Array.isArray(d.schools))d.schools.forEach(function(s){if(s.passage==='100% online')s.passage='Fully online';});
     if(Array.isArray(d.schools)&&!d.portsMerged){var _hn={};d.schools.forEach(function(s){_hn[(s.name||'').toLowerCase()]=1;});DEFAULTS.schools.forEach(function(s){if(!_hn[(s.name||'').toLowerCase()])d.schools.push(clone(s));});d.portsMerged=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     return d;}

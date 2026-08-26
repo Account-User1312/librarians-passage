@@ -68,10 +68,10 @@ exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return json(405, { error: 'method', reply: 'POST only.' });
   const KEY = process.env.GEMINI_API_KEY || process.env.GEMINI_KEY;
   if (!KEY) return json(200, { error: 'no_key', reply: 'No GEMINI_API_KEY is set on the server yet. In Netlify: Site configuration → Environment variables → add GEMINI_API_KEY, then redeploy.' });
-  const MODEL = process.env.GEMINI_MODEL || 'gemini-3.1-pro-preview';
 
   let body;
   try { body = JSON.parse(event.body || '{}'); } catch (e) { return json(400, { error: 'bad_json', reply: 'Bad request.' }); }
+  const MODEL = (body.model && String(body.model)) || process.env.GEMINI_MODEL || 'gemini-2.5-flash';
   const instruction = String(body.instruction || '').slice(0, 6000);
   const data = body.data || {};
   if (!instruction.trim()) return json(400, { error: 'empty', reply: 'No orders given.' });

@@ -60,6 +60,10 @@ function sysPrompt() {
 }
 
 exports.handler = async function (event) {
+  if (event.httpMethod === 'GET') {
+    var names = Object.keys(process.env).filter(function (k) { return /GEMINI/i.test(k); });
+    return json(200, { diag: true, hasKey: !!process.env.GEMINI_API_KEY, keyLen: (process.env.GEMINI_API_KEY || '').length, model: process.env.GEMINI_MODEL || 'gemini-2.5-pro', geminiVarNames: names, totalEnvVars: Object.keys(process.env).length });
+  }
   if (event.httpMethod !== 'POST') return json(405, { error: 'method', reply: 'POST only.' });
   const KEY = process.env.GEMINI_API_KEY;
   if (!KEY) return json(200, { error: 'no_key', reply: 'No GEMINI_API_KEY is set on the server yet. In Netlify: Site configuration → Environment variables → add GEMINI_API_KEY, then redeploy.' });

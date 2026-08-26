@@ -240,6 +240,12 @@
   table.ports .ptitle{font-size:.98rem;color:#1f1206}
   table.ports .pberth{font-style:italic;font-size:.76rem;color:#5f4a28}
   table.ports .colhead td{font-size:.6rem;color:#6a501a}
+  .modal-ov{position:fixed;inset:0;background:#0a0603cc;display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
+  .modal{background:var(--parchment-light);border:1px solid var(--parchment-dark);border-radius:4px;box-shadow:var(--shadow-deep);padding:1.4rem 1.5rem;max-width:26rem;width:100%}
+  .modal h3{font-family:'IM Fell English SC',Georgia,serif;color:var(--text-parchment);margin:0 0 1rem;font-size:1.1rem}
+  .modal .fl{display:block;margin-bottom:.2rem}
+  .modal .f{margin-bottom:.3rem;width:100%}
+  .modal-btns{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.2rem}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -454,6 +460,32 @@
   }
   function addbar(ds,noun){return '<div class="addwrap"><button class="btn-brass" data-add="'+ds+'">＋ Add '+esc(noun)+'</button></div>';}
 
+  function openPortModal(){
+    var regions=REGION_ORDER.slice();state.schools.forEach(function(s){if(s.region&&regions.indexOf(s.region)<0)regions.push(s.region);});
+    var opts=regions.map(function(r){return '<option value="'+esc(r)+'">'+esc(r)+'</option>';}).join('')+'<option value="__new__">+ New heading\u2026</option>';
+    var ov=document.createElement('div');ov.className='modal-ov';
+    ov.innerHTML='<div class="modal"><h3>\u2693 Chart a New Port</h3>'+
+      '<label class="fl">Under which heading?</label><select class="f" id="pm-region">'+opts+'</select>'+
+      '<div id="pm-newwrap" style="display:none;margin-top:.55rem"><label class="fl">New heading name</label><input class="f" id="pm-new" placeholder="e.g. The Pacific Northwest"></div>'+
+      '<label class="fl" style="margin-top:.6rem">Port name (optional)</label><input class="f" id="pm-name" placeholder="e.g. Cerritos College">'+
+      '<div class="modal-btns"><button class="btn-ghost" id="pm-cancel" type="button">Cancel</button><button class="btn-brass" id="pm-add" type="button">Add port</button></div></div>';
+    document.body.appendChild(ov);
+    var reg=ov.querySelector('#pm-region'),newwrap=ov.querySelector('#pm-newwrap');
+    function onKey(e){if(e.key==='Escape')close();}
+    function close(){document.removeEventListener('keydown',onKey);if(ov.parentNode)ov.parentNode.removeChild(ov);}
+    reg.addEventListener('change',function(){var isNew=reg.value==='__new__';newwrap.style.display=isNew?'block':'none';if(isNew)ov.querySelector('#pm-new').focus();});
+    ov.addEventListener('click',function(e){if(e.target===ov)close();});
+    ov.querySelector('#pm-cancel').addEventListener('click',close);
+    ov.querySelector('#pm-add').addEventListener('click',function(){
+      var region=reg.value==='__new__'?(ov.querySelector('#pm-new').value.trim()||'New Waters'):reg.value;
+      var name=ov.querySelector('#pm-name').value.trim();
+      recordUndo('add');
+      state.schools.push({region:region,name:name,berth:'',papers:'',passage:'100% online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''});
+      if(REGION_ORDER.indexOf(region)<0)REGION_ORDER.push(region);
+      save();close();active='schools';renderView();
+    });
+    document.addEventListener('keydown',onKey);ov.querySelector('#pm-name').focus();
+  }
   function passageKey(v){v=String(v||'');if(/on-campus/i.test(v))return 'oncampus';if(/hybrid/i.test(v))return 'hybrid';if(/in-person/i.test(v))return 'inperson';if(/unconfirm/i.test(v))return 'unconfirmed';return 'online';}
   function passageSelect(ds,i){var v=state[ds][i].passage||'';return '<select class="f pchip pchip-'+passageKey(v)+'" data-ds="'+ds+'" data-i="'+i+'" data-k="passage" data-pchip>'+selOpts('passage',v)+'</select>';}
   function linkMini(ds,i,k){var has=!!((state[ds][i][k]||'')+'').trim();return '<span class="linkmini"><a class="ext'+(has?'':' off')+'" data-openlink="'+ds+':'+i+':'+k+'" title="'+(has?'Open in new tab':'No link yet')+'">\u2197</a><button class="lnkedit" data-editlink="'+ds+':'+i+':'+k+'" title="Edit link" type="button">\u270e</button></span>';}
@@ -653,7 +685,7 @@
     var ldel=e.target.closest('[data-ledger-del]');
     if(ldel){recordUndo('delete');state.ledger.expenses.splice(+ldel.dataset.ledgerDel,1);save();renderView();return;}
     var add=e.target.closest('[data-add]');
-    if(add){var d2=add.dataset.add,blank={};recordUndo('add');
+    if(add){if(add.dataset.add==='schools'){openPortModal();return;}var d2=add.dataset.add,blank={};recordUndo('add');
       if(d2==='schools'){blank={region:REGION_ORDER[0],name:'',berth:'',papers:'',passage:'100% online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''};}
       else{CARDS[d2].body.concat([CARDS[d2].title,CARDS[d2].sub]).forEach(function(k){blank[k]='';});}
       state[d2].push(blank);EXP[d2][state[d2].length-1]=true;save();renderView();return;}

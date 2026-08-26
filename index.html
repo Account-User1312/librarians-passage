@@ -102,6 +102,7 @@
   .b-amber{color:#6a3d10;background:#f2dcb0;border-color:#c39a4a}
   .b-rose{color:#6a2440;background:#f2cdd8;border-color:#c06f8a}
   .b-slate{color:#33404a;background:#d7dee4;border-color:#8895a0}
+  .b-red{color:#7a2f16;background:#f0d6c4;border-color:var(--rust)}
   .datechip{font-family:Lora,serif;font-style:italic;font-size:.7rem;color:#1c3a5e;background:#cfe0f0;
     border:1px solid #6b93c0;border-radius:2px;padding:.16rem .45rem;white-space:nowrap}
   .csub{display:block;width:100%;padding:.05rem .7rem .45rem 2.25rem;font-family:Lora,serif;font-style:italic;
@@ -538,7 +539,7 @@
   var EXP={schools:{},opportunities:{},companies:{},people:{},employment:{}};
   var EXPREG={};var EXPEMP={};
   var CATS=['Resumes','Cover Letters','Miscellaneous Notes','Credentials & Files'];
-  var CAT_COLOR={'Resumes':'b-blue','Cover Letters':'b-teal','Miscellaneous Notes':'b-amber','Credentials & Files':'b-purple'};
+  var CAT_COLOR={'Resumes':'b-blue','Cover Letters':'b-teal','Miscellaneous Notes':'b-red','Credentials & Files':'b-purple'};
   var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
   var cqMsg='';
 

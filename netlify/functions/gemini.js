@@ -60,6 +60,15 @@ function sysPrompt() {
 }
 
 exports.handler = async function (event) {
+  if (event.httpMethod === 'GET') {
+    var K0 = process.env.GEMINI_API_KEY || process.env.GEMINI_KEY;
+    try {
+      var lr = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=' + encodeURIComponent(K0));
+      var lj = await lr.json();
+      var ms = (lj.models || []).filter(function (m) { return (m.supportedGenerationMethods || []).indexOf('generateContent') >= 0; }).map(function (m) { return m.name.replace('models/', ''); });
+      return json(200, { gemma: ms.filter(function (n) { return /gemma/i.test(n); }), all: ms });
+    } catch (e) { return json(200, { error: 'list', msg: String(e && e.message || e) }); }
+  }
   if (event.httpMethod !== 'POST') return json(405, { error: 'method', reply: 'POST only.' });
   const KEY = process.env.GEMINI_API_KEY || process.env.GEMINI_KEY;
   if (!KEY) return json(200, { error: 'no_key', reply: 'No GEMINI_API_KEY is set on the server yet. In Netlify: Site configuration → Environment variables → add GEMINI_API_KEY, then redeploy.' });

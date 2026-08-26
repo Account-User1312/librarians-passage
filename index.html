@@ -497,6 +497,7 @@
   var EXP={schools:{},opportunities:{},companies:{},people:{},employment:{}};
   var EXPREG={};var EXPEMP={};
   var CATS=['Resumes','Cover Letters','Miscellaneous Notes','Credentials & Files'];
+  var CAT_COLOR={'Resumes':'b-blue','Cover Letters':'b-teal','Miscellaneous Notes':'b-amber','Credentials & Files':'b-purple'};
   var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
   var cqMsg='';
 
@@ -780,8 +781,10 @@
     try{document.execCommand(cmd,false,arg);}catch(e){}
     docSync(ed);}
   /* Documents print as a plain Google-Docs-style page, not in the ship's livery. */
-  var DOCCSS="@page{size:letter;margin:1in}"
-    +"body{font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.15;color:#000;background:#fff;margin:1in;max-width:6.5in}"
+  /* One document renderer for both exports: the .doc and the printed PDF are the
+     same HTML and the same stylesheet, so the PDF is a print of the Word document
+     rather than a second recreation of it. Word units stay in pt/in. */
+  var DOCCSS="body{font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.15;color:#000;background:#fff}"
     +"p{margin:0 0 10pt}"
     +"h1{font-size:14pt;font-weight:700;margin:0 0 4pt}"
     +"h2{font-size:12pt;font-weight:700;text-transform:uppercase;margin:14pt 0 5pt;border-bottom:1px solid #000;padding-bottom:2pt}"
@@ -790,8 +793,17 @@
     +"ul,ol{margin:0 0 10pt;padding-left:.32in}li{margin:0 0 2pt}"
     +"a{color:#1155cc;text-decoration:underline}"
     +"img{max-width:100%;height:auto}"
-    +"table{border-collapse:collapse}td,th{border:1px solid #666;padding:3pt 6pt}"
-    +"@media print{body{margin:0;max-width:none}}";
+    +"table{border-collapse:collapse}td,th{border:1px solid #666;padding:3pt 6pt}";
+  function docPageHtml(d,forWord){
+    var esc2=function(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+    var page=forWord
+      ? "@page WordSection1{size:8.5in 11.0in;margin:1.0in}div.WordSection1{page:WordSection1}body{margin:0}"
+      : "@page{size:letter;margin:1in}body{margin:1in;max-width:6.5in}@media print{body{margin:0;max-width:none}}";
+    var head='<meta charset="utf-8"><title>'+esc2(d.title||'Document')+'</title><style>'+DOCCSS+page+'</style>';
+    var inner='<div class="WordSection1">'+docBodyHtml(d)+'</div>';
+    return forWord
+      ? '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>'+head+'</head><body>'+inner+'</body></html>'
+      : '<!doctype html><html><head>'+head+'</head><body>'+inner+'</body></html>';}
   function assetInner(d){
     var a=d.asset||{},media='',acts='';
     if(a.file&&a.type==='image'){
@@ -810,7 +822,7 @@
   function docCard(i){var d=state.employment[i];var op=(EXP.employment[i]!==undefined)?EXP.employment[i]:false;
     return '<div class="card"><div class="chead"><button class="chev'+(op?' open':'')+'" data-toggle="employment:'+i+'" type="button">▶</button>'+
       '<input class="ctitle" data-ds="employment" data-i="'+i+'" data-k="title" value="'+esc(d.title||'')+'" placeholder="(untitled)">'+
-      '<span class="badge b-neutral">'+esc(d.category||'')+'</span>'+
+      '<span class="badge '+(CAT_COLOR[d.category]||'b-neutral')+'">'+esc(d.category||'')+'</span>'+
       '<button class="del" data-del="employment:'+i+'" title="Strike">&times;</button></div>'+
       '<div class="cbody'+(op?' open':'')+'" id="cbody-employment-'+i+'">'+
         ((d.asset&&d.asset.type)?assetInner(d):
@@ -832,25 +844,14 @@
     body+='</div>';
     return card('Employment','Imported from the Employment folder on Drive — edit here, then Download PDF or Word. Each doc links back to its Drive original.',tools,body);
   }
-  function docPrint(i){var d=state.employment[i];if(!d)return;var w=window.open('','_blank');if(!w){alert('Allow pop-ups to print/save as PDF.');return;}
-    var esc2=function(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
-    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+esc2(d.title||'Document')+'</title><style>'+DOCCSS+'</style></head><body>'+docBodyHtml(d)+'</body></html>');
-    w.document.close();w.focus();setTimeout(function(){w.print();},350);}
+  function docPrint(i){var d=state.employment[i];if(!d)return;var w=window.open('','_blank');
+    if(!w){alert('Allow pop-ups to print/save as PDF.');return;}
+    w.document.write(docPageHtml(d,false));w.document.close();w.focus();setTimeout(function(){w.print();},350);}
   function docWord(i){var d=state.employment[i];if(!d)return;
-    var esc2=function(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
-    var wcss="@page WordSection1{size:8.5in 11.0in;margin:1.0in}div.WordSection1{page:WordSection1}"
-      +"body{font-family:'Times New Roman',Times,serif;font-size:12.0pt;line-height:1.15;color:#000}"
-      +"p{margin:0 0 10.0pt}h1{font-size:14.0pt;font-weight:bold;margin:0 0 4.0pt}"
-      +"h2{font-size:12.0pt;font-weight:bold;text-transform:uppercase;margin:14.0pt 0 5.0pt;border-bottom:1px solid #000}"
-      +"h3{font-size:12.0pt;font-weight:bold;margin:10.0pt 0 2.0pt}"
-      +"h4{font-size:12.0pt;font-style:italic;font-weight:normal;margin:0 0 4.0pt}"
-      +"ul,ol{margin:0 0 10.0pt}li{margin:0 0 2.0pt}a{color:#1155cc}"
-      +"table{border-collapse:collapse}td,th{border:1px solid #666;padding:3.0pt 6.0pt}"
-      ;
-    var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-      +'<head><meta charset="utf-8"><title>'+esc2(d.title)+'</title><style>'+wcss+'</style></head>'
-      +'<body><div class="WordSection1">'+docBodyHtml(d)+'</div></body></html>';
-    var blob=new Blob(['﻿'+html],{type:'application/msword'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=((d.title||'document').replace(/[^\w.-]+/g,'_'))+'.doc';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);}
+    var blob=new Blob(['﻿'+docPageHtml(d,true)],{type:'application/msword'});
+    var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
+    a.download=((d.title||'document').replace(/[^\w.-]+/g,'_'))+'.doc';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);}
   function renderLedger(){
     var L=state.ledger, incomeM=L.incomeMonthly, exps=L.expenses, half=(ledgerView==='check');
     var idxs=exps.map(function(_,i){return i;}).sort(function(a,b){return exps[b].amount-exps[a].amount;});

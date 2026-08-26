@@ -262,6 +262,15 @@
   .docbody{min-height:13rem;font-family:Georgia,'Times New Roman',serif;line-height:1.55;width:100%}
   .docacts{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;align-items:center}
   .docacts .tbtn{text-decoration:none;display:inline-flex;align-items:center;padding:.4rem .8rem}
+  #gate{position:fixed;inset:0;z-index:9999;background:var(--wood-darkest);background-image:radial-gradient(ellipse at 50% 10%,#c5a44426 0%,transparent 60%);display:flex;align-items:center;justify-content:center;padding:1rem}
+  #gate.unlocked{display:none}
+  .gate-card{background:var(--parchment-light);border:1px solid var(--parchment-dark);border-radius:4px;box-shadow:var(--shadow-deep);padding:2rem 2rem 1.6rem;max-width:22rem;width:100%;text-align:center}
+  .gate-eyebrow{font-family:'IM Fell English SC',Georgia,serif;font-size:1.4rem;color:var(--text-parchment);margin-bottom:.5rem}
+  .gate-msg{font-family:'IM Fell English',Georgia,serif;font-style:italic;color:#7a5f3c;margin:0 0 1rem;font-size:.92rem}
+  #gate-input{width:100%;font-size:16px;padding:.6rem;border:1px solid #c9b183;border-radius:2px;background:#fffaef;margin-bottom:.7rem;text-align:center;color:var(--ink)}
+  #gate-input:focus{outline:none;border-color:var(--brass-dark);box-shadow:0 0 0 2px #c5a44430}
+  #gate .btn-brass{width:100%}
+  .gate-err{color:var(--rust);font-style:italic;font-size:.8rem;min-height:1em;margin:.7rem 0 0}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -290,6 +299,7 @@
 </style>
 </head>
 <body>
+<div id="gate"><div class="gate-card"><div class="gate-eyebrow">⚓ Neal&rsquo;s Passage</div><p class="gate-msg">Enter the ship&rsquo;s passcode to come aboard.</p><input id="gate-input" type="password" placeholder="passcode" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="gate-btn" class="btn-brass" type="button">Come aboard</button><p class="gate-err" id="gate-err"></p></div></div>
 <header>
   <p class="eyebrow">Chart &middot; Logbook &middot; Purse</p>
   <h1>Neal's Passage</h1>
@@ -803,6 +813,16 @@
   document.getElementById('btn-reset').addEventListener('click',function(){if(!confirm('Reset every tab (chart, CRM, and ledger) to defaults? Your changes will be lost.'))return;
     recordUndo('reset');state=clone(DEFAULTS);EXP={schools:{},opportunities:{},companies:{},people:{}};save();render();flash('Reset to defaults.');});
 
+  var SITE_PASS='neal-admin';
+  (function gate(){var g=document.getElementById('gate');if(!g)return;
+    if(localStorage.getItem('passage-unlocked')==='1'){g.classList.add('unlocked');return;}
+    function tryUnlock(){var v=(document.getElementById('gate-input').value||'').trim();
+      if(v===SITE_PASS){try{localStorage.setItem('passage-unlocked','1');}catch(e){}g.classList.add('unlocked');}
+      else{document.getElementById('gate-err').textContent='Wrong passcode — try again.';}}
+    document.getElementById('gate-btn').addEventListener('click',tryUnlock);
+    document.getElementById('gate-input').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();tryUnlock();}});
+    try{document.getElementById('gate-input').focus();}catch(e){}
+  })();
   render();
 })();
 </script>

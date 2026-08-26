@@ -213,6 +213,15 @@
   .ptag{font-family:Lora,serif;font-size:.76rem;color:#1c3a5e;background:#cfe0f0;border:1px solid #6b93c0;border-radius:2px;padding:.15rem .45rem}
   .ptag em{font-style:italic;color:#3a5670}
   @media (max-width:700px){ table.ports .ptitle,table.ports .pberth,table.ports .f{font-size:16px} }
+  .cq{padding:1.1rem 1.3rem;border-bottom:1px solid #e2d2ab;background:#f7edcf}
+  .cq h3{font-family:'IM Fell English SC',Georgia,serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-dark);margin:0 0 .45rem}
+  .cq .cq-desc{font-family:Lora,serif;font-style:italic;font-size:.8rem;color:#8a7250;margin:0 0 .6rem;line-height:1.45}
+  .cq textarea{width:100%;min-height:3.2rem;font-family:Lora,Georgia,serif;font-size:.92rem;color:var(--ink);background:#fffaef;border:1px solid #c9b183;border-radius:2px;padding:.55rem .6rem;resize:vertical;line-height:1.4}
+  .cq textarea:focus{outline:none;border-color:var(--brass-dark);box-shadow:0 0 0 2px #c5a44430}
+  .cq-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.5rem}
+  .cq-hint{font-family:Lora,serif;font-style:italic;font-size:.72rem;color:#8a7250}
+  .cq-out{margin-top:.7rem;font-family:'IM Fell English',Georgia,serif;font-size:.9rem;line-height:1.55;color:var(--ink);min-height:1rem}
+  .cq-out .cq-err{color:var(--rust);font-style:italic}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -345,6 +354,7 @@
   var state=load(), active='dashboard', ledgerView='month', dashDim='status', saveTimer=null;
   var EXP={schools:{},opportunities:{},companies:{},people:{}};
   var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
+  var cqMsg='';
 
   function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
   function save(){persist();flash('Entered in the log.');}
@@ -436,6 +446,42 @@
       '<div class="scroller"><table class="ports"><tbody>'+body+'</tbody></table></div>'+addbar('schools','port'));
   }
   /* ---------- dashboard ---------- */
+  function resolveMatch(arr,match){
+    if(!match)return -1;
+    if(typeof match.index==='number'&&arr[match.index])return match.index;
+    var nm=norm(match.name||'');if(!nm)return -1;
+    for(var i=0;i<arr.length;i++){var v=norm(arr[i].name||arr[i].title||'');if(v&&(v.indexOf(nm)>=0||nm.indexOf(v)>=0))return i;}
+    return -1;}
+  function applyOps(ops){
+    recordUndo('ai');var sum=[];
+    (ops||[]).forEach(function(op){
+      if(!op||!op.action)return;var set=op.set||{};
+      if(op.action==='set_income'){var a=parseFloat(set.amount);if(isFinite(a)){state.ledger.incomeMonthly=a;sum.push('income \u2192 '+money(a));}return;}
+      var coll=op.collection;
+      var arr=coll==='expenses'?state.ledger.expenses:state[coll];
+      if(!arr){sum.push('(unknown collection)');return;}
+      if(op.action==='add'){var rec={};var keys=coll==='expenses'?['name','kind','amount']:(CARDS[coll]?CARDS[coll].body.concat([CARDS[coll].title,CARDS[coll].sub]):Object.keys(set));
+        keys.forEach(function(k){rec[k]='';});if(coll==='schools'){rec.region=rec.region||'California Waters';}
+        Object.keys(set).forEach(function(k){rec[k]=set[k];});if(coll==='expenses'){rec.amount=parseFloat(rec.amount)||0;}
+        arr.push(rec);sum.push('added to '+coll);return;}
+      var idx=resolveMatch(arr,op.match);
+      if(idx<0){sum.push('(no match in '+coll+')');return;}
+      if(op.action==='delete'){arr.splice(idx,1);sum.push('deleted from '+coll);return;}
+      if(op.action==='update'){Object.keys(set).forEach(function(k){arr[idx][k]=(coll==='expenses'&&k==='amount')?(parseFloat(set[k])||0):set[k];});sum.push('updated '+coll);return;}
+    });
+    persist();return sum;}
+  function cqSend(){
+    var inp=document.getElementById('cq-input');if(!inp)return;var instruction=(inp.value||'').trim();if(!instruction)return;
+    cqMsg='<em>Consulting the Quartermaster\u2026</em>';var out=document.querySelector('.cq-out');if(out)out.innerHTML=cqMsg;
+    var data={schools:state.schools,opportunities:state.opportunities,companies:state.companies,people:state.people,ledger:state.ledger};
+    fetch('/.netlify/functions/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({instruction:instruction,data:data})})
+      .then(function(r){return r.json();})
+      .then(function(res){
+        if(res&&res.error){cqMsg='<span class="cq-err">'+esc(res.reply||res.error)+'</span>';render();return;}
+        var sum=applyOps(res.ops);inp.value='';
+        cqMsg='<strong>'+esc((res&&res.reply)||'Done.')+'</strong>'+(sum&&sum.length?'<br><span style="color:#8a7250">'+esc(sum.join(' \u00b7 '))+'</span> \u2014 <em>use \u21b6 Undo to revert</em>':'');
+        render();})
+      .catch(function(e){cqMsg='<span class="cq-err">The Quartermaster is only reachable on the deployed site (needs the Netlify function + GEMINI_API_KEY). It will not run from a local file.</span>';render();});}
   function barColor(s){s=String(s);
     if(/lost/i.test(s))return 'linear-gradient(90deg,#8c3a1c,#c05a35)';
     if(/won/i.test(s))return 'linear-gradient(90deg,#2f6b4f,#57a074)';
@@ -462,8 +508,13 @@
     var pr={};REGION_ORDER.forEach(function(rg){pr[rg]=0;});state.schools.forEach(function(s){pr[s.region]=(pr[s.region]||0)+1;});
     var prmax=Object.keys(pr).reduce(function(x,k){return Math.max(x,pr[k]);},1);
     var pbars=Object.keys(pr).map(function(k){return '<div class="barrow"><div class="barlabel" title="'+esc(k)+'">'+esc(k)+'</div><div class="bartrack"><div class="barfill" style="width:'+(pr[k]/prmax*100).toFixed(1)+'%;background:'+barColor(k)+'"></div></div><div class="barval">'+pr[k]+'</div></div>';}).join('');
+    var cqPanel='<div class="cq"><h3>\u2693 Captain&rsquo;s Quarters</h3>'+
+      '<p class="cq-desc">Give the Quartermaster an order and it edits the log for ye \u2014 e.g. &ldquo;add a port: Cerritos College, California, 100% online&rdquo;, &ldquo;mark the City of Irvine folk as references&rdquo;, or &ldquo;set Netflix to $12.99&rdquo;. Undo is always a tap away.</p>'+
+      '<textarea id="cq-input" placeholder="Type an order for the Quartermaster..."></textarea>'+
+      '<div class="cq-row"><button class="btn-brass" data-cq-send type="button">Send to the Quartermaster</button><span class="cq-hint">&#8984;/Ctrl+Enter to send</span></div>'+
+      '<div class="cq-out">'+cqMsg+'</div></div>';
     return card('Dashboard','The control panel — the job campaign and the ports ahead','',
-      stats+'<div class="chartwrap"><div class="chart-top"><h3>Opportunities '+dims[dashDim].toLowerCase()+' tally</h3>'+picker+'</div>'+bars+'</div>'+
+      cqPanel+stats+'<div class="chartwrap"><div class="chart-top"><h3>Opportunities '+dims[dashDim].toLowerCase()+' tally</h3>'+picker+'</div>'+bars+'</div>'+
       '<div class="chartwrap" style="border-top:1px solid #e2d2ab"><div class="chart-top"><h3>Potential ports by waters</h3></div>'+pbars+'</div>');
   }
   function stat(n,l){return '<div class="stat"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
@@ -552,6 +603,7 @@
     if(t.dataset.ledger)persist();
   });
   view.addEventListener('click',function(e){
+    var cq=e.target.closest('[data-cq-send]');if(cq){cqSend();return;}
     var open=e.target.closest('[data-open]');
     if(open){var inp=open.parentNode.querySelector('input');var u=(inp&&inp.value||'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
     var tog=e.target.closest('[data-toggle]');
@@ -579,6 +631,7 @@
   document.getElementById('btn-undo').addEventListener('click',doUndo);
   document.getElementById('btn-redo').addEventListener('click',doRedo);
   document.addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase();
+    if((e.metaKey||e.ctrlKey)&&k==='enter'&&e.target&&e.target.id==='cq-input'){e.preventDefault();cqSend();return;}
     if((e.metaKey||e.ctrlKey)&&k==='z'&&!e.shiftKey){e.preventDefault();doUndo();}
     else if((e.metaKey||e.ctrlKey)&&(k==='y'||(k==='z'&&e.shiftKey))){e.preventDefault();doRedo();}});
   document.getElementById('btn-export').addEventListener('click',function(){var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');

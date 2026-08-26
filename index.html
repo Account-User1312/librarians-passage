@@ -330,24 +330,24 @@
 
   var SCHOOLS=[
     {region:'California Waters',name:'Santa Ana College',berth:'Santa Ana · Orange County',papers:'Certificate of Achievement + A.A., Library Technology',passage:'Online + on-campus',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000 (cert, once resident)',bond:'Live in CA ~1 yr',flag:'best',flagText:'Best in CA',catch:'Nearest port to Irvine; cheapest once resident; opens SJSU in-state for the MLS later.',link:'https://libguides.sac.edu/LTProgram/library-technology'},
-    {region:'California Waters',name:'Palomar College',berth:'San Marcos · San Diego County',papers:'Certificate + A.S., Library & Information Technology',passage:'100% online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Fully-online, well-worn program — take it from anywhere in the state.',link:'https://www.palomar.edu/library/library-and-information-technology-program/'},
-    {region:'California Waters',name:'Fresno City College',berth:'Fresno',papers:'Library Technology certificate / degree (~4 semesters)',passage:'100% online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Another fully-online option; no edge over Santa Ana unless the courses fit better.',link:'https://www.fresnocitycollege.edu/academics/library/library-technology.html'},
+    {region:'California Waters',name:'Palomar College',berth:'San Marcos · San Diego County',papers:'Certificate + A.S., Library & Information Technology',passage:'Fully online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Fully-online, well-worn program — take it from anywhere in the state.',link:'https://www.palomar.edu/library/library-and-information-technology-program/'},
+    {region:'California Waters',name:'Fresno City College',berth:'Fresno',papers:'Library Technology certificate / degree (~4 semesters)',passage:'Fully online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Another fully-online option; no edge over Santa Ana unless the courses fit better.',link:'https://www.fresnocitycollege.edu/academics/library/library-technology.html'},
     {region:'California Waters',name:'Long Beach City College — FREE noncredit certs',berth:'Long Beach',papers:'Noncredit Library Technician certificates',passage:'Online + on-campus',toll:'$0 (noncredit)',firstPapers:'$0 — but NO transcript credit',bond:'None',flag:'warn',flagText:'Free ≠ credit',catch:'Genuinely free skill-badges, but no college credit and no transcript. Distinct from the paid degree below.',link:'https://www.lbcc.edu/library-technician'},
-    {region:'California Waters',name:'Long Beach City College — B.S. degree (for credit)',berth:'Long Beach',papers:'B.S. in Library & Information Science (only one in the US) — the for-credit path',passage:'100% online',toll:'~$46/unit resident (standard for-credit rates)',firstPapers:'Paid, standard CA credit — NOT free',bond:'Live in CA ~1 yr · apps open ~Spring 2027',flag:'warn',flagText:'Paid & future',catch:'A real, paid, for-credit degree — do not confuse with the free noncredit certs above. Redundant if ye already hold a bachelor\'s.',link:'https://www.lbcc.edu/press-release/library-offer-bachelors-science-degree'},
+    {region:'California Waters',name:'Long Beach City College — B.S. degree (for credit)',berth:'Long Beach',papers:'B.S. in Library & Information Science (only one in the US) — the for-credit path',passage:'Fully online',toll:'~$46/unit resident (standard for-credit rates)',firstPapers:'Paid, standard CA credit — NOT free',bond:'Live in CA ~1 yr · apps open ~Spring 2027',flag:'warn',flagText:'Paid & future',catch:'A real, paid, for-credit degree — do not confuse with the free noncredit certs above. Redundant if ye already hold a bachelor\'s.',link:'https://www.lbcc.edu/press-release/library-offer-bachelors-science-degree'},
     {region:'California Waters',name:'Irvine Valley College',berth:'Irvine — the town ye fancy',papers:'A few LIB courses only — NO full certificate',passage:'Online + on-campus',toll:'~$46/unit (resident)',firstPapers:'—',bond:'Live in CA ~1 yr',flag:'warn',flagText:'Not a credential',catch:'Courses, not a program. Live in Irvine if ye like — but earn the papers at Santa Ana.',link:'https://www.ivc.edu/llr/library-information-science'},
     {region:'The Texas Coast',name:'Palo Alto College',berth:'San Antonio · Alamo Colleges',papers:'Library Technician local certificate (14 cr) · Library Technology A.S. (62 cr)',passage:'Unconfirmed',toll:'$180/credit (e-Rate)',firstPapers:'~$2,600 (14-cr cert)',bond:'None (TX resident)',flag:'warn',flagText:'Verify first',catch:'Cheapest library papers IF online; built-in local internship (7 hrs/wk). Verify delivery before ye sail.',link:'https://mypaccatalog.alamo.edu/preview_program.php?catoid=63&poid=2638'},
     {region:'The Texas Coast',name:'Tarrant County College',berth:'Fort Worth',papers:'Library Technician Level 1 Certificate + A.A.S.',passage:'Hybrid',toll:'TX in-state (verify rate)',firstPapers:'Low (in-state)',bond:'None',flag:'good',flagText:'State-recognized',catch:'A true Level-1 credential — but hybrid means ~3-hr drives. Poor fit for a remote hammock.',link:'https://www.tccd.edu/academics/courses-and-programs/programs-a-z/credit/library-technician/'},
-    {region:'Distant Shores',name:'Central Carolina CC',berth:'Sanford, North Carolina',papers:'6 certificates (12–18 cr) · Diploma (38 cr) · A.A.S. (66 cr)',passage:'100% online',toll:'$268/credit (+$15/course)',firstPapers:'~$3,300 (12-cr cert)',bond:'None',flag:'best',flagText:'Best confirmed-online',catch:'ALA-LSSC recognized (portable), local internship, stackable buffet of certs. The safe start-now choice.',link:'https://www.cccc.edu/all-programs/library-and-information-technology/'},
-    {region:'Distant Shores',name:'Northampton CC',berth:'Bethlehem, Pennsylvania',papers:'Library Technical Assistant Specialized Diploma (16 cr)',passage:'100% online',toll:'$390/credit',firstPapers:'~$6,240',bond:'None',flag:'good',flagText:'Archives-flavored',catch:'One clean 1-year diploma; markets toward archives roles & MLS. Pricier, less flexible than Carolina.',link:'https://www.northampton.edu/education-and-training/programs/library-technical-assistant.html'},
-    {region:'Distant Shores',name:'College of DuPage',berth:'Glen Ellyn, Illinois',papers:'A.A.S. Library & Information Technology + certificates',passage:'100% online',toll:'~$430/credit (online fees waived)',firstPapers:'~$6,500',bond:'None',flag:'good',flagText:'Fine',catch:'Waives its online fees, but still dearer than Carolina with no added edge.',link:'https://www.cod.edu/academics/programs/library-technology/index.html'},
-    {region:'Distant Shores',name:'Bluegrass CTC',berth:'Lexington, Kentucky',papers:'A.A.S. + certificate, Library & Information Technology',passage:'100% online',toll:'~$490/credit',firstPapers:'~$7,400',bond:'None',flag:'good',flagText:'Fine',catch:'Fully online & sound — but no reason to pay this over Central Carolina.',link:'https://catalog.kctcs.edu/programs-of-study/aas/graphic-design-library-technology/library-information-technology-certificate/'},
-    {region:'Distant Shores',name:'Pueblo CC',berth:'Pueblo, Colorado',papers:'Library Technician certificate (30 cr) + degree',passage:'100% online',toll:'$694/credit',firstPapers:'~$20,800 (30-cr cert)',bond:'None',flag:'dear',flagText:'Avoid',catch:'Dearest port on the chart for the same cargo. Sail past.',link:'https://pueblocc.edu/programs/ltn'}
+    {region:'Distant Shores',name:'Central Carolina CC',berth:'Sanford, North Carolina',papers:'6 certificates (12–18 cr) · Diploma (38 cr) · A.A.S. (66 cr)',passage:'Fully online',toll:'$268/credit (+$15/course)',firstPapers:'~$3,300 (12-cr cert)',bond:'None',flag:'best',flagText:'Best confirmed-online',catch:'ALA-LSSC recognized (portable), local internship, stackable buffet of certs. The safe start-now choice.',link:'https://www.cccc.edu/all-programs/library-and-information-technology/'},
+    {region:'Distant Shores',name:'Northampton CC',berth:'Bethlehem, Pennsylvania',papers:'Library Technical Assistant Specialized Diploma (16 cr)',passage:'Fully online',toll:'$390/credit',firstPapers:'~$6,240',bond:'None',flag:'good',flagText:'Archives-flavored',catch:'One clean 1-year diploma; markets toward archives roles & MLS. Pricier, less flexible than Carolina.',link:'https://www.northampton.edu/education-and-training/programs/library-technical-assistant.html'},
+    {region:'Distant Shores',name:'College of DuPage',berth:'Glen Ellyn, Illinois',papers:'A.A.S. Library & Information Technology + certificates',passage:'Fully online',toll:'~$430/credit (online fees waived)',firstPapers:'~$6,500',bond:'None',flag:'good',flagText:'Fine',catch:'Waives its online fees, but still dearer than Carolina with no added edge.',link:'https://www.cod.edu/academics/programs/library-technology/index.html'},
+    {region:'Distant Shores',name:'Bluegrass CTC',berth:'Lexington, Kentucky',papers:'A.A.S. + certificate, Library & Information Technology',passage:'Fully online',toll:'~$490/credit',firstPapers:'~$7,400',bond:'None',flag:'good',flagText:'Fine',catch:'Fully online & sound — but no reason to pay this over Central Carolina.',link:'https://catalog.kctcs.edu/programs-of-study/aas/graphic-design-library-technology/library-information-technology-certificate/'},
+    {region:'Distant Shores',name:'Pueblo CC',berth:'Pueblo, Colorado',papers:'Library Technician certificate (30 cr) + degree',passage:'Fully online',toll:'$694/credit',firstPapers:'~$20,800 (30-cr cert)',bond:'None',flag:'dear',flagText:'Avoid',catch:'Dearest port on the chart for the same cargo. Sail past.',link:'https://pueblocc.edu/programs/ltn'}
   ];
   var REGION_ORDER=['California Waters','The Texas Coast','Distant Shores'];
   var REGION_SUB={'California Waters':'in-state toll shown — unlocked only after ye drop anchor ~1 year',
     'The Texas Coast':'in-state now — no bond, no waiting','Distant Shores':'out-of-state online fleet — no move, but a dearer toll'};
 
-  var OPTIONS=Object.assign({region:REGION_ORDER.slice(),passage:['100% online','Online + on-campus','Hybrid','In-person','Unconfirmed']}, SEED.options||{});
+  var OPTIONS=Object.assign({region:REGION_ORDER.slice(),passage:['Fully online','Online + on-campus','Hybrid','In-person','Unconfirmed']}, SEED.options||{});
 
   var FMETA={
     name:{label:'Name',type:'text'},company:{label:'Company',type:'text'},title:{label:'Title',type:'text'},
@@ -371,11 +371,11 @@
     schools:{title:'name',sub:'berth',badge:'flag',region:true,defaultOpen:true,noun:'port',
       body:['region','papers','passage','toll','firstPapers','bond','catch','link']},
     opportunities:{title:'name',sub:'company',badge:'stage',dateField:'closeDate',noun:'opportunity',
-      body:['stage','status','priority','source','lossReason','payHourly','paySalary','closeDate','link','description']},
+      body:['status','priority','source','lossReason','payHourly','paySalary','closeDate','link','description']},
     companies:{title:'name',sub:'city',badge:'contactType',noun:'company',
-      body:['_people','contactType','phone','emailDomain','website','address','city','state','zip','country','linkedin','description']},
+      body:['_people','phone','emailDomain','website','address','city','state','zip','country','linkedin','description']},
     people:{title:'name',sub:'company',badge:'contactType',noun:'person',
-      body:['_company','title','contactType','email','phone','website','address','city','state','zip','linkedin','description']}
+      body:['_company','title','email','phone','website','address','city','state','zip','linkedin','description']}
   };
   var TABS=[{id:'dashboard',label:'Dashboard'},{id:'schools',label:'The Passage'},{id:'opportunities',label:'Opportunities'},
     {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'ledger',label:"Purser's Ledger"}];
@@ -385,7 +385,9 @@
   function clone(o){return JSON.parse(JSON.stringify(o));}
   function load(){try{var raw=localStorage.getItem(KEY);if(!raw)return clone(DEFAULTS);var d=JSON.parse(raw);
     ['schools','people','companies','opportunities'].forEach(function(k){if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
-    if(!d.ledger||typeof d.ledger.incomeMonthly!=='number'||!Array.isArray(d.ledger.expenses))d.ledger=clone(DEFAULTS.ledger);return d;}
+    if(!d.ledger||typeof d.ledger.incomeMonthly!=='number'||!Array.isArray(d.ledger.expenses))d.ledger=clone(DEFAULTS.ledger);
+    if(Array.isArray(d.schools))d.schools.forEach(function(s){if(s.passage==='100% online')s.passage='Fully online';});
+    return d;}
     catch(e){return clone(DEFAULTS);}}
   var state=load(), active='dashboard', ledgerView='month', dashDim='status', saveTimer=null;
   var EXP={schools:{},opportunities:{},companies:{},people:{}};
@@ -442,7 +444,7 @@
       var open=(EXP[ds][i]!==undefined)?EXP[ds][i]:!!cfg.defaultOpen;
       var badge='';
       if(cfg.badge==='flag'){if(rec.flag)badge='<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>';}
-      else{var bv=rec[cfg.badge]||'';if(bv)badge='<span class="badge '+badgeClass(cfg.badge,bv)+'" id="badge-'+ds+'-'+i+'">'+esc(bv)+'</span>';}
+      else{badge=tagSel(ds,i,cfg.badge,cfg.badge);}
       var dchip=(cfg.dateField&&rec[cfg.dateField])?'<span class="datechip" id="date-'+ds+'-'+i+'" title="Close date">'+esc(rec[cfg.dateField])+'</span>':'';
       var fields=cfg.body.map(function(k){var m=FMETA[k];var lab=LABEL_OVERRIDE[ds+':'+k]||m.label;
         var inner=(m.type==='computed')?computedField(ds,i,k):field(ds,i,k);
@@ -488,16 +490,18 @@
       var region=reg.value==='__new__'?(ov.querySelector('#pm-new').value.trim()||'New Waters'):reg.value;
       var name=ov.querySelector('#pm-name').value.trim();
       recordUndo('add');
-      state.schools.push({region:region,name:name,berth:'',papers:'',passage:'100% online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''});
+      state.schools.push({region:region,name:name,berth:'',papers:'',passage:'Fully online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''});
       if(REGION_ORDER.indexOf(region)<0)REGION_ORDER.push(region);
       save();close();active='schools';renderView();
     });
     document.addEventListener('keydown',onKey);ov.querySelector('#pm-name').focus();
   }
   function passageKey(v){v=String(v||'');if(/on-campus/i.test(v))return 'oncampus';if(/hybrid/i.test(v))return 'hybrid';if(/in-person/i.test(v))return 'inperson';if(/unconfirm/i.test(v))return 'unconfirmed';return 'online';}
-  function passageSelect(ds,i){var v=state[ds][i].passage||'';var id='pspan-'+ds+'-'+i;
-    return '<span class="tagsel"><span class="badge pt-'+passageKey(v)+'" id="'+id+'">'+esc(v||'\u2014')+'</span>'+
-      '<select class="tagsel-native" data-ds="'+ds+'" data-i="'+i+'" data-k="passage" data-pspan="'+id+'">'+selOpts('passage',v)+'</select></span>';}
+  function colorClass(field,v){if(field==='passage')return 'pt-'+passageKey(v);return badgeClass(field,v);}
+  function tagSel(ds,i,field,optKey){var v=state[ds][i][field]||'';var id='tg-'+ds+'-'+i+'-'+field;
+    return '<span class="tagsel"><span class="badge '+colorClass(field,v)+'" id="'+id+'">'+esc(v||'—')+'</span>'+
+      '<select class="tagsel-native" data-ds="'+ds+'" data-i="'+i+'" data-k="'+field+'" data-tagspan="'+id+'">'+selOpts(optKey,v)+'</select></span>';}
+  function passageSelect(ds,i){return tagSel(ds,i,'passage','passage');}
   function linkMini(ds,i,k){var has=!!((state[ds][i][k]||'')+'').trim();return '<span class="linkmini"><a class="ext'+(has?'':' off')+'" data-openlink="'+ds+':'+i+':'+k+'" title="'+(has?'Open in new tab':'No link yet')+'">\u2197</a><button class="lnkedit" data-editlink="'+ds+':'+i+':'+k+'" title="Edit link" type="button">\u270e</button></span>';}
   function renderPortsTable(){
     var ds='schools',recs=state.schools;
@@ -544,18 +548,19 @@
     persist();return sum;}
   function cqSend(){
     var inp=document.getElementById('cq-input');if(!inp)return;var instruction=(inp.value||'').trim();if(!instruction)return;
-    cqMsg='<em>Consulting the Quartermaster\u2026</em>';var out=document.querySelector('.cq-out');if(out)out.innerHTML=cqMsg;
-    var pass=localStorage.getItem('cq-passcode');if(!pass){pass=window.prompt('Captain\'s Quarters passcode:');if(pass===null){cqMsg='';var o2=document.querySelector('.cq-out');if(o2)o2.innerHTML='';return;}pass=pass.trim();localStorage.setItem('cq-passcode',pass);}
+    var pass=localStorage.getItem('cq-passcode');if(!pass){pass=window.prompt("Captain’s Quarters passcode:");if(pass===null){return;}pass=pass.trim();localStorage.setItem('cq-passcode',pass);}
     var data={schools:state.schools,opportunities:state.opportunities,companies:state.companies,people:state.people,ledger:state.ledger};
-    fetch('/.netlify/functions/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({instruction:instruction,data:data,passcode:pass})})
-      .then(function(r){return r.json();})
-      .then(function(res){
-        if(res&&res.error==='bad_pass'){localStorage.removeItem('cq-passcode');cqMsg='<span class="cq-err">Wrong passcode \u2014 try again.</span>';render();return;}
-        if(res&&res.error){cqMsg='<span class="cq-err">'+esc(res.reply||res.error)+'</span>';render();return;}
-        var sum=applyOps(res.ops);inp.value='';
-        cqMsg='<strong>'+esc((res&&res.reply)||'Done.')+'</strong>'+(sum&&sum.length?'<br><span style="color:#8a7250">'+esc(sum.join(' \u00b7 '))+'</span> \u2014 <em>use \u21b6 Undo to revert</em>':'');
-        render();})
-      .catch(function(e){cqMsg='<span class="cq-err">The Quartermaster is only reachable on the deployed site (needs the Netlify function + GEMINI_API_KEY). It will not run from a local file.</span>';render();});}
+    cqMsg='<em>Consulting the Quartermaster… (the free model can be slow on the first call)</em>';var out=document.querySelector('.cq-out');if(out)out.innerHTML=cqMsg;
+    function post(){var ctrl=('AbortController' in window)?new AbortController():null;var to=ctrl?window.setTimeout(function(){ctrl.abort();},32000):null;return fetch('/.netlify/functions/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({instruction:instruction,data:data,passcode:pass}),signal:ctrl?ctrl.signal:undefined}).then(function(r){if(to)window.clearTimeout(to);return r.json();});}
+    function handle(res){
+      if(res&&res.error==='bad_pass'){localStorage.removeItem('cq-passcode');cqMsg='<span class="cq-err">Wrong passcode — try again.</span>';render();return;}
+      if(res&&res.error){cqMsg='<span class="cq-err">'+esc(res.reply||res.error)+'</span>';render();return;}
+      var sum=applyOps(res.ops);inp.value='';
+      cqMsg='<strong>'+esc((res&&res.reply)||'Done.')+'</strong>'+(sum&&sum.length?'<br><span style="color:#8a7250">'+esc(sum.join(' · '))+'</span> — <em>use ↶ Undo to revert</em>':'');
+      render();}
+    function fail(){cqMsg=(location.protocol==='file:')?'<span class="cq-err">The Quartermaster only runs on the live Netlify site, not a local file — open your .netlify.app URL.</span>':'<span class="cq-err">The Quartermaster didn’t answer in time — the free model is sometimes slow. Give it another go.</span>';render();}
+    post().then(handle).catch(function(){post().then(handle).catch(fail);});
+  }
   function barColor(s){s=String(s);
     if(/lost/i.test(s))return 'linear-gradient(90deg,#8c3a1c,#c05a35)';
     if(/won/i.test(s))return 'linear-gradient(90deg,#2f6b4f,#57a074)';
@@ -583,7 +588,7 @@
     var prmax=Object.keys(pr).reduce(function(x,k){return Math.max(x,pr[k]);},1);
     var pbars=Object.keys(pr).map(function(k){return '<div class="barrow"><div class="barlabel" title="'+esc(k)+'">'+esc(k)+'</div><div class="bartrack"><div class="barfill" style="width:'+(pr[k]/prmax*100).toFixed(1)+'%;background:'+barColor(k)+'"></div></div><div class="barval">'+pr[k]+'</div></div>';}).join('');
     var cqPanel='<div class="cq"><h3>\u2693 Captain&rsquo;s Quarters</h3>'+
-      '<p class="cq-desc">Give the Quartermaster an order and it edits the log for ye \u2014 e.g. &ldquo;add a port: Cerritos College, California, 100% online&rdquo;, &ldquo;mark the City of Irvine folk as references&rdquo;, or &ldquo;set Netflix to $12.99&rdquo;. Undo is always a tap away.</p>'+
+      '<p class="cq-desc">Give the Quartermaster an order and it edits the log for ye \u2014 e.g. &ldquo;add a port: Cerritos College, California, Fully online&rdquo;, &ldquo;mark the City of Irvine folk as references&rdquo;, or &ldquo;set Netflix to $12.99&rdquo;. Undo is always a tap away.</p>'+
       '<textarea id="cq-input" placeholder="Type an order for the Quartermaster..."></textarea>'+
       '<div class="cq-row"><button class="btn-brass" data-cq-send type="button">Send to the Quartermaster</button><span class="cq-hint">&#8984;/Ctrl+Enter to send</span></div>'+
       '<div class="cq-out">'+cqMsg+'</div></div>';
@@ -673,7 +678,7 @@
   });
   view.addEventListener('change',function(e){var t=e.target;
     if(t.id==='dashdim'){dashDim=t.value;renderView();return;}
-    if(t.dataset&&t.dataset.pspan){var sp=document.getElementById(t.dataset.pspan);if(sp){sp.textContent=t.value||'\u2014';sp.className='badge pt-'+passageKey(t.value);}}
+    if(t.dataset&&t.dataset.tagspan){var sp=document.getElementById(t.dataset.tagspan);if(sp){sp.textContent=t.value||'—';sp.className='badge '+colorClass(t.dataset.k,t.value);}}
     if(t.tagName==='SELECT'&&(t.dataset.k||t.dataset.ledger))persist();
     if(t.dataset.ledger)persist();
   });
@@ -696,7 +701,7 @@
     if(ldel){recordUndo('delete');state.ledger.expenses.splice(+ldel.dataset.ledgerDel,1);save();renderView();return;}
     var add=e.target.closest('[data-add]');
     if(add){if(add.dataset.add==='schools'){openPortModal();return;}var d2=add.dataset.add,blank={};recordUndo('add');
-      if(d2==='schools'){blank={region:REGION_ORDER[0],name:'',berth:'',papers:'',passage:'100% online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''};}
+      if(d2==='schools'){blank={region:REGION_ORDER[0],name:'',berth:'',papers:'',passage:'Fully online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''};}
       else{CARDS[d2].body.concat([CARDS[d2].title,CARDS[d2].sub]).forEach(function(k){blank[k]='';});}
       state[d2].push(blank);EXP[d2][state[d2].length-1]=true;save();renderView();return;}
     var lview=e.target.closest('[data-lview]');

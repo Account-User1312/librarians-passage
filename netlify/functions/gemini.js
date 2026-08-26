@@ -19,7 +19,7 @@ const FIELDS = {
 
 const ENUMS = [
   'region: "California Waters" | "The Texas Coast" | "Distant Shores"',
-  'passage: "100% online" | "Online + on-campus" | "Hybrid" | "In-person" | "Unconfirmed"',
+  'passage: "Fully online" | "Online + on-campus" | "Hybrid" | "In-person" | "Unconfirmed"',
   'flag: "best" | "good" | "warn" | "dear"  (with a short flagText label)',
   'stage: "Researching" | "Application Sent" | "Application Recieved" | "Follow-up" | "Negotiation" | "Won" | "Lost"',
   'status: "Open" | "Closed: Won" | "Closed: Lost" | "Abandoned" | "Negotiation" | "Researching"',

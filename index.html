@@ -246,6 +246,14 @@
   .modal .fl{display:block;margin-bottom:.2rem}
   .modal .f{margin-bottom:.3rem;width:100%}
   .modal-btns{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.2rem}
+  .tagsel{position:relative;display:inline-block}
+  .tagsel .badge{cursor:pointer}
+  .tagsel-native{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;margin:0;padding:0}
+  .pt-online{color:#173252;background:#cfe0f0;border-color:#6b93c0}
+  .pt-oncampus{color:#173f2b;background:#d3ecc2;border-color:#57a074}
+  .pt-hybrid{color:#5a3208;background:#f2dcb0;border-color:#c39a4a}
+  .pt-inperson{color:#37214f;background:#e2d5f2;border-color:#8a6fb0}
+  .pt-unconfirmed{color:#6a2410;background:#f0dcc4;border-color:#c06f8a}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -487,7 +495,9 @@
     document.addEventListener('keydown',onKey);ov.querySelector('#pm-name').focus();
   }
   function passageKey(v){v=String(v||'');if(/on-campus/i.test(v))return 'oncampus';if(/hybrid/i.test(v))return 'hybrid';if(/in-person/i.test(v))return 'inperson';if(/unconfirm/i.test(v))return 'unconfirmed';return 'online';}
-  function passageSelect(ds,i){var v=state[ds][i].passage||'';return '<select class="f pchip pchip-'+passageKey(v)+'" data-ds="'+ds+'" data-i="'+i+'" data-k="passage" data-pchip>'+selOpts('passage',v)+'</select>';}
+  function passageSelect(ds,i){var v=state[ds][i].passage||'';var id='pspan-'+ds+'-'+i;
+    return '<span class="tagsel"><span class="badge pt-'+passageKey(v)+'" id="'+id+'">'+esc(v||'\u2014')+'</span>'+
+      '<select class="tagsel-native" data-ds="'+ds+'" data-i="'+i+'" data-k="passage" data-pspan="'+id+'">'+selOpts('passage',v)+'</select></span>';}
   function linkMini(ds,i,k){var has=!!((state[ds][i][k]||'')+'').trim();return '<span class="linkmini"><a class="ext'+(has?'':' off')+'" data-openlink="'+ds+':'+i+':'+k+'" title="'+(has?'Open in new tab':'No link yet')+'">\u2197</a><button class="lnkedit" data-editlink="'+ds+':'+i+':'+k+'" title="Edit link" type="button">\u270e</button></span>';}
   function renderPortsTable(){
     var ds='schools',recs=state.schools;
@@ -663,7 +673,7 @@
   });
   view.addEventListener('change',function(e){var t=e.target;
     if(t.id==='dashdim'){dashDim=t.value;renderView();return;}
-    if(t.dataset&&t.dataset.pchip){t.className='f pchip pchip-'+passageKey(t.value);}
+    if(t.dataset&&t.dataset.pspan){var sp=document.getElementById(t.dataset.pspan);if(sp){sp.textContent=t.value||'\u2014';sp.className='badge pt-'+passageKey(t.value);}}
     if(t.tagName==='SELECT'&&(t.dataset.k||t.dataset.ledger))persist();
     if(t.dataset.ledger)persist();
   });

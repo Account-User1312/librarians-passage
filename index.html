@@ -103,6 +103,7 @@
   .b-rose{color:#6a2440;background:#f2cdd8;border-color:#c06f8a}
   .b-slate{color:#33404a;background:#d7dee4;border-color:#8895a0}
   .b-red{color:#7a2f16;background:#f0d6c4;border-color:var(--rust)}
+  .datechip.empty{display:none}
   .datechip{font-family:Lora,serif;font-style:italic;font-size:.7rem;color:#1c3a5e;background:#cfe0f0;
     border:1px solid #6b93c0;border-radius:2px;padding:.16rem .45rem;white-space:nowrap}
   .csub{display:block;width:100%;padding:.05rem .7rem .45rem 2.25rem;font-family:Lora,serif;font-style:italic;
@@ -643,7 +644,7 @@
       var badge='';
       if(cfg.badge==='flag'){if(rec.flag)badge='<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>';}
       else{badge=tagSel(ds,i,cfg.badge,cfg.badge);}
-      var dchip=(cfg.dateField&&rec[cfg.dateField])?'<span class="datechip" id="date-'+ds+'-'+i+'" title="Close date">'+esc(rec[cfg.dateField])+'</span>':'';
+      var dchip=cfg.dateField?'<span class="datechip'+(rec[cfg.dateField]?'':' empty')+'" id="date-'+ds+'-'+i+'" title="Close date">'+esc(rec[cfg.dateField]||'')+'</span>':'';
       var fields=cfg.body.map(function(k){var m=FMETA[k];var lab=LABEL_OVERRIDE[ds+':'+k]||m.label;
         var inner=(m.type==='computed')?computedField(ds,i,k):field(ds,i,k);
         return '<div class="fb'+(m.wide?' wide':'')+'"><label class="fl">'+esc(lab)+'</label>'+inner+'</div>';}).join('');
@@ -971,7 +972,8 @@
       e2[k]=(k==='amount')?(isFinite(parseFloat(t.value))?parseFloat(t.value):0):t.value;saveSoon();return;}
     if(t.dataset.k){var arr=state[t.dataset.ds];if(!arr)return;var rec=arr[+t.dataset.i];if(!rec)return;rec[t.dataset.k]=t.value;saveSoon();
       var cfg=CARDS[t.dataset.ds];if(cfg){if(t.dataset.k===cfg.badge){var bd=document.getElementById('badge-'+t.dataset.ds+'-'+t.dataset.i);if(bd){bd.textContent=t.value;bd.className='badge '+badgeClass(cfg.badge,t.value);}}
-        if(t.dataset.k===cfg.dateField){var dd=document.getElementById('date-'+t.dataset.ds+'-'+t.dataset.i);if(dd)dd.textContent=t.value;}}}
+        if(t.dataset.k===cfg.dateField){var dd=document.getElementById('date-'+t.dataset.ds+'-'+t.dataset.i);
+          if(dd){dd.textContent=t.value;dd.className='datechip'+(String(t.value).trim()?'':' empty');}}}}
   });
   view.addEventListener('change',function(e){var t=e.target;
     if(t.id==='dashdim'){dashDim=t.value;renderView();return;}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Librarian's Passage</title>
+<title>Neal's Passage</title>
 <meta name="description" content="A pirate's chart of library-school ports, a logbook of the hunt for a berth, and the ship's budget — all in one.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%E2%9A%93</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -254,6 +254,11 @@
   .pt-hybrid{color:#5a3208;background:#f2dcb0;border-color:#c39a4a}
   .pt-inperson{color:#37214f;background:#e2d5f2;border-color:#8a6fb0}
   .pt-unconfirmed{color:#6a2410;background:#f0dcc4;border-color:#c06f8a}
+  table.ports{min-width:1080px}
+  table.ports textarea.f{min-width:6.5rem}
+  table.ports td:nth-child(1){min-width:11rem}
+  .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
+  tr.region .chev{display:inline-flex;color:var(--brass);vertical-align:middle}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -284,9 +289,9 @@
 <body>
 <header>
   <p class="eyebrow">Chart &middot; Logbook &middot; Purse</p>
-  <h1>The Librarian's Passage</h1>
+  <h1>Neal's Passage</h1>
   <div class="rule"></div>
-  <p class="standfirst">The ports that school a keeper of books, the running log of the hunt for a berth, and the ship's own purse &mdash; all in one hold. Every line is yours to amend; the ship remembers.</p>
+  <p class="standfirst">The ports that school a keeper of books, the running log of the hunt for quarters, and the ship's own purse &mdash; all in one hold. Every line is yours to amend; the ship remembers.</p>
 </header>
 
 <div class="wrap">
@@ -414,6 +419,7 @@
     catch(e){return clone(DEFAULTS);}}
   var state=load(), active='dashboard', ledgerView='month', dashDim='status', saveTimer=null;
   var EXP={schools:{},opportunities:{},companies:{},people:{}};
+  var EXPREG={};
   var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
   var cqMsg='';
 
@@ -487,7 +493,7 @@
     }else{recs.forEach(function(_,i){body+=cardHtml(i);});}
     body+='</div>'+addbar(ds,cfg.noun);
     var H={schools:['The Chart of Ports','Where to school for the trade · Passage is a dropdown · tap ↗ for each program’s info page'],
-      opportunities:['Opportunities','Every berth hailed · close date shown as a tag · ↗ opens the application'],
+      opportunities:['Opportunities','Every post hailed · close date shown as a tag · ↗ opens the application'],
       companies:['Companies','The houses the People sail under'],people:['People','Folk qualified to do business with']};
     return card(H[ds][0],H[ds][1],tools,body);
   }
@@ -530,18 +536,22 @@
     var ds='schools',recs=state.schools;
     var cols=[['papers','Papers (degree & credits)'],['passage','Passage'],['toll','Toll / cost per credit'],['firstPapers','Cost to first papers'],['bond','Residency'],['catch','The catch'],['link','Info page']];
     var colhead='<tr class="colhead"><td class="pn">Port o&rsquo; Call</td>'+cols.map(function(c){return '<td>'+esc(c[1])+'</td>';}).join('')+'<td class="act"></td></tr>';
-    var body='';
+    var tools='<div class="toolbtns"><button class="tbtn" data-rgall="1">Open all</button><button class="tbtn" data-rgall="0">Collapse all</button></div>';
     var order=REGION_ORDER.slice();recs.forEach(function(r){if(order.indexOf(r.region)<0)order.push(r.region||'—');});
+    var body='';
     order.forEach(function(reg){var idxs=[];recs.forEach(function(r,i){if((r.region||'—')===reg)idxs.push(i);});if(!idxs.length)return;
-      body+='<tr class="region"><td colspan="'+(cols.length+2)+'">⚓ '+esc(reg)+(REGION_SUB[reg]?'<span class="rsub">'+esc(REGION_SUB[reg])+'</span>':'')+'</td></tr>'+colhead;
-      idxs.forEach(function(i){var rec=recs[i];
-        var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
-          '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
-          '<input class="f pberth" data-ds="'+ds+'" data-i="'+i+'" data-k="berth" value="'+esc(rec.berth||'')+'" placeholder="location"></td>';
-        body+='<tr>'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td>'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
-      });
+      var op=EXPREG[reg]===true;
+      body+='<tr class="region"><td colspan="'+(cols.length+2)+'"><button class="chev'+(op?' open':'')+'" data-rgtoggle="'+esc(reg)+'" type="button" aria-label="Toggle heading">▶</button> ⚓ '+esc(reg)+' <span class="rgcount">('+idxs.length+')</span>'+(REGION_SUB[reg]?'<span class="rsub">'+esc(REGION_SUB[reg])+'</span>':'')+'</td></tr>';
+      if(op){body+=colhead;
+        idxs.forEach(function(i){var rec=recs[i];
+          var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
+            '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
+            '<input class="f pberth" data-ds="'+ds+'" data-i="'+i+'" data-k="berth" value="'+esc(rec.berth||'')+'" placeholder="location"></td>';
+          body+='<tr class="drow">'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td>'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
+        });
+      }
     });
-    return card('The Chart of Ports','Where to school for the trade · Passage is a dropdown · tap ↗ for each program’s info page','',
+    return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,
       '<div class="scroller"><table class="ports"><tbody>'+body+'</tbody></table></div>'+addbar('schools','port'));
   }
   /* ---------- dashboard ---------- */
@@ -707,6 +717,8 @@
   });
   view.addEventListener('click',function(e){
     var cq=e.target.closest('[data-cq-send]');if(cq){cqSend();return;}
+    var rgt=e.target.closest('[data-rgtoggle]');if(rgt){EXPREG[rgt.dataset.rgtoggle]=!EXPREG[rgt.dataset.rgtoggle];renderView();return;}
+    var rga=e.target.closest('[data-rgall]');if(rga){var onn=rga.dataset.rgall==='1';var seen={};state.schools.forEach(function(s){seen[s.region||'—']=1;});REGION_ORDER.forEach(function(r){seen[r]=1;});Object.keys(seen).forEach(function(r){EXPREG[r]=onn;});renderView();return;}
     var ol=e.target.closest('[data-openlink]');
     if(ol){var p=ol.dataset.openlink.split(':');var u=((state[p[0]][+p[1]][p[2]]||'')+'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
     var el2=e.target.closest('[data-editlink]');

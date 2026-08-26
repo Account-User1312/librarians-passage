@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Librarian's Passage</title>
+<meta name="description" content="A pirate's chart of library-school ports, a logbook of the hunt for a berth, and the ship's budget — all in one.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%E2%9A%93</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  :root{
+    --wood-darkest:#080401;--wood-dark:#110804;--wood-mid:#1a0e06;--wood-plank:#261508;
+    --parchment-light:#faf3e0;--parchment-dark:#dcc89a;--parchment-mid:#e6d3a0;
+    --brass:#c5a444;--brass-bright:#d4af37;--brass-dark:#7a5f1e;--brass-muted:#9e7f30;--gold-sheen:#e6c43a;
+    --rope:#6e5940;--rope-light:#8a7250;--sea-dark:#0a1c2c;--text-parchment:#241408;
+    --text-light:#edd9a8;--text-muted:#9a7d58;--ink:#4a3018;--rust:#8c3a1c;--seafoam:#2f6b4f;--shadow-deep:0 12px 48px #000000d9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background-color:var(--wood-darkest);
+    background-image:radial-gradient(ellipse at 50% 0%,#c5a4440f 0%,transparent 55%),
+      repeating-linear-gradient(88deg,#0000 0 22px,#ffffff02 22px 23px,#0000 23px 46px),
+      repeating-linear-gradient(#0000 0 4px,#0000001f 4px 5px,#0000 5px 140px,#ffffff05 140px 141px,#0000 141px 145px);
+    color:var(--text-light);font-family:Lora,Georgia,serif;-webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:rgba(197,164,68,.25);overflow-x:hidden}
+  @supports (min-height:100dvh){body{min-height:100dvh}}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 1.1rem 5rem}
+  header{text-align:center;padding:3.2rem 1rem 1.7rem;background:linear-gradient(180deg,var(--sea-dark) 0%,transparent 100%);
+    border-bottom:1px solid #7a5f1e40;margin-bottom:1.6rem}
+  .eyebrow{font-family:Lora,serif;font-style:italic;font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--brass-muted);margin:0 0 1rem}
+  h1{font-family:'IM Fell English SC',Georgia,serif;font-size:clamp(2rem,5.2vw,3.5rem);line-height:1.05;margin:0;
+    color:var(--parchment-light);text-shadow:0 0 80px #c5a4442e,0 4px 24px #000000e6}
+  .rule{width:190px;height:1px;margin:1.1rem auto 1rem;background:linear-gradient(90deg,transparent,var(--rope),var(--brass-dark),var(--brass),var(--brass-dark),var(--rope),transparent)}
+  .standfirst{font-family:'IM Fell English',Georgia,serif;font-style:italic;font-size:.98rem;color:var(--text-muted);margin:0 auto;max-width:42rem;line-height:1.5}
+
+  .tabs{display:flex;justify-content:center;flex-wrap:wrap;margin-bottom:1.4rem}
+  .tab{font-family:'IM Fell English SC',Georgia,serif;font-size:.86rem;letter-spacing:.05em;
+    background:linear-gradient(180deg,var(--wood-plank) 0%,var(--wood-mid) 100%);color:var(--text-muted);
+    border:1px solid #7a5f1e59;padding:.68rem 1.15rem;cursor:pointer;transition:color .2s,background .2s,border-color .2s;margin:-1px 0 0 -1px}
+  .tab:hover{color:var(--parchment-mid)}
+  .tab[aria-selected="true"]{background:linear-gradient(180deg,var(--brass) 0%,#a07a28 100%);color:var(--wood-darkest);border-color:var(--brass-bright);z-index:1}
+  .tab:focus-visible{outline:2px solid var(--gold-sheen);outline-offset:2px;z-index:2}
+
+  .ledger{background:var(--parchment-light);border:1px solid var(--parchment-dark);border-radius:3px;
+    box-shadow:3px 3px 0 var(--parchment-dark),5px 5px #00000059,var(--shadow-deep);overflow:hidden;margin-bottom:1.4rem}
+  .lhead{background:linear-gradient(180deg,#efe0b4 0%,#e6d3a0 100%);border-bottom:1px solid #b99f6e;
+    padding:.95rem 1.3rem;display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap}
+  .lhead h2{font-family:'IM Fell English SC',Georgia,serif;font-size:1.1rem;margin:0;color:var(--text-parchment)}
+  .lhead .cad{font-family:Lora,serif;font-style:italic;font-size:.76rem;color:#7a5f1e;flex:1 1 14rem}
+  .toolbtns{display:flex;gap:.4rem;flex-wrap:wrap}
+  .tbtn{font-family:'IM Fell English SC',Georgia,serif;font-size:.68rem;letter-spacing:.05em;background:#f3e7c0;
+    color:var(--brass-dark);border:1px solid #c9b183;border-radius:2px;padding:.35rem .7rem;cursor:pointer}
+  .tbtn:hover{border-color:var(--brass-dark);color:var(--ink)}
+
+  /* editable fields */
+  .f{font-family:Lora,Georgia,serif;font-size:.86rem;color:var(--ink);background:#fffaef;border:1px solid #d8c58f;
+    border-radius:2px;padding:.35rem .45rem;width:100%;transition:border-color .15s,box-shadow .15s}
+  .f:focus{outline:none;border-color:var(--brass-dark);box-shadow:0 0 0 2px #c5a44430}
+  textarea.f{resize:vertical;min-height:2.1rem;line-height:1.4;white-space:pre-wrap;word-break:break-word;overflow:hidden}
+  select.f{font-family:'IM Fell English SC',Georgia,serif;font-size:.78rem;color:var(--text-parchment);background:#f3e7c0;cursor:pointer}
+  .linkcell{display:flex;align-items:stretch;gap:.3rem}
+  .linkcell .f{min-width:0}
+  .ext{flex:0 0 auto;color:var(--brass-dark);text-decoration:none;font-size:1rem;cursor:pointer;border:1px solid #c9b183;
+    border-radius:2px;line-height:1;padding:.1rem .5rem;background:#f3e7c0;display:flex;align-items:center}
+  .ext:hover{color:#fff;background:var(--brass-dark);border-color:var(--brass-dark)}
+  .del{background:none;border:none;cursor:pointer;color:#b89a5e;font-size:1.15rem;line-height:1;padding:.2rem .35rem;border-radius:2px;transition:color .18s,background .18s}
+  .del:hover{color:var(--rust);background:#00000010}
+  .flag{display:inline-block;font-family:'IM Fell English SC',Georgia,serif;font-size:.55rem;letter-spacing:.08em;
+    text-transform:uppercase;padding:.18rem .5rem;border-radius:2px;border:1px solid;white-space:nowrap}
+  .flag-best{color:#5a4410;background:#f0e2b0;border-color:var(--brass-dark)}
+  .flag-good{color:#1f4d38;background:#dcecc9;border-color:var(--seafoam)}
+  .flag-warn,.flag-dear{color:#7a2f16;background:#f0dcc4;border-color:var(--rust)}
+
+  /* cards */
+  .cards{padding:.8rem 1rem 1rem}
+  .regionbar{background:linear-gradient(180deg,var(--wood-plank) 0%,var(--wood-mid) 100%);color:var(--brass);
+    border:1px solid var(--brass-dark);border-radius:3px;font-family:'IM Fell English SC',Georgia,serif;
+    letter-spacing:.1em;font-size:.85rem;padding:.55rem .9rem;margin:.9rem 0 .5rem}
+  .regionbar:first-child{margin-top:.2rem}
+  .regionbar .rsub{font-family:Lora,serif;font-style:italic;letter-spacing:normal;color:var(--rope-light);font-size:.7rem;margin-left:.5rem}
+  .card{background:#f6ecca;border:1px solid #d8c58f;border-radius:3px;margin-bottom:.55rem;overflow:hidden}
+  .chead{display:flex;align-items:center;gap:.55rem;padding:.5rem .7rem;background:linear-gradient(180deg,#f1e4ba 0%,#ecdcac 100%);flex-wrap:wrap}
+  .chev{flex:0 0 auto;background:none;border:none;cursor:pointer;color:var(--brass-dark);font-size:.8rem;
+    width:1.5rem;height:1.7rem;display:flex;align-items:center;justify-content:center;transition:transform .18s}
+  .chev.open{transform:rotate(90deg)}
+  .ctitle{flex:1 1 55%;min-width:8rem;font-family:'IM Fell English SC',Georgia,serif;font-size:1rem;color:var(--text-parchment);
+    background:transparent;border:none;border-bottom:1px dashed transparent;padding:.15rem .2rem;border-radius:2px;
+    resize:none;overflow:hidden;white-space:pre-wrap;word-break:break-word;line-height:1.25}
+  .ctitle:hover{border-bottom-color:#c9b183}
+  .ctitle:focus{outline:none;background:#fffaeb;border-bottom-color:var(--brass-dark)}
+  .chead .flag,.badge,.datechip{flex:0 0 auto;margin-top:0}
+  .badge{font-family:'IM Fell English SC',Georgia,serif;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+    padding:.2rem .55rem;border-radius:2px;border:1px solid;white-space:nowrap}
+  .b-lost{color:#7a2f16;background:#f0d6c4;border-color:var(--rust)}
+  .b-won{color:#1f4d38;background:#d3ecc2;border-color:var(--seafoam)}
+  .b-neutral{color:#5a4410;background:#efe1ad;border-color:var(--brass-dark)}
+  .b-blue{color:#1c3a5e;background:#cfe0f0;border-color:#6b93c0}
+  .b-purple{color:#422a5e;background:#e2d5f2;border-color:#8a6fb0}
+  .b-green{color:#1f4d38;background:#d3ecc2;border-color:#57a074}
+  .b-teal{color:#14483f;background:#cbe8e0;border-color:#4f9c8c}
+  .b-amber{color:#6a3d10;background:#f2dcb0;border-color:#c39a4a}
+  .b-rose{color:#6a2440;background:#f2cdd8;border-color:#c06f8a}
+  .b-slate{color:#33404a;background:#d7dee4;border-color:#8895a0}
+  .datechip{font-family:Lora,serif;font-style:italic;font-size:.7rem;color:#1c3a5e;background:#cfe0f0;
+    border:1px solid #6b93c0;border-radius:2px;padding:.16rem .45rem;white-space:nowrap}
+  .csub{display:block;width:100%;padding:.05rem .7rem .45rem 2.25rem;font-family:Lora,serif;font-style:italic;
+    font-size:.82rem;color:#7a5f3c;background:transparent;border:none;border-bottom:1px dashed transparent;border-radius:2px}
+  .csub:focus{outline:none;background:#fffaeb;border-bottom-color:var(--brass-dark)}
+  .cbody{display:none;padding:.5rem .9rem 1rem;border-top:1px solid #e0cf9c;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.7rem .9rem}
+  .cbody.open{display:grid}
+  .fb{display:flex;flex-direction:column;gap:.2rem;min-width:0}
+  .fb.wide{grid-column:1/-1}
+  .fl{font-family:'IM Fell English SC',Georgia,serif;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-dark)}
+  .addwrap{padding:.2rem 1rem 1.1rem;text-align:left}
+
+  /* dashboard */
+  .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.9rem;padding:1.3rem 1.3rem .4rem}
+  .stat{background:#f3e7c0;border:1px solid #c9b183;border-radius:3px;padding:.95rem 1rem;text-align:center}
+  .stat .n{font-family:'IM Fell English SC',Georgia,serif;font-size:2rem;color:var(--text-parchment);line-height:1}
+  .stat .l{font-family:Lora,serif;font-style:italic;font-size:.78rem;color:#8a7250;margin-top:.3rem}
+  .chartwrap{padding:.6rem 1.4rem 1.5rem}
+  .chart-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.7rem}
+  .chart-top h3{font-family:'IM Fell English SC',Georgia,serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-dark);margin:0}
+  .barrow{display:flex;align-items:center;gap:.7rem;margin:.3rem 0}
+  .barlabel{flex:0 0 34%;max-width:34%;font-size:.82rem;color:var(--ink);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bartrack{flex:1 1 auto;height:16px;background:#e5d5ae;border-radius:2px;overflow:hidden}
+  .barfill{height:100%;background:linear-gradient(90deg,var(--brass-dark),var(--brass));border-radius:2px;min-width:2px;transition:width .3s}
+  .barfill.won{background:linear-gradient(90deg,#2f6b4f,#57a074)}
+  .barfill.lost{background:linear-gradient(90deg,#8c3a1c,#c05a35)}
+  .barval{flex:0 0 auto;font-variant-numeric:tabular-nums;font-size:.82rem;color:var(--text-parchment);width:2.2rem;text-align:right}
+
+  /* ledger */
+  .ltable{width:100%;border-collapse:collapse;min-width:0}
+  .ltable th{font-family:'IM Fell English SC',Georgia,serif;font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--brass-dark);font-weight:400;text-align:left;padding:.7rem 1.3rem .4rem;border-bottom:1px solid #c9b183}
+  .ltable th.num{text-align:right}
+  .ltable td{padding:.5rem 1.3rem;border-bottom:1px solid #e2d2ab;font-size:.9rem;color:var(--ink);vertical-align:middle}
+  .ltable td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-parchment);white-space:nowrap}
+  .ltable td.act{text-align:right;width:40px;padding-right:1rem}
+  .ltable .f{width:100%}
+  .ltable td .lkind-in{margin-top:.25rem;font-style:italic;font-size:.72rem;color:#8a7250}
+  .lkind{display:block;font-style:italic;font-size:.68rem;color:#8a7250;margin-top:.05rem}
+  .share{width:26%}
+  .sbar{height:6px;background:#e5d5ae;border-radius:1px;overflow:hidden}
+  .sbar span{display:block;height:100%;background:linear-gradient(90deg,var(--brass-dark),var(--brass));border-radius:1px}
+  .spct{font-variant-numeric:tabular-nums;font-size:.68rem;color:#8a7250;margin-top:.22rem;display:block}
+  .lmoney{display:inline-flex;align-items:center;gap:.12rem;justify-content:flex-end}
+  .lmoney .cur{color:#8a7250;font-size:.9em}
+  .lmoney .f{width:7rem;text-align:right}
+  .l-income td{background:#efe3bd;border-bottom:1px solid #c9b183;font-family:'IM Fell English SC',Georgia,serif;letter-spacing:.05em}
+  .l-income td.num{font-size:1.05rem}.l-income .lmoney .f{font-size:1.05rem}
+  .l-out td{background:#ece0b8;border-top:1px solid #c9b183;font-family:'IM Fell English SC',Georgia,serif}
+  .l-left td{background:linear-gradient(180deg,var(--wood-plank) 0%,var(--wood-darkest) 100%);border-top:2px solid var(--brass-dark);
+    color:var(--brass);font-family:'IM Fell English SC',Georgia,serif}
+  .l-left td.num{color:var(--gold-sheen);font-size:clamp(1.3rem,4vw,1.9rem)}
+  .l-left td.num.over{color:#e0764a}
+  .l-sub{display:block;font-family:Lora,serif;font-style:italic;letter-spacing:normal;font-size:.7rem;color:var(--rope-light);margin-top:.15rem}
+  .lsub-toggle{display:flex;gap:0}
+  .lsub-toggle button{font-family:'IM Fell English SC',Georgia,serif;font-size:.72rem;background:#f3e7c0;color:var(--brass-dark);
+    border:1px solid #c9b183;padding:.4rem .9rem;cursor:pointer}
+  .lsub-toggle button[aria-pressed="true"]{background:linear-gradient(180deg,var(--brass) 0%,#a07a28 100%);color:var(--wood-darkest);border-color:var(--brass-bright)}
+  .lsub-toggle button:first-child{border-radius:2px 0 0 2px}
+  .lsub-toggle button:last-child{border-radius:0 2px 2px 0;border-left:none}
+  .laddbar{background:linear-gradient(180deg,#e9dcb2 0%,#e0d09c 100%);border-top:1px solid #c9b183;padding:.9rem 1.3rem}
+  .laddlabel{font-family:'IM Fell English SC',Georgia,serif;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-dark);margin:0 0 .5rem}
+  .laddrow{display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end}
+  .lfield{display:flex;flex-direction:column;gap:.2rem;flex:1 1 8rem}
+  .lfield label{font-family:Lora,serif;font-style:italic;font-size:.68rem;color:#7a5f1e}
+  .lfield input{font-family:Lora,serif;font-size:.9rem;color:var(--ink);background:#fffaeb;border:1px solid #c9b183;border-radius:2px;padding:.45rem .5rem;width:100%}
+  .lfield.amt{flex:0 0 7rem}.lfield.amt input{text-align:right}
+  .llog{padding:1rem 1.3rem;border-top:1px solid #e2d2ab}
+  .llog .log-label{font-family:'IM Fell English SC',Georgia,serif;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-dark);margin:0 0 .45rem}
+  .llog p{font-family:'IM Fell English',Georgia,serif;font-style:italic;font-size:.86rem;line-height:1.65;color:var(--ink);margin:0 0 .55rem}
+  .llog p:last-child{margin:0}.llog strong{font-style:normal;font-weight:600;color:var(--text-parchment)}
+
+  .btn-brass{background:linear-gradient(180deg,var(--brass) 0%,#a07a28 100%);color:var(--wood-darkest);letter-spacing:.05em;
+    border:1px solid var(--brass-bright);cursor:pointer;border-radius:2px;padding:.5rem 1.15rem;font-family:'IM Fell English SC',Georgia,serif;font-size:.82rem;transition:filter .2s}
+  .btn-brass:hover{filter:brightness(1.12)}
+  .btn-brass:focus-visible{outline:2px solid var(--gold-sheen);outline-offset:2px}
+  .stores{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:.4rem}
+  .btn-ghost{background:linear-gradient(180deg,var(--wood-plank) 0%,var(--wood-mid) 100%);color:var(--text-muted);
+    border:1px solid #7a5f1e59;border-radius:2px;padding:.5rem 1rem;font-family:'IM Fell English SC',Georgia,serif;font-size:.72rem;letter-spacing:.05em;cursor:pointer;transition:color .2s,border-color .2s}
+  .btn-ghost:hover{color:var(--parchment-mid);border-color:var(--brass-dark)}
+  .btn-ghost.danger:hover{color:#e0764a;border-color:var(--rust)}
+  .btn-ghost:disabled{opacity:.4;cursor:not-allowed}
+  .btn-ghost:disabled:hover{color:var(--text-muted);border-color:#7a5f1e59}
+  #btn-undo,#btn-redo{font-size:.9rem}
+  .saved{text-align:center;font-family:Lora,serif;font-style:italic;font-size:.72rem;color:var(--rope);margin:.9rem 0 0;min-height:1.1em;transition:opacity .3s}
+  .ornament{text-align:center;color:var(--brass-dark);letter-spacing:.3em;font-size:.9rem;margin:1.6rem 0 .4rem}
+  .footline{text-align:center;font-family:Lora,serif;font-style:italic;font-size:.72rem;color:var(--rope);margin:0}
+  table.ports{width:100%;border-collapse:collapse;min-width:960px}
+  table.ports th{font-family:'IM Fell English SC',Georgia,serif;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-dark);font-weight:400;text-align:left;padding:.7rem .7rem .4rem;border-bottom:1px solid #c9b183;vertical-align:bottom}
+  table.ports th.act{width:30px}
+  table.ports td{padding:.5rem .7rem;border-bottom:1px solid #e2d2ab;vertical-align:top}
+  table.ports tr:last-child td{border-bottom:none}
+  table.ports td.act{text-align:center;padding:.5rem .25rem}
+  table.ports tr.region td{background:linear-gradient(180deg,var(--wood-plank) 0%,var(--wood-mid) 100%);color:var(--brass);border-top:1px solid var(--brass-dark);border-bottom:1px solid var(--brass-dark);font-family:'IM Fell English SC',Georgia,serif;letter-spacing:.1em;font-size:.85rem;padding:.55rem .8rem}
+  table.ports tr.region td .rsub{font-family:Lora,serif;font-style:italic;letter-spacing:normal;color:var(--rope-light);font-size:.7rem;margin-left:.5rem}
+  table.ports .pn{width:15%;min-width:9.5rem}
+  table.ports .f{width:100%;background:transparent;border:none;border-radius:0;padding:.12rem .15rem;box-shadow:none}
+  table.ports .f:hover{background:#fbf1d2}
+  table.ports .f:focus{background:#fffaeb;box-shadow:inset 0 -1px 0 var(--brass-dark);outline:none}
+  table.ports select.f{background:transparent}
+  table.ports select.f:hover{background:#fbf1d2}
+  table.ports .linkcell .ext{background:transparent;border-color:#cdb478}
+  table.ports tr.colhead td{font-family:'IM Fell English SC',Georgia,serif;font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-dark);padding:.55rem .7rem .32rem;border-bottom:1px solid #c9b183;vertical-align:bottom;background:#f4e8c2}
+  .ptitle{font-family:'IM Fell English SC',Georgia,serif;font-size:.92rem;color:var(--text-parchment);margin-top:.3rem}
+  .pberth{font-style:italic;font-size:.72rem;color:#8a7250;margin-top:.28rem}
+  .assoc{display:flex;flex-wrap:wrap;gap:.35rem}
+  .assoc.empty{font-style:italic;color:#8a7250;font-size:.82rem}
+  .ptag{font-family:Lora,serif;font-size:.76rem;color:#1c3a5e;background:#cfe0f0;border:1px solid #6b93c0;border-radius:2px;padding:.15rem .45rem}
+  .ptag em{font-style:italic;color:#3a5670}
+  @media (max-width:700px){ table.ports .ptitle,table.ports .pberth,table.ports .f{font-size:16px} }
+  [hidden]{display:none !important}
+
+  @media (max-width:700px){
+    .wrap{padding-left:max(.7rem,env(safe-area-inset-left));padding-right:max(.7rem,env(safe-area-inset-right))}
+    .tab{flex:1 1 30%;padding:.62rem .4rem;font-size:.78rem;min-height:46px}
+    .ctitle{flex-basis:100%}
+    .csub{padding-left:.7rem}
+    .ltable td,.ltable th{padding-left:.9rem;padding-right:.9rem}
+    .share{width:20%}.sbar{display:none}
+    .lmoney .f{width:5.5rem}
+    .barlabel{flex-basis:42%;max-width:42%;font-size:.76rem}
+    .f,select.f,textarea.f,.ctitle,.csub{font-size:16px}
+    .del{min-width:44px;min-height:44px}
+    .stores{gap:.45rem}.stores .btn-ghost{flex:1 1 40%;min-height:46px}
+  }
+  @media print{
+    body{background:#fff !important;background-image:none !important;color:#1a1208}
+    .tabs,.stores,.saved,.toolbtns,.laddbar,.addwrap,.del,.ext,.chev,.lsub-toggle{display:none !important}
+    header{background:none;border-bottom:1px solid #8a7250}h1{color:#1a1208;text-shadow:none}
+    .ledger{box-shadow:none;border:1px solid #b0997080}.cbody{display:grid !important}
+    .f{border:none;background:none}select.f{-webkit-appearance:none;appearance:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<header>
+  <p class="eyebrow">Chart &middot; Logbook &middot; Purse</p>
+  <h1>The Librarian's Passage</h1>
+  <div class="rule"></div>
+  <p class="standfirst">The ports that school a keeper of books, the running log of the hunt for a berth, and the ship's own purse &mdash; all in one hold. Every line is yours to amend; the ship remembers.</p>
+</header>
+
+<div class="wrap">
+  <div class="tabs" id="tabs" role="tablist" aria-label="Sections"></div>
+  <div id="view"></div>
+  <div class="stores">
+    <button class="btn-ghost" id="btn-undo" type="button" title="Undo (Ctrl/Cmd+Z)" disabled>↶ Undo</button>
+    <button class="btn-ghost" id="btn-redo" type="button" title="Redo (Ctrl/Cmd+Shift+Z)" disabled>↷ Redo</button>
+    <button class="btn-ghost" id="btn-export" type="button">Back up data</button>
+    <button class="btn-ghost" id="btn-import" type="button">Load a copy</button>
+    <button class="btn-ghost" id="btn-print" type="button">Save as PDF</button>
+    <button class="btn-ghost danger" id="btn-reset" type="button">Reset to defaults</button>
+    <input type="file" id="file-import" accept="application/json,.json" hidden>
+  </div>
+  <p class="saved" id="saved"></p>
+  <p class="ornament">&#10087; &nbsp; &sect; &nbsp; &#10087;</p>
+  <p class="footline">Chart figures gathered Aug 2026 &mdash; confirm at each harbour. CRM &amp; purse are yours, saved to this browser only.</p>
+</div>
+
+<script type="application/json" id="seed-crm">{"people":[{"tag":"Past","name":"Dan Taylor","company":"Y.A.L","email":"dan.taylor@yaliberty.org","title":"Developement Director","contactType":"Reference","phone":"260-442-2013","website":"yaliberty.org","address":"500 N Capital of TX HWY\nBldg 5 Ste 100","city":"Austin","state":"Texas","zip":"78746","linkedin":"https://www.linkedin.com/in/daniel-taylor-828561164/","description":"Boss at Y.A.L"},{"tag":"Current","name":"Julia Stone","company":"UATX","email":"jstone@uaustin.org","title":"Snr Mgr. of Development Operations","contactType":"Current Employer","phone":"401-636-4647","website":"www.uaustin.org","address":"522 Congress Ave\nSuite 300","city":"Austin","state":"Texas","zip":"78701","linkedin":"N/A","description":"Connector to job"},{"tag":"Done","name":"Catherine Wusterhausen","company":"TX Legislative Reference Library","email":"Catherine.Wusterhausen@irl.texas.gov","title":"Assistant Director","contactType":"Potential Employer","phone":"512.463.1252","website":"https://lrl.texas.gov/","address":"1100 N Congress Ave Rm 2N.3","city":"Austin","state":"Texas","zip":"78701","linkedin":"http://www.linkedin.com/search/fpsearch?type=people&keywords=Catherine Wusterhausen TX Legislative Reference Library&pplSearchOrigin=GLHD&pageKey=fps_results","description":"Test Contact"},{"tag":"Past","name":"Kyle Royer","company":"Royer Group","email":"kroyer@royergroupllc.com","title":"Founder/Owner","contactType":"Reference","phone":"703.346.1846​","website":"https://www.royergroupllc.com/about.html","address":"","city":"Fairfax","state":"Virgina","zip":"","linkedin":"","description":"Accountant at YAL --  former colleague"},{"tag":"Past","name":"Aaron Droba","company":"Y.A.L","email":"aaron.droba@yaliberty.org","title":"CFO","contactType":"Reference","phone":"","website":"yaliberty.org","address":"500 N Capital of TX HWY\nBldg 5 Ste 100","city":"Austin","state":"Texas","zip":"78746","linkedin":"","description":"CFO of YAL"},{"tag":"Past","name":"Philip Parker","company":"Frmr Y.A.L","email":"philip.parker@yaliberty.org","title":"CTO","contactType":"Reference","phone":"318.372.2937","website":"yaliberty.org","address":"522 Congress Ave\nSuite 300","city":"Austin","state":"Texas","zip":"78701","linkedin":"","description":""},{"tag":"Past","name":"Sean Themea","company":"Y.A.L","email":"sean.themea@yaliberty.org","title":"COO","contactType":"Reference","phone":"603-571-7326","website":"yaliberty.org","address":"522 Congress Ave\nSuite 300","city":"Austin","state":"Texas","zip":"78701","linkedin":"https://www.linkedin.com/in/seanthemea/","description":""},{"tag":"Current","name":"Anthony Rosario","company":"UATX","email":"arosario@uaustin.org","title":"MGO","contactType":"Reference","phone":"","website":"www.uaustin.org","address":"522 Congress Ave\nSuite 300","city":"Austin","state":"Texas","zip":"78701","linkedin":"","description":""},{"tag":"Strong","name":"Tony Mesta","company":"Y.A.L","email":"tony.mesta@yaliberty.org","title":"Deputy Director - SRC","contactType":"Reference","phone":"737-329-7948","website":"yaliberty.org","address":"522 Congress Ave\nSuite 300","city":"Austin","state":"Texas","zip":"78701","linkedin":"https://www.linkedin.com/in/tony-mesta-3b6b33209?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BqLIP%2B9SMTlWV%2Bq%2F0yleW9g%3D%3D","description":""},{"tag":"Strong","name":"Mitchell Grady","company":"Gumby's, LLC","email":"mgradyfd@gmail.com","title":"Assistant Manager","contactType":"Reference","phone":"","website":"https://gumbys.com/","address":"","city":"","state":"","zip":"","linkedin":"","description":""},{"tag":"Past","name":"Rachel Alajian","company":"Atlas Society","email":"rachel@atlassociety.org","title":"MGO","contactType":"Reference","phone":"310-403-5837","website":"https://www.atlassociety.org","address":"1038 Miwok Dr","city":"Lodi","state":"California","zip":"95240","linkedin":"https://www.linkedin.com/in/rachel-alajian-883750315/","description":""},{"tag":"","name":"Anaheta Gandoumani","company":"City of Irvine","email":"Agandoumani@cityofirvine.org","title":"HR Specialist","contactType":"Potential Employer","phone":"949-724-5403","website":"https://cityofirvine.org/","address":"1 Civic Center Plaza","city":"Irvine","state":"California","zip":"92606","linkedin":"https://www.linkedin.com/in/anaheta-gandoumani-751b2416b/","description":""},{"tag":"","name":"Jamiee Lang","company":"County of Orange","email":"jamiee.lang@occr.ocgov.com","title":"HR Specialist","contactType":"Potential Employer","phone":"714-480-2738 ​","website":"","address":"","city":"","state":"","zip":"","linkedin":"","description":""},{"tag":"","name":"Nancy Pic","company":"San Bernadino USD","email":"nancy.pic@sbcusd.k12.ca.us","title":"HR Admin Asst.","contactType":"Potential Employer","phone":"(909) 381-1101","website":"https://www.sbcusd.com/departments/human-resources-division","address":"777 North F St.","city":"San Bernadino","state":"California","zip":"92410","linkedin":"","description":""}],"companies":[{"name":"Young Americans for Liberty (Y.A.L)","contactType":"Current Employer","phone":"737-329-6213","emailDomain":"@yaliberty.org","website":"yaliberty.org","address":"500 N Capital of TX HWY\nBldg 5 Ste 100","city":"Austin","state":"Texas","zip":"78746","country":"US","linkedin":"https://www.linkedin.com/company/young-americans-for-liberty/","description":"Current employer 2025"},{"name":"University of Austin (UATX)","contactType":"Potential Employer","phone":"401-636-4647","emailDomain":"@uaustin.org","website":"www.uaustin.org","address":"522 Congress Ave\nSuite 300","city":"Austin","state":"Texas","zip":"78701","country":"US","linkedin":"https://www.linkedin.com/school/uaustinorg/","description":""},{"name":"Univ of St. Augustine for Health Sciences","contactType":"Potential Employer","phone":"(904) 826-0084","emailDomain":"hr@usa.edu","website":"https://careers.usa.edu/job/san-marcos/assistant-librarian/26483/84701162192","address":"700 Windy Point Drive","city":"San Marcos","state":"California","zip":"92069","country":"US","linkedin":"https://www.linkedin.com/vsearch/c?type=companies&keywords=Univ of St. Augustine for Health Sciences&orig=GLHD&rsid=&pageKey=biz-overview-internal&trkInfo=&search=Search","description":"They also have a campus in Austin:\n\n5401 La Crosse Ave\nAustin, TX 78739"},{"name":"Windham School District","contactType":"Potential Employer","phone":"","emailDomain":"","website":"https://wsdtx.org/join-our-team/job-openings/","address":"802 FM 2821 West","city":"Huntsville","state":"Texas","zip":"77320","country":"US","linkedin":"https://www.linkedin.com/company/windham-school-district/","description":"A prison school system with branches all over Texas. It seems minimum security tho."},{"name":"American Library Association (ALA)","contactType":"Career Help","phone":"","emailDomain":"","website":"https://joblist.ala.org/","address":"225 N Michigan Ave \nSte 1300","city":"Chicago","state":"Illinois","zip":"60601-7616","country":"US","linkedin":"https://www.linkedin.com/company/american-library-association/","description":"They post jobs sorta, non-profit so idk if they're hiring but they sometimes have other stuff"},{"name":"TX Legislative Reference Library","contactType":"Potential Employer","phone":"","emailDomain":"lrl.service@lrl.texas.gov","website":"https://www.lrl.texas.gov/library/employment.cfm","address":"PO Box 12488","city":"Austin","state":"Texas","zip":"78711-2488","country":"US","linkedin":"None","description":"I should mail and email what they need / highlight familarity with state legislature's. Do this asap to dip toes in."},{"name":"City of Cedar Park","contactType":"Potential Employer","phone":"(512) 401.5022","emailDomain":"","website":"https://www.governmentjobs.com/careers/cedarparktx/applications/submitted","address":"425 S Parkwest Dr","city":"Cedar Park","state":"Texas","zip":"78613","country":"US","linkedin":"https://www.linkedin.com/company/city-of-cedar-park_2/","description":""},{"name":"North Orange County Community College District","contactType":"Potential Employer","phone":"714-808-4810","emailDomain":"hrapply@nocccd.edu","website":"https://nocccd.peopleadmin.com/job_applications/243240","address":"1830 W. Romneya Drive","city":"Anaheim","state":"California","zip":"92801","country":"US","linkedin":"https://www.linkedin.com/company/north-orange-county-community-college-district","description":"App Conf Code: CN000243201; DEI Centric -- in CA"},{"name":"City of Austin","contactType":"Potential Employer","phone":"","emailDomain":"","website":"https://www.austincityjobs.org/postings/search","address":"","city":"","state":"","zip":"","country":"","linkedin":"","description":"For Austin Public Library"},{"name":"City of Irvine","contactType":"Potential Employer","phone":"949-724-5403","emailDomain":"","website":"https://cityofirvine.org/","address":"1 Civic Center Plaza","city":"Irvine","state":"California","zip":"92606","country":"US","linkedin":"","description":"Library Associate Position"},{"name":"Government Jobs","contactType":"Job Listing","phone":"","emailDomain":"","website":"https://www.governmentjobs.com","address":"","city":"","state":"","zip":"","country":"","linkedin":"","description":"[login removed — keep credentials in a password manager, not here]"}],"opportunities":[{"name":"Production Manager","company":"Young Americans for Liberty (Y.A.L)","stage":"Won","payHourly":"","paySalary":"","closeDate":"","status":"Closed: Won","lossReason":"N/A","priority":"Very High","source":"Peer","description":"Current role. Left the UATX Annual Fund Manager position ~6 months in to return to YAL as Production Manager (direct-mail fundraising / production).","link":""},{"name":"Annual Fund Manager","company":"UATX","stage":"Lost","payHourly":"","paySalary":"$68,000","closeDate":"2025-09-15","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Peer","description":"Upcoming role that starts on 10/6/25. \"Academic\" environment + lots of Admin Related tasks. There is also Donor Outreach.","link":""},{"name":"Library Assistant","company":"Windham School Distr.","stage":"Lost","payHourly":"","paySalary":"$52,000","closeDate":"2025-07-31","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"None","source":"Browser","description":"This was the first role I tried to apply for, this is where I learned that I need to have lots of Admin experience and make sure they get college transcripts in an orderly fashion.","link":""},{"name":"Library Clerk","company":"TX Legislative Reference Library","stage":"Lost","payHourly":"","paySalary":"$38,033","closeDate":"2025-10-01","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"None","source":"Browser","description":"NG 9/29 Catherine emailed me and said they reviewed other apps and decided not to inv me to next stage of hiring. NG 9/22 The Assistant Director emailed me today and said my app has been received and is under review!\n\nPay isn't the best but the experience could be fantastic. \n\nhttps://lrl.texas.gov/library/Library%20and%20bill%20status%20Clerk%20JD.25.09.05%20revised.pdf \n\nEmailed twice on Thurs and Fri, mailed them app:","link":"https://lrl.texas.gov/library/Library%20and%20bill%20status%20Clerk%20JD.25.09.05%20revised.pdf"},{"name":"Library Assistant - Youth Services","company":"City of Cedar Park","stage":"Lost","payHourly":"","paySalary":"$30,000","closeDate":"2025-09-26","status":"Closed: Lost","lossReason":"Ghosted","priority":"None","source":"Browser","description":"NG 9/22 app was recieved according to their site, but I havne't been contacted so far. Follow up this week.\n\nLow-ish pay but could possibly survive on $40k, it's a range they're offering. \n\nhttps://www.governmentjobs.com/careers/cedarparktx/jobs/5079415/library-assistant-youth-services-part-time","link":"https://www.governmentjobs.com/careers/cedarparktx/jobs/5079415/library-assistant-youth-services-part-time"},{"name":"Library Assistant 1","company":"N. OC Comm College Dist.","stage":"Lost","payHourly":"","paySalary":"$61,440","closeDate":"2025-09-30","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"None","source":"Browser","description":"NG 9/22 They emailed me in the evening and said the role absoluely requires 1 yr of clerical/tecnical library experience (full time btw). This is the type of position that I could move into after getting some experience though, I think even if I did part time roles I could stack experience that sort of thing. \n\nNG 9/22 I LVM'd with their recruitment person. Follow up in a couple days if nothing back. I'm not feeling super strong about this one. A lesson learned here is that having 1yr of library experience will really help (they just needed a BA). Something I may have to look into is volunteering somewhere for a year on top of my normal job *shrug*\n\nNG 9/20: I was auto-rejected but still follow up with HR to explain.\n\nRelatively high pay. There's no way they'd accept me but I should definitely still try. Lots of DEI language needed. \n\nhttps://nocccd.peopleadmin.com/postings/8846\n\nConf App Code: CN000243201","link":"https://nocccd.peopleadmin.com/postings/8846"},{"name":"Assistant Librarian","company":"University of St. Augustine","stage":"Lost","payHourly":"$20.19 – $26.35","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"Ghosted","priority":"None","source":"Browser","description":"It's kinda hard to track on the site but it confirms I've applied: Req #1155\n\nApp number: orpvwAus\n\nFar from OC but still apply\n\nhttps://careers.usa.edu/job/san-marcos/assistant-librarian/26483/84701162192","link":"https://careers.usa.edu/job/san-marcos/assistant-librarian/26483/84701162192"},{"name":"Library Associate (P/T)","company":"City of Santa Ana","stage":"Lost","payHourly":"$21.12","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"Low","source":"Browser","description":"NG 9/23 this one opened up on 9/19. I don't know how viable it is for me to work this job but gonna apply anyways. I'm also fairly certain I'll just get auto rejected, but I'll still give it a shot.\n\nhttps://www.governmentjobs.com/careers/santaana/jobs/5084070/library-associate-part-time","link":"https://www.governmentjobs.com/careers/santaana/jobs/5084070/library-associate-part-time"},{"name":"Substitute Library Media Assistant","company":"Riverside Unified School District","stage":"Lost","payHourly":"$23.64","paySalary":"","closeDate":"2025-10-10","status":"Closed: Lost","lossReason":"N/A","priority":"Medium","source":"Browser","description":"I'm likely too inexperienced but still apply: \n\nhttps://www.edjoin.org/riversideusd?rows=10&page=3&catID=0&districtID=574","link":"https://www.edjoin.org/riversideusd?rows=10&page=3&catID=0&districtID=574"},{"name":"Library Assistant (Short Term Hourly - TEMP)","company":"Antelope Valley College","stage":"Lost","payHourly":"$20.94","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"Pay: Low","priority":"Medium","source":"Browser","description":"https://www.schooljobs.com/careers/avc/jobs/3283028-0/library-assistant-short-term-hourly-temporary","link":"https://www.schooljobs.com/careers/avc/jobs/3283028-0/library-assistant-short-term-hourly-temporary"},{"name":"Assistant Library Pool","company":"Austin Independent School District","stage":"Lost","payHourly":"","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"Low","source":"Browser","description":"https://www.applitrack.com/austin/onlineapp/jobpostings/view.asp?all=1&AppliTrackJobId=3463&AppliTrackLayoutMode=detail&AppliTrackViewPosting=1 \n\n\nwww.applitrack.com/austin/onlineapp/_application.aspx?posJobCodes=3463&posFirstChoice=4 - Campus Clerical/Support&posSpecialty=Assistant Library \n\nApp currently in progress, finish soon...","link":"https://www.applitrack.com/austin/onlineapp/jobpostings/view.asp?all=1&AppliTrackJobId=3463&AppliTrackLayoutMode=detail&AppliTrackViewPosting=1"},{"name":"Senior Library Assistant","company":"County of Orange","stage":"Lost","payHourly":"","paySalary":"$50,000 – $68,000","closeDate":"2025-11-26","status":"Closed: Lost","lossReason":"N/A","priority":"Very High","source":"Browser","description":"I've been plcaed in the B-tier pool, so its not a No but not a Yes. \n\nI'm in communication with an HR rep there about the interview and multiple choice assesment. I haven't gotten specific instructions though, basically just notifications.\n\nApply soon anyways, but this is the kind of position I could *build* up to after a couple years:\n\nhttps://www.governmentjobs.com/careers/oc/jobs/5129935/senior-library-assistant","link":"https://www.governmentjobs.com/careers/oc/jobs/5129935/senior-library-assistant"},{"name":"Library Associate 1","company":"City of Irvine","stage":"Lost","payHourly":"","paySalary":"$46,654","closeDate":"2025-11-17","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"High","source":"Job Board","description":"https://www.governmentjobs.com/jobs/5133548-0/library-associate-i","link":"https://www.governmentjobs.com/jobs/5133548-0/library-associate-i"},{"name":"Library Assistant","company":"City of San Bernadino","stage":"Lost","payHourly":"$18.50 – $22.51","paySalary":"","closeDate":"2025-11-18","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"High","source":"Job Board","description":"https://www.linkedin.com/jobs/view/4316226201/?alternateChannel=search&eBP=NOT_ELIGIBLE_FOR_CHARGING&refId=KFIsicg%2Fcm1g%2FmZNsGbsZw%3D%3D&trackingId=SMtaTdxh5GgVOgCUdvE1%2Bg%3D%3D","link":"https://www.linkedin.com/jobs/view/4316226201/?alternateChannel=search&eBP=NOT_ELIGIBLE_FOR_CHARGING&refId=KFIsicg%2Fcm1g%2FmZNsGbsZw%3D%3D&trackingId=SMtaTdxh5GgVOgCUdvE1%2Bg%3D%3D"},{"name":"Library Technical Assistant 1","company":"City of Fullerton","stage":"Lost","payHourly":"","paySalary":"$45,000","closeDate":"2025-11-23","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"High","source":"Job Board","description":"They emailed me saying that other candidates had better experience and education for the role.\n\nIts a passport services position but still kinda interesting","link":""},{"name":"Library Assistant","company":"City of Taylor","stage":"Lost","payHourly":"$18.54 – $23.17","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"Medium","source":"Browser","description":"https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?job=269951&clientkey=E7B5C9650F2682381DFAAFAF7F1DF29B","link":"https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?job=269951&clientkey=E7B5C9650F2682381DFAAFAF7F1DF29B"},{"name":"Community And Library Services Coordinator","company":"City of Huntington Beach","stage":"Lost","payHourly":"","paySalary":"$53,000","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"Medium","source":"Job Board","description":"https://www.governmentjobs.com/jobs/5133172-0/community-and-library-services-coordinator-rentals-events","link":"https://www.governmentjobs.com/jobs/5133172-0/community-and-library-services-coordinator-rentals-events"},{"name":"Assistant Library Clerk","company":"City of Mission Viejo","stage":"Lost","payHourly":"$18.20 – $23.77","paySalary":"","closeDate":"2025-12-22","status":"Closed: Lost","lossReason":"Pay: Low","priority":"Low","source":"Job Board","description":"This is P/T and not ideal pay\n\nhttps://www.governmentjobs.com/jobs/5162319-0/assistant-library-clerk","link":"https://www.governmentjobs.com/jobs/5162319-0/assistant-library-clerk"},{"name":"Librarian - PTF (IVC)","company":"Irvine Valley College","stage":"Lost","payHourly":"?","paySalary":"?","closeDate":"2025-12-10","status":"Closed: Lost","lossReason":"Pay: Low","priority":"Low","source":"Browser","description":"https://www.schooljobs.com/careers/socccd/jobs/5076285/librarian-ptf-ivc?keywords=library%20&pagetype=jobOpportunitiesJobs","link":"https://www.schooljobs.com/careers/socccd/jobs/5076285/librarian-ptf-ivc?keywords=library%20&pagetype=jobOpportunitiesJobs"},{"name":"Library Technician, Cataloging","company":"Mt. SAC","stage":"Lost","payHourly":"","paySalary":"$65,602","closeDate":"2025-12-09","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Browser","description":"https://hrjobs.mtsac.edu/postings/13927 \n\nApp Complete. 1/20/26 Conf code:CN000312693","link":"https://hrjobs.mtsac.edu/postings/13927"},{"name":"Part Time Library Assistant","company":"City of Anaheim","stage":"Lost","payHourly":"","paySalary":"$65,873.60 – $80,059.20","closeDate":"2026-01-30","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Job Board","description":"App complete 1/30/26:\n\nhttps://www.governmentjobs.com/applications/submitted/5202041/2a905af5-317e-43f3-a5fd-6b6dadfbcfe1/application","link":"https://www.governmentjobs.com/applications/submitted/5202041/2a905af5-317e-43f3-a5fd-6b6dadfbcfe1/application"},{"name":"Library Assistant I (Temporary) (01-26)","company":"City of Whittier","stage":"Lost","payHourly":"$18.00 – $22.00","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Job Board","description":"App complete 1/30/26:\n\nhttps://www.governmentjobs.com/applications/submitted/4220079/6219dfcf-272e-4e6e-86a6-105f4acb7cd3/jobdetails","link":"https://www.governmentjobs.com/applications/submitted/4220079/6219dfcf-272e-4e6e-86a6-105f4acb7cd3/jobdetails"},{"name":"Part-time Library Page","company":"City of Irvine","stage":"Lost","payHourly":"$22.09 – $29.02","paySalary":"","closeDate":"2026-02-06","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"High","source":"Job Board","description":"App complete 1/30/26:\n\nhttps://www.governmentjobs.com/applications/submitted/5218113/0e40ca3d-461f-41a2-ac71-453a1c3b3ef4/jobdetails","link":"https://www.governmentjobs.com/applications/submitted/5218113/0e40ca3d-461f-41a2-ac71-453a1c3b3ef4/jobdetails"},{"name":"Part Time Library Clerk","company":"City of Anaheim","stage":"Lost","payHourly":"$18.82 – $24.02","paySalary":"","closeDate":"2026-02-12","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Job Board","description":"App complete 1/31/26:\n\nhttps://www.governmentjobs.com/applications/submitted/5209533/99518755-acdb-4619-b585-8dfda343b0e4/jobdetails","link":"https://www.governmentjobs.com/applications/submitted/5209533/99518755-acdb-4619-b585-8dfda343b0e4/jobdetails"},{"name":"Part-Time Library Assistant","company":"City of Yorba Linda","stage":"Lost","payHourly":"$30.18 – $36.69","paySalary":"","closeDate":"2026-02-11","status":"Closed: Lost","lossReason":"Lack o' Experience","priority":"High","source":"Job Board","description":"App complete 2/1/2026:\n\nhttps://www.governmentjobs.com/applications/submitted/5214395/a0784ae7-40f7-4ebd-9a39-d5df81c75699/jobdetails","link":"https://www.governmentjobs.com/applications/submitted/5214395/a0784ae7-40f7-4ebd-9a39-d5df81c75699/jobdetails"},{"name":"Library Services Coordinator","company":"UC Irvine","stage":"Lost","payHourly":"$29.92","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"Medium","source":"Browser","description":"Probs underqualified: \n\nhttps://jobs.uci.edu/careers-home/jobs/122857?lang=en-us&previousLocale=en-US","link":"https://jobs.uci.edu/careers-home/jobs/122857?lang=en-us&previousLocale=en-US"},{"name":"Library Media Technician","company":"Centennial High School","stage":"Lost","payHourly":"$24.23","paySalary":"","closeDate":"2026-02-05","status":"Closed: Lost","lossReason":"N/A","priority":"Medium","source":"Browser","description":"Probs underqualified:\n\nhttps://www.linkedin.com/jobs/view/library-media-technician-centennial-high-school-at-corona-norco-unified-school-district-4366642496/?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic","link":"https://www.linkedin.com/jobs/view/library-media-technician-centennial-high-school-at-corona-norco-unified-school-district-4366642496/?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic"},{"name":"Assistant Director of Development, Univ Library","company":"UC Irvine","stage":"Lost","payHourly":"","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"None","source":"Browser","description":"This sounds kind of awful but we'll see: \n\nhttps://careers.pageuppeople.com/873/lb/en-us/job/552497/assistant-director-of-development-university-library","link":"https://careers.pageuppeople.com/873/lb/en-us/job/552497/assistant-director-of-development-university-library"},{"name":"Library Assistant I-Circulation (19-Hour)","company":"Chapman University","stage":"Lost","payHourly":"$17.00 – $17.50","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"","source":"","description":"App completed 2/2/26, Conf: CN000465346","link":""},{"name":"Library Assistant III","company":"City of Santa Monica","stage":"Lost","payHourly":"$66,900.00 – $82,596.00","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Browser","description":"App completed Feb 5. \n\nhttps://www.governmentjobs.com/applications/submitted/5211565/3081ee21-fef3-4701-a04e-3186cfdbbe9b/jobdetails","link":"https://www.governmentjobs.com/applications/submitted/5211565/3081ee21-fef3-4701-a04e-3186cfdbbe9b/jobdetails"},{"name":"Library Assistant","company":"City of Newport Beach","stage":"Lost","payHourly":"$61,000","paySalary":"","closeDate":"2026-02-19","status":"Closed: Lost","lossReason":"N/A","priority":"High","source":"Browser","description":"App completed Feb 9.\n\nhttps://www.governmentjobs.com/applications/submitted/5222828/393242b3-0507-42df-b459-bc80bf06e4c6/jobdetails","link":"https://www.governmentjobs.com/applications/submitted/5222828/393242b3-0507-42df-b459-bc80bf06e4c6/jobdetails"},{"name":"Library Assistant (Part-time)","company":"City of El Segundo","stage":"Lost","payHourly":"$21.37 – $25.98","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"","priority":"","source":"","description":"https://www.governmentjobs.com/jobs/5220956-0/library-assistant-part-time","link":"https://www.governmentjobs.com/jobs/5220956-0/library-assistant-part-time"},{"name":"Library Assistant (PT)","company":"City of Inglewood","stage":"Lost","payHourly":"$27.88 – $39.50","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"Ghosted","priority":"","source":"","description":"https://www.governmentjobs.com/jobs/138025-1/library-assistant-pt","link":"https://www.governmentjobs.com/jobs/138025-1/library-assistant-pt"},{"name":"Library Associate (Part-Time)","company":"City of Monrovia","stage":"Lost","payHourly":"$24.32 – $32.59","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"","priority":"","source":"","description":"https://www.governmentjobs.com/jobs/5218181-0/library-associate-part-time","link":"https://www.governmentjobs.com/jobs/5218181-0/library-associate-part-time"},{"name":"Library/Media Assistant","company":"Bellflower Unified School District","stage":"Lost","payHourly":"$20.96 – $25.49 Hourly","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"","priority":"","source":"","description":"https://www.governmentjobs.com/applications/submitted/5220956/cfdd71ec-d4ff-4ff9-b31f-1ba0c9c4d24e/application","link":"https://www.governmentjobs.com/applications/submitted/5220956/cfdd71ec-d4ff-4ff9-b31f-1ba0c9c4d24e/application"},{"name":"Library Clerk (Part-Time)","company":"City of San Marino","stage":"Lost","payHourly":"","paySalary":"","closeDate":"","status":"Closed: Lost","lossReason":"","priority":"","source":"","description":"https://www.governmentjobs.com/applications/submitted/5249700/7a70924c-bd8c-47b1-a4f4-c9e0f4941f7f/application","link":"https://www.governmentjobs.com/applications/submitted/5249700/7a70924c-bd8c-47b1-a4f4-c9e0f4941f7f/application"}],"options":{"contactType":["Reference","Potential Employer","Current Employer","Career Help","Mover","Personal","Job Listing","Other"],"stage":["Researching","Application Sent","Application Recieved","Follow-up","Negotiation","Won","Lost"],"status":["Open","Closed: Won","Closed: Lost","Abandoned","Negotiation","Researching"],"source":["Job Board","Industry Site","Peer","Misc. Advert","Browser","Other"],"lossReason":["N/A","Lack o' Experience","Location","Pay: Low","Job Filled","Job Removed","Ghosted"],"priority":["Very High","High","Medium","Low","None"]}}</script>
+<script>
+(function(){
+  'use strict';
+  var KEY='librarians-passage-v4';
+  var SEED=JSON.parse(document.getElementById('seed-crm').textContent);
+
+  var LEDGER_DEFAULTS={ incomeMonthly:4385.48, expenses:[
+    {name:'Quarters',kind:'Base rent',amount:1076},
+    {name:'Water & Sundries',kind:'Water, trash, pest — 3-mo avg',amount:122.36},
+    {name:'Light & Heat',kind:'Electric — estimate',amount:250},
+    {name:'Carriage Insurance',kind:'Auto policy',amount:165},
+    {name:'Telegraph Line',kind:'AT&T internet',amount:65},
+    {name:"Merchant's Guild",kind:'Amazon Prime',amount:14.99},
+    {name:"Musicians' Retainer",kind:'Apple Music',amount:11.99},
+    {name:'Playhouse, Second Box',kind:'Hulu',amount:11.99},
+    {name:'Gaming House',kind:'Xbox Game Pass',amount:9.99},
+    {name:'Playhouse, First Box',kind:'Netflix',amount:8.99},
+    {name:'Harbour Dues',kind:'Netlify Pro',amount:20}
+  ]};
+
+  var SCHOOLS=[
+    {region:'California Waters',name:'Santa Ana College',berth:'Santa Ana · Orange County',papers:'Certificate of Achievement + A.A., Library Technology',passage:'Online + on-campus',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000 (cert, once resident)',bond:'Live in CA ~1 yr',flag:'best',flagText:'Best in CA',catch:'Nearest port to Irvine; cheapest once resident; opens SJSU in-state for the MLS later.',link:'https://libguides.sac.edu/LTProgram/library-technology'},
+    {region:'California Waters',name:'Palomar College',berth:'San Marcos · San Diego County',papers:'Certificate + A.S., Library & Information Technology',passage:'100% online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Fully-online, well-worn program — take it from anywhere in the state.',link:'https://www.palomar.edu/library/library-and-information-technology-program/'},
+    {region:'California Waters',name:'Fresno City College',berth:'Fresno',papers:'Library Technology certificate / degree (~4 semesters)',passage:'100% online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Another fully-online option; no edge over Santa Ana unless the courses fit better.',link:'https://www.fresnocitycollege.edu/academics/library/library-technology.html'},
+    {region:'California Waters',name:'Long Beach City College — FREE noncredit certs',berth:'Long Beach',papers:'Noncredit Library Technician certificates',passage:'Online + on-campus',toll:'$0 (noncredit)',firstPapers:'$0 — but NO transcript credit',bond:'None',flag:'warn',flagText:'Free ≠ credit',catch:'Genuinely free skill-badges, but no college credit and no transcript. Distinct from the paid degree below.',link:'https://www.lbcc.edu/library-technician'},
+    {region:'California Waters',name:'Long Beach City College — B.S. degree (for credit)',berth:'Long Beach',papers:'B.S. in Library & Information Science (only one in the US) — the for-credit path',passage:'100% online',toll:'~$46/unit resident (standard for-credit rates)',firstPapers:'Paid, standard CA credit — NOT free',bond:'Live in CA ~1 yr · apps open ~Spring 2027',flag:'warn',flagText:'Paid & future',catch:'A real, paid, for-credit degree — do not confuse with the free noncredit certs above. Redundant if ye already hold a bachelor\'s.',link:'https://www.lbcc.edu/press-release/library-offer-bachelors-science-degree'},
+    {region:'California Waters',name:'Irvine Valley College',berth:'Irvine — the town ye fancy',papers:'A few LIB courses only — NO full certificate',passage:'Online + on-campus',toll:'~$46/unit (resident)',firstPapers:'—',bond:'Live in CA ~1 yr',flag:'warn',flagText:'Not a credential',catch:'Courses, not a program. Live in Irvine if ye like — but earn the papers at Santa Ana.',link:'https://www.ivc.edu/llr/library-information-science'},
+    {region:'The Texas Coast',name:'Palo Alto College',berth:'San Antonio · Alamo Colleges',papers:'Library Technician local certificate (14 cr) · Library Technology A.S. (62 cr)',passage:'Unconfirmed',toll:'$180/credit (e-Rate)',firstPapers:'~$2,600 (14-cr cert)',bond:'None (TX resident)',flag:'warn',flagText:'Verify first',catch:'Cheapest library papers IF online; built-in local internship (7 hrs/wk). Verify delivery before ye sail.',link:'https://mypaccatalog.alamo.edu/preview_program.php?catoid=63&poid=2638'},
+    {region:'The Texas Coast',name:'Tarrant County College',berth:'Fort Worth',papers:'Library Technician Level 1 Certificate + A.A.S.',passage:'Hybrid',toll:'TX in-state (verify rate)',firstPapers:'Low (in-state)',bond:'None',flag:'good',flagText:'State-recognized',catch:'A true Level-1 credential — but hybrid means ~3-hr drives. Poor fit for a remote hammock.',link:'https://www.tccd.edu/academics/courses-and-programs/programs-a-z/credit/library-technician/'},
+    {region:'Distant Shores',name:'Central Carolina CC',berth:'Sanford, North Carolina',papers:'6 certificates (12–18 cr) · Diploma (38 cr) · A.A.S. (66 cr)',passage:'100% online',toll:'$268/credit (+$15/course)',firstPapers:'~$3,300 (12-cr cert)',bond:'None',flag:'best',flagText:'Best confirmed-online',catch:'ALA-LSSC recognized (portable), local internship, stackable buffet of certs. The safe start-now choice.',link:'https://www.cccc.edu/all-programs/library-and-information-technology/'},
+    {region:'Distant Shores',name:'Northampton CC',berth:'Bethlehem, Pennsylvania',papers:'Library Technical Assistant Specialized Diploma (16 cr)',passage:'100% online',toll:'$390/credit',firstPapers:'~$6,240',bond:'None',flag:'good',flagText:'Archives-flavored',catch:'One clean 1-year diploma; markets toward archives roles & MLS. Pricier, less flexible than Carolina.',link:'https://www.northampton.edu/education-and-training/programs/library-technical-assistant.html'},
+    {region:'Distant Shores',name:'College of DuPage',berth:'Glen Ellyn, Illinois',papers:'A.A.S. Library & Information Technology + certificates',passage:'100% online',toll:'~$430/credit (online fees waived)',firstPapers:'~$6,500',bond:'None',flag:'good',flagText:'Fine',catch:'Waives its online fees, but still dearer than Carolina with no added edge.',link:'https://www.cod.edu/academics/programs/library-technology/index.html'},
+    {region:'Distant Shores',name:'Bluegrass CTC',berth:'Lexington, Kentucky',papers:'A.A.S. + certificate, Library & Information Technology',passage:'100% online',toll:'~$490/credit',firstPapers:'~$7,400',bond:'None',flag:'good',flagText:'Fine',catch:'Fully online & sound — but no reason to pay this over Central Carolina.',link:'https://catalog.kctcs.edu/programs-of-study/aas/graphic-design-library-technology/library-information-technology-certificate/'},
+    {region:'Distant Shores',name:'Pueblo CC',berth:'Pueblo, Colorado',papers:'Library Technician certificate (30 cr) + degree',passage:'100% online',toll:'$694/credit',firstPapers:'~$20,800 (30-cr cert)',bond:'None',flag:'dear',flagText:'Avoid',catch:'Dearest port on the chart for the same cargo. Sail past.',link:'https://pueblocc.edu/programs/ltn'}
+  ];
+  var REGION_ORDER=['California Waters','The Texas Coast','Distant Shores'];
+  var REGION_SUB={'California Waters':'in-state toll shown — unlocked only after ye drop anchor ~1 year',
+    'The Texas Coast':'in-state now — no bond, no waiting','Distant Shores':'out-of-state online fleet — no move, but a dearer toll'};
+
+  var OPTIONS=Object.assign({region:REGION_ORDER.slice(),passage:['100% online','Online + on-campus','Hybrid','In-person','Unconfirmed']}, SEED.options||{});
+
+  var FMETA={
+    name:{label:'Name',type:'text'},company:{label:'Company',type:'text'},title:{label:'Title',type:'text'},
+    contactType:{label:'Contact type',type:'select',opt:'contactType'},email:{label:'Work email',type:'text'},
+    phone:{label:'Phone',type:'text'},website:{label:'Website',type:'link'},address:{label:'Address',type:'text'},
+    city:{label:'City',type:'text'},state:{label:'State',type:'text'},zip:{label:'Zip',type:'text'},
+    country:{label:'Country',type:'text'},linkedin:{label:'LinkedIn',type:'link'},emailDomain:{label:'Email domain',type:'text'},
+    description:{label:'Notes / log',type:'area',wide:true},stage:{label:'Stage',type:'select',opt:'stage'},status:{label:'Status',type:'select',opt:'status'},
+    priority:{label:'Priority',type:'select',opt:'priority'},source:{label:'Source',type:'select',opt:'source'},
+    lossReason:{label:'Loss reason',type:'select',opt:'lossReason'},payHourly:{label:'Pay — hourly',type:'text'},
+    paySalary:{label:'Pay — salary',type:'text'},closeDate:{label:'Close date',type:'text'},link:{label:'Link',type:'link'},
+    region:{label:'Region',type:'select',opt:'region'},papers:{label:'Papers (degree & credits)',type:'area',wide:true},
+    passage:{label:'Passage (delivery)',type:'select',opt:'passage'},toll:{label:'Toll / cost per credit',type:'area'},
+    firstPapers:{label:'Cost to first papers',type:'area'},bond:{label:'Residency (bond)',type:'area'},
+    catch:{label:'The catch',type:'area',wide:true},berth:{label:'Location',type:'text'},
+    _people:{label:'People at this company',type:'computed',wide:true}
+  };
+  var LABEL_OVERRIDE={'schools:link':'Info page ↗','opportunities:link':'Application link ↗'};
+  var CARDS={
+    schools:{title:'name',sub:'berth',badge:'flag',region:true,defaultOpen:true,noun:'port',
+      body:['region','papers','passage','toll','firstPapers','bond','catch','link']},
+    opportunities:{title:'name',sub:'company',badge:'stage',dateField:'closeDate',noun:'opportunity',
+      body:['stage','status','priority','source','lossReason','payHourly','paySalary','closeDate','link','description']},
+    companies:{title:'name',sub:'city',badge:'contactType',noun:'company',
+      body:['_people','contactType','phone','emailDomain','website','address','city','state','zip','country','linkedin','description']},
+    people:{title:'name',sub:'company',badge:'contactType',noun:'person',
+      body:['title','contactType','email','phone','website','address','city','state','zip','linkedin','description']}
+  };
+  var TABS=[{id:'dashboard',label:'Dashboard'},{id:'schools',label:'The Passage'},{id:'opportunities',label:'Opportunities'},
+    {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'ledger',label:"Purser's Ledger"}];
+
+  var DEFAULTS={schools:SCHOOLS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};
+
+  function clone(o){return JSON.parse(JSON.stringify(o));}
+  function load(){try{var raw=localStorage.getItem(KEY);if(!raw)return clone(DEFAULTS);var d=JSON.parse(raw);
+    ['schools','people','companies','opportunities'].forEach(function(k){if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
+    if(!d.ledger||typeof d.ledger.incomeMonthly!=='number'||!Array.isArray(d.ledger.expenses))d.ledger=clone(DEFAULTS.ledger);return d;}
+    catch(e){return clone(DEFAULTS);}}
+  var state=load(), active='dashboard', ledgerView='month', dashDim='status', saveTimer=null;
+  var EXP={schools:{},opportunities:{},companies:{},people:{}};
+  var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
+
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function save(){persist();flash('Entered in the log.');}
+  function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,400);}
+  function flash(m){var el=document.getElementById('saved');el.textContent=m;el.style.opacity='1';
+    clearTimeout(saveTimer);saveTimer=setTimeout(function(){el.style.opacity='0';},1600);}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  var CUR=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'});
+  function money(n){return CUR.format(n);}
+  function r2(n){return Math.round(n*100)/100;}
+
+  function updateUndoBtns(){var u=document.getElementById('btn-undo'),r=document.getElementById('btn-redo');if(u)u.disabled=!undoStack.length;if(r)r.disabled=!redoStack.length;}
+  function recordUndo(kind,fieldKey){var now=Date.now();
+    if(kind==='edit'&&lastKind==='edit'&&fieldKey===lastEditKey&&(now-lastEditTs)<1500){lastEditTs=now;return;}
+    undoStack.push(JSON.stringify(state));if(undoStack.length>60)undoStack.shift();redoStack=[];
+    lastKind=kind;lastEditKey=fieldKey||null;lastEditTs=now;updateUndoBtns();}
+  function doUndo(){if(!undoStack.length)return;redoStack.push(JSON.stringify(state));state=JSON.parse(undoStack.pop());lastKind=null;lastEditKey=null;persist();render();flash('Undone — the line is restored.');}
+  function doRedo(){if(!redoStack.length)return;undoStack.push(JSON.stringify(state));state=JSON.parse(redoStack.pop());lastKind=null;lastEditKey=null;persist();render();flash('Redone.');}
+
+  /* ---------- fields ---------- */
+  function selOpts(optKey,val){var list=(OPTIONS[optKey]||[]).slice();if(val&&list.indexOf(val)<0)list.unshift(val);if(list.indexOf('')<0)list.unshift('');
+    return list.map(function(o){return '<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+(o===''?'—':esc(o))+'</option>';}).join('');}
+  function field(ds,i,k){var m=FMETA[k],rec=state[ds][i],v=rec[k]==null?'':rec[k];
+    var a='data-ds="'+ds+'" data-i="'+i+'" data-k="'+k+'"';
+    if(m.type==='select')return '<select class="f" '+a+'>'+selOpts(m.opt,v)+'</select>';
+    if(m.type==='area')return '<textarea class="f" '+a+' rows="1">'+esc(v)+'</textarea>';
+    if(m.type==='link')return '<span class="linkcell"><input class="f" '+a+' value="'+esc(v)+'" placeholder="paste a URL"><a class="ext" data-open title="Open in new tab">↗</a></span>';
+    return '<input class="f" '+a+' value="'+esc(v)+'">';
+  }
+  var CT_COLOR={'Reference':'b-blue','Potential Employer':'b-purple','Current Employer':'b-green','Career Help':'b-teal','Mover':'b-amber','Personal':'b-rose','Job Listing':'b-slate','Other':'b-neutral'};
+  function badgeClass(k,v){if(k==='stage')return v==='Won'?'b-won':(v==='Lost'?'b-lost':'b-neutral');if(k==='contactType')return CT_COLOR[v]||'b-neutral';return 'b-neutral';}
+
+  function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+  function assocPeople(cn){cn=norm(cn);if(!cn)return [];return state.people.filter(function(p){var pc=norm(p.company);return pc&&(cn.indexOf(pc)>=0||pc.indexOf(cn)>=0);});}
+  function computedField(ds,i,k){if(k==='_people'){var pl=assocPeople(state.companies[i].name);
+    if(!pl.length)return '<div class="assoc empty">— none linked yet —</div>';
+    return '<div class="assoc">'+pl.map(function(p){return '<span class="ptag">'+esc(p.name)+(p.title?' <em>· '+esc(p.title)+'</em>':'')+'</span>';}).join('')+'</div>';}
+    return '';}
+  /* ---------- card renderer (used by all data tabs) ---------- */
+  function renderCards(ds){
+    var cfg=CARDS[ds],recs=state[ds];
+    var tools='<div class="toolbtns"><button class="tbtn" data-xall="'+ds+':1">Expand all</button><button class="tbtn" data-xall="'+ds+':0">Collapse all</button></div>';
+    function cardHtml(i){var rec=recs[i];
+      var open=(EXP[ds][i]!==undefined)?EXP[ds][i]:!!cfg.defaultOpen;
+      var badge='';
+      if(cfg.badge==='flag'){if(rec.flag)badge='<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>';}
+      else{var bv=rec[cfg.badge]||'';if(bv)badge='<span class="badge '+badgeClass(cfg.badge,bv)+'" id="badge-'+ds+'-'+i+'">'+esc(bv)+'</span>';}
+      var dchip=(cfg.dateField&&rec[cfg.dateField])?'<span class="datechip" id="date-'+ds+'-'+i+'" title="Close date">'+esc(rec[cfg.dateField])+'</span>':'';
+      var fields=cfg.body.map(function(k){var m=FMETA[k];var lab=LABEL_OVERRIDE[ds+':'+k]||m.label;
+        var inner=(m.type==='computed')?computedField(ds,i,k):field(ds,i,k);
+        return '<div class="fb'+(m.wide?' wide':'')+'"><label class="fl">'+esc(lab)+'</label>'+inner+'</div>';}).join('');
+      return '<div class="card"><div class="chead">'+
+        '<button class="chev'+(open?' open':'')+'" data-toggle="'+ds+':'+i+'" aria-label="Expand">▶</button>'+
+        '<textarea class="ctitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.title+'" placeholder="(untitled)">'+esc(rec[cfg.title]||'')+'</textarea>'+
+        badge+dchip+'<button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></div>'+
+        '<input class="csub" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.sub+'" value="'+esc(rec[cfg.sub]||'')+'" placeholder="—">'+
+        '<div class="cbody'+(open?' open':'')+'" id="cbody-'+ds+'-'+i+'">'+fields+'</div></div>';
+    }
+    var body='<div class="cards">';
+    if(cfg.region){var order=REGION_ORDER.slice();recs.forEach(function(r){if(order.indexOf(r.region)<0)order.push(r.region||'—');});
+      order.forEach(function(reg){var idxs=[];recs.forEach(function(r,i){if((r.region||'—')===reg)idxs.push(i);});if(!idxs.length)return;
+        body+='<div class="regionbar">⚓ '+esc(reg)+(REGION_SUB[reg]?'<span class="rsub">'+esc(REGION_SUB[reg])+'</span>':'')+'</div>';
+        idxs.forEach(function(i){body+=cardHtml(i);});});
+    }else{recs.forEach(function(_,i){body+=cardHtml(i);});}
+    body+='</div>'+addbar(ds,cfg.noun);
+    var H={schools:['The Chart of Ports','Where to school for the trade · Passage is a dropdown · tap ↗ for each program’s info page'],
+      opportunities:['Opportunities','Every berth hailed · close date shown as a tag · ↗ opens the application'],
+      companies:['Companies','The houses the People sail under'],people:['People','Folk qualified to do business with']};
+    return card(H[ds][0],H[ds][1],tools,body);
+  }
+  function addbar(ds,noun){return '<div class="addwrap"><button class="btn-brass" data-add="'+ds+'">＋ Add '+esc(noun)+'</button></div>';}
+
+  function renderPortsTable(){
+    var ds='schools',recs=state.schools;
+    var cols=[['papers','Papers (degree & credits)'],['passage','Passage'],['toll','Toll / cost per credit'],['firstPapers','Cost to first papers'],['bond','Residency'],['catch','The catch'],['link','Info page']];
+    var colhead='<tr class="colhead"><td class="pn">Port o&rsquo; Call</td>'+cols.map(function(c){return '<td>'+esc(c[1])+'</td>';}).join('')+'<td class="act"></td></tr>';
+    var body='';
+    var order=REGION_ORDER.slice();recs.forEach(function(r){if(order.indexOf(r.region)<0)order.push(r.region||'—');});
+    order.forEach(function(reg){var idxs=[];recs.forEach(function(r,i){if((r.region||'—')===reg)idxs.push(i);});if(!idxs.length)return;
+      body+='<tr class="region"><td colspan="'+(cols.length+2)+'">⚓ '+esc(reg)+(REGION_SUB[reg]?'<span class="rsub">'+esc(REGION_SUB[reg])+'</span>':'')+'</td></tr>'+colhead;
+      idxs.forEach(function(i){var rec=recs[i];
+        var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
+          '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
+          '<textarea class="f pberth" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="berth" placeholder="location">'+esc(rec.berth||'')+'</textarea></td>';
+        body+='<tr>'+namecell+cols.map(function(c){return '<td>'+field(ds,i,c[0])+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
+      });
+    });
+    return card('The Chart of Ports','Where to school for the trade · Passage is a dropdown · tap ↗ for each program’s info page','',
+      '<div class="scroller"><table class="ports"><tbody>'+body+'</tbody></table></div>'+addbar('schools','port'));
+  }
+  /* ---------- dashboard ---------- */
+  function barColor(s){s=String(s);
+    if(/lost/i.test(s))return 'linear-gradient(90deg,#8c3a1c,#c05a35)';
+    if(/won/i.test(s))return 'linear-gradient(90deg,#2f6b4f,#57a074)';
+    if(/open/i.test(s))return 'linear-gradient(90deg,#2a5b86,#4f8fc0)';
+    if(/abandon/i.test(s))return 'linear-gradient(90deg,#5a5148,#8a7d6c)';
+    if(/negotiat/i.test(s))return 'linear-gradient(90deg,#5a3a7a,#8a6fb0)';
+    if(/research/i.test(s))return 'linear-gradient(90deg,#2f6b63,#57a094)';
+    if(/follow/i.test(s))return 'linear-gradient(90deg,#9a6a1e,#c9a24a)';
+    if(/california/i.test(s))return 'linear-gradient(90deg,#b8862b,#e0b84a)';
+    if(/texas/i.test(s))return 'linear-gradient(90deg,#a3491f,#cf6a35)';
+    if(/distant/i.test(s))return 'linear-gradient(90deg,#2a5b86,#4f8fc0)';
+    return 'linear-gradient(90deg,#7a5f1e,#c5a444)';}
+  function renderDashboard(){
+    var o=state.opportunities;
+    var dims={stage:'Stage',status:'Status',priority:'Priority',source:'Source',company:'Company'};
+    var m={};if(dashDim!=='company')(OPTIONS[dashDim]||[]).forEach(function(k){if(k!=='')m[k]=0;});
+    o.forEach(function(r){var v=(dashDim==='company'?r.company:r[dashDim])||'—';m[v]=(m[v]||0)+1;});
+    var keys=Object.keys(m).sort(function(a,b){return m[b]-m[a]||a.localeCompare(b);});
+    var max=keys.reduce(function(x,k){return Math.max(x,m[k]);},1);
+    var bars=keys.map(function(k){return '<div class="barrow"><div class="barlabel" title="'+esc(k)+'">'+esc(k)+'</div>'+
+      '<div class="bartrack"><div class="barfill" style="width:'+(m[k]/max*100).toFixed(1)+'%;background:'+barColor(k)+'"></div></div><div class="barval">'+m[k]+'</div></div>';}).join('');
+    var picker='<select class="f" id="dashdim" style="width:auto;min-width:9rem">'+Object.keys(dims).map(function(d){return '<option value="'+d+'"'+(d===dashDim?' selected':'')+'>by '+dims[d]+'</option>';}).join('')+'</select>';
+    var stats='<div class="dash-grid">'+stat(o.length,'Opportunities')+stat(state.companies.length,'Companies')+stat(state.people.length,'People')+stat(state.schools.length,'Potential ports')+'</div>';
+    var pr={};REGION_ORDER.forEach(function(rg){pr[rg]=0;});state.schools.forEach(function(s){pr[s.region]=(pr[s.region]||0)+1;});
+    var prmax=Object.keys(pr).reduce(function(x,k){return Math.max(x,pr[k]);},1);
+    var pbars=Object.keys(pr).map(function(k){return '<div class="barrow"><div class="barlabel" title="'+esc(k)+'">'+esc(k)+'</div><div class="bartrack"><div class="barfill" style="width:'+(pr[k]/prmax*100).toFixed(1)+'%;background:'+barColor(k)+'"></div></div><div class="barval">'+pr[k]+'</div></div>';}).join('');
+    return card('Dashboard','The control panel — the job campaign and the ports ahead','',
+      stats+'<div class="chartwrap"><div class="chart-top"><h3>Opportunities '+dims[dashDim].toLowerCase()+' tally</h3>'+picker+'</div>'+bars+'</div>'+
+      '<div class="chartwrap" style="border-top:1px solid #e2d2ab"><div class="chart-top"><h3>Potential ports by waters</h3></div>'+pbars+'</div>');
+  }
+  function stat(n,l){return '<div class="stat"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
+
+  /* ---------- ledger (faithful to the original) ---------- */
+  function renderLedger(){
+    var L=state.ledger, incomeM=L.incomeMonthly, exps=L.expenses, half=(ledgerView==='check');
+    var idxs=exps.map(function(_,i){return i;}).sort(function(a,b){return exps[b].amount-exps[a].amount;});
+    var max=exps.reduce(function(x,e){return Math.max(x,e.amount);},1);
+    var totalM=r2(exps.reduce(function(s,e){return s+e.amount;},0));
+    var totalC=r2(exps.reduce(function(s,e){return s+r2(e.amount/2);},0));
+    var incomeC=r2(incomeM/2);
+    var income=half?incomeC:incomeM, total=half?totalC:totalM, left=r2(income-total);
+    var over=left<0, pctLeft=income>0?left/income*100:0;
+    function shareCell(amount){var pct=incomeM>0?amount/incomeM*100:0, w=max>0?amount/max*100:0;
+      return '<td class="share"><div class="sbar"><span style="width:'+w.toFixed(1)+'%"></span></div><span class="spct">'+pct.toFixed(1)+'%</span></td>';}
+    var toggle='<div class="lsub-toggle"><button data-lview="month" aria-pressed="'+(!half)+'">The Month</button><button data-lview="check" aria-pressed="'+half+'">Per Paycheck</button></div>';
+    var rows='<tr class="l-income"><td>Wages Received</td><td class="share"></td>'+
+      (half?'<td class="num">'+money(incomeC)+'</td>'
+           :'<td class="num"><span class="lmoney"><span class="cur">$</span><input class="f" data-ledger="income" type="number" step="0.01" min="0" value="'+incomeM.toFixed(2)+'"></span></td>')+
+      '<td class="act"></td></tr>';
+    idxs.forEach(function(i){var e=exps[i], amt=half?r2(e.amount/2):e.amount;
+      rows+='<tr><td>'+(half?esc(e.name)+(e.kind?'<span class="lkind">'+esc(e.kind)+'</span>':'')
+          :'<input class="f" data-ledger="exp" data-i="'+i+'" data-k="name" value="'+esc(e.name)+'"><input class="f lkind-in" data-ledger="exp" data-i="'+i+'" data-k="kind" value="'+esc(e.kind||'')+'" placeholder="what it really is">')+'</td>'+
+        shareCell(e.amount)+
+        (half?'<td class="num">'+money(amt)+'</td><td class="act"></td>'
+             :'<td class="num"><span class="lmoney"><span class="cur">$</span><input class="f" data-ledger="exp" data-i="'+i+'" data-k="amount" type="number" step="0.01" min="0" value="'+e.amount.toFixed(2)+'"></span></td><td class="act"><button class="del" data-ledger-del="'+i+'" title="Strike">&times;</button></td>')+
+      '</tr>';});
+    rows+='<tr class="l-out"><td>Total Disbursed</td><td class="share"></td><td class="num">'+money(total)+'</td><td class="act"></td></tr>'+
+      '<tr class="l-left"><td>'+(over?'Over the Gunwale':'Remaining in Coffer')+'<span class="l-sub">'+(over?'Spending exceeds takings by '+money(Math.abs(left)):pctLeft.toFixed(1)+'% of takings unspoken for')+'</span></td><td class="share"></td><td class="num'+(over?' over':'')+'">'+money(left)+'</td><td class="act"></td></tr>';
+    var outPct=incomeM>0?totalM/incomeM*100:0, keep=100-outPct;
+    var sorted=exps.slice().sort(function(a,b){return b.amount-a.amount;});
+    var top2=sorted.slice(0,2), top2sum=top2.reduce(function(s,e){return s+e.amount;},0), top2pct=incomeM>0?top2sum/incomeM*100:0;
+    var smalls=exps.filter(function(e){return e.amount<50;}), smallMo=smalls.reduce(function(s,e){return s+e.amount;},0);
+    var per=half?'a paycheck':'a month', annM=half?24:12;
+    var smallDisp=half?r2(smallMo/2):smallMo, smallYr=r2(smallDisp*annM);
+    var pool=half?r2(incomeC-totalC):r2(incomeM-totalM);
+    var drift=r2(totalC*2-totalM);
+    var log='<div class="llog"><p class="log-label">Captain\'s Log'+(half?' — per paycheck':' — the month')+'</p>';
+    log+='<p><strong>'+outPct.toFixed(1)+'% out, '+keep.toFixed(1)+'% kept</strong> — the same proportion whether ye reckon by month or by paycheck; only the scale changes.'+(top2.length===2?' '+esc(top2[0].name)+' and '+esc(top2[1].name)+' alone account for <strong>'+top2pct.toFixed(1)+'%</strong> of every dollar landed.':'')+'</p>';
+    if(smalls.length>1)log+='<p>The '+smalls.length+' small lines under $50/mo together run <strong>'+money(smallDisp)+' '+per+' — '+money(smallYr)+' a year</strong>. Small water, but it leaks the same.</p>';
+    if(pool<0)log+='<p><strong>The ledger will not balance.</strong> Disbursements exceed takings by '+money(Math.abs(pool))+' '+per+'. Something must come off the manifest.</p>';
+    else log+='<p>That <strong>'+money(pool)+'</strong> '+per+' is a pool, not a surplus — anything not yet entered above still draws from it.</p>';
+    if(Math.abs(drift)>=0.01)log+='<p>Halved amounts round to the nearest cent, so the per-payment column runs '+money(Math.abs(drift))+' '+(drift>0?'above':'below')+' exactly half the month. The books are square; the pennies are just rounded.</p>';
+    log+='</div>';
+    var addform=half?'':'<div class="laddbar"><p class="laddlabel">Enter a new line</p><form class="laddrow" id="ladd">'+
+      '<div class="lfield"><label>Entry</label><input id="la-name" placeholder="Provisions" maxlength="48" autocomplete="off"></div>'+
+      '<div class="lfield"><label>What it really is</label><input id="la-kind" placeholder="Groceries" maxlength="48" autocomplete="off"></div>'+
+      '<div class="lfield amt"><label>Per month</label><input id="la-amt" type="number" step="0.01" min="0" placeholder="0.00"></div>'+
+      '<button class="btn-brass" type="submit">Enter</button></form></div>';
+    var thead='<thead><tr><th>Entry</th><th class="share">Share of takings</th><th class="num">Amount</th><th class="act"></th></tr></thead>';
+    return card("Purser's Ledger","The ship's purse — provisions, quarters & sundries. Per-paycheck halves every figure.",toggle,
+      '<div class="scroller"><table class="ltable">'+thead+'<tbody>'+rows+'</tbody></table></div>'+addform+log);
+  }
+
+  /* ---------- shell ---------- */
+  function card(title,cad,tools,inner){return '<div class="ledger"><div class="lhead"><h2>'+esc(title)+'</h2><span class="cad">'+cad+'</span>'+(tools||'')+'</div>'+inner+'</div>';}
+  function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" data-tab="'+t.id+'" aria-selected="'+(t.id===active)+'">'+esc(t.label)+'</button>';}).join('');}
+  function autosize(el){el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
+  function autosizeAll(){var ts=document.querySelectorAll('#view textarea');for(var i=0;i<ts.length;i++){if(ts[i].offsetParent!==null)autosize(ts[i]);}}
+  function renderView(){var el=document.getElementById('view');
+    if(active==='dashboard')el.innerHTML=renderDashboard();
+    else if(active==='ledger')el.innerHTML=renderLedger();
+    else if(active==='schools')el.innerHTML=renderPortsTable();
+    else el.innerHTML=renderCards(active);
+    autosizeAll();}
+  function render(){renderTabs();renderView();updateUndoBtns();}
+
+  /* ---------- events ---------- */
+  document.getElementById('tabs').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(!b)return;active=b.dataset.tab;render();});
+  var view=document.getElementById('view');
+  view.addEventListener('input',function(e){var t=e.target;
+    var fk=t.dataset.ledger?('L:'+(t.dataset.ledger==='income'?'income':(t.dataset.i+':'+t.dataset.k))):(t.dataset.k?(t.dataset.ds+':'+t.dataset.i+':'+t.dataset.k):null);
+    if(fk)recordUndo('edit',fk);
+    if(t.tagName==='TEXTAREA')autosize(t);
+    if(t.dataset.ledger==='income'){var v=parseFloat(t.value);state.ledger.incomeMonthly=isFinite(v)&&v>=0?v:0;saveSoon();return;}
+    if(t.dataset.ledger==='exp'){var i=+t.dataset.i,k=t.dataset.k,e2=state.ledger.expenses[i];if(!e2)return;
+      e2[k]=(k==='amount')?(isFinite(parseFloat(t.value))?parseFloat(t.value):0):t.value;saveSoon();return;}
+    if(t.dataset.k){var arr=state[t.dataset.ds];if(!arr)return;var rec=arr[+t.dataset.i];if(!rec)return;rec[t.dataset.k]=t.value;saveSoon();
+      var cfg=CARDS[t.dataset.ds];if(cfg){if(t.dataset.k===cfg.badge){var bd=document.getElementById('badge-'+t.dataset.ds+'-'+t.dataset.i);if(bd){bd.textContent=t.value;bd.className='badge '+badgeClass(cfg.badge,t.value);}}
+        if(t.dataset.k===cfg.dateField){var dd=document.getElementById('date-'+t.dataset.ds+'-'+t.dataset.i);if(dd)dd.textContent=t.value;}}}
+  });
+  view.addEventListener('change',function(e){var t=e.target;
+    if(t.id==='dashdim'){dashDim=t.value;renderView();return;}
+    if(t.tagName==='SELECT'&&(t.dataset.k||t.dataset.ledger))persist();
+    if(t.dataset.ledger)persist();
+  });
+  view.addEventListener('click',function(e){
+    var open=e.target.closest('[data-open]');
+    if(open){var inp=open.parentNode.querySelector('input');var u=(inp&&inp.value||'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
+    var tog=e.target.closest('[data-toggle]');
+    if(tog){var p=tog.dataset.toggle.split(':'),ds=p[0],i=+p[1];EXP[ds][i]=(EXP[ds][i]!==undefined)?!EXP[ds][i]:!(CARDS[ds].defaultOpen);
+      var b=document.getElementById('cbody-'+ds+'-'+i);if(b){b.classList.toggle('open',EXP[ds][i]);if(EXP[ds][i]){var ts=b.querySelectorAll('textarea');for(var j=0;j<ts.length;j++)autosize(ts[j]);}}tog.classList.toggle('open',EXP[ds][i]);return;}
+    var xall=e.target.closest('[data-xall]');
+    if(xall){var q=xall.dataset.xall.split(':'),d=q[0],on=q[1]==='1';EXP[d]={};if(on)state[d].forEach(function(_,i){EXP[d][i]=true;});else state[d].forEach(function(_,i){EXP[d][i]=false;});renderView();return;}
+    var del=e.target.closest('[data-del]');
+    if(del){var s=del.dataset.del.split(':'),ds2=s[0],idx=+s[1];if(state[ds2]&&state[ds2][idx]){recordUndo('delete');state[ds2].splice(idx,1);EXP[ds2]={};save();renderView();}return;}
+    var ldel=e.target.closest('[data-ledger-del]');
+    if(ldel){recordUndo('delete');state.ledger.expenses.splice(+ldel.dataset.ledgerDel,1);save();renderView();return;}
+    var add=e.target.closest('[data-add]');
+    if(add){var d2=add.dataset.add,blank={};recordUndo('add');
+      if(d2==='schools'){blank={region:REGION_ORDER[0],name:'',berth:'',papers:'',passage:'100% online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''};}
+      else{CARDS[d2].body.concat([CARDS[d2].title,CARDS[d2].sub]).forEach(function(k){blank[k]='';});}
+      state[d2].push(blank);EXP[d2][state[d2].length-1]=true;save();renderView();return;}
+    var lview=e.target.closest('[data-lview]');
+    if(lview){ledgerView=lview.dataset.lview;renderView();return;}
+  });
+  view.addEventListener('submit',function(e){if(e.target.id!=='ladd')return;e.preventDefault();
+    var n=document.getElementById('la-name').value.trim(),k=document.getElementById('la-kind').value.trim(),a=parseFloat(document.getElementById('la-amt').value);
+    if(!n||!isFinite(a)||a<0)return;recordUndo('add');state.ledger.expenses.push({name:n,kind:k,amount:r2(a)});save();renderView();});
+
+  /* ---------- stores ---------- */
+  document.getElementById('btn-undo').addEventListener('click',doUndo);
+  document.getElementById('btn-redo').addEventListener('click',doRedo);
+  document.addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase();
+    if((e.metaKey||e.ctrlKey)&&k==='z'&&!e.shiftKey){e.preventDefault();doUndo();}
+    else if((e.metaKey||e.ctrlKey)&&(k==='y'||(k==='z'&&e.shiftKey))){e.preventDefault();doRedo();}});
+  document.getElementById('btn-export').addEventListener('click',function(){var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='librarians-passage.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);flash('Backup saved.');});
+  document.getElementById('btn-import').addEventListener('click',function(){document.getElementById('file-import').click();});
+  document.getElementById('file-import').addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f)return;var fr=new FileReader();
+    fr.onload=function(){try{var d=JSON.parse(fr.result);['schools','people','companies','opportunities'].forEach(function(k){if(!Array.isArray(d[k]))throw 0;});
+      if(!d.ledger)d.ledger=clone(DEFAULTS.ledger);recordUndo('import');state=d;save();render();flash('Log restored.');}catch(err){flash("That file isn't a log this book knows.");}};
+    fr.readAsText(f);e.target.value='';});
+  document.getElementById('btn-print').addEventListener('click',function(){window.print();});
+  document.getElementById('btn-reset').addEventListener('click',function(){if(!confirm('Reset every tab (chart, CRM, and ledger) to defaults? Your changes will be lost.'))return;
+    recordUndo('reset');state=clone(DEFAULTS);EXP={schools:{},opportunities:{},companies:{},people:{}};save();render();flash('Reset to defaults.');});
+
+  render();
+})();
+</script>
+</body>
+</html>

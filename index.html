@@ -222,6 +222,24 @@
   .cq-hint{font-family:Lora,serif;font-style:italic;font-size:.72rem;color:#8a7250}
   .cq-out{margin-top:.7rem;font-family:'IM Fell English',Georgia,serif;font-size:.9rem;line-height:1.55;color:var(--ink);min-height:1rem}
   .cq-out .cq-err{color:var(--rust);font-style:italic}
+  .pchip{border-radius:11px;padding:.24rem .6rem;border:1px solid;width:auto;min-width:0;font-family:'IM Fell English SC',Georgia,serif;font-size:.72rem;letter-spacing:.02em;cursor:pointer}
+  .pchip:focus{outline:none;box-shadow:0 0 0 2px #c5a44440}
+  .pchip-online{background:#cfe0f0;color:#173252;border-color:#6b93c0}
+  .pchip-oncampus{background:#d3ecc2;color:#173f2b;border-color:#57a074}
+  .pchip-hybrid{background:#f2dcb0;color:#5a3208;border-color:#c39a4a}
+  .pchip-inperson{background:#e2d5f2;color:#37214f;border-color:#8a6fb0}
+  .pchip-unconfirmed{background:#f0dcc4;color:#6a2410;border-color:#c06f8a}
+  .linkmini{display:inline-flex;gap:.35rem;align-items:center}
+  .linkmini .ext{padding:.15rem .55rem;font-size:1.05rem}
+  .linkmini .ext.off{opacity:.3;pointer-events:none}
+  .lnkedit{background:#f3e7c0;border:1px solid #cdb478;border-radius:2px;color:var(--brass-dark);cursor:pointer;font-size:.85rem;line-height:1;padding:.18rem .45rem}
+  .lnkedit:hover{color:var(--rust);border-color:var(--rust)}
+  table.ports td,table.ports .f{color:#2a1707}
+  table.ports .f{font-size:.9rem}
+  table.ports td{padding:.6rem .8rem}
+  table.ports .ptitle{font-size:.98rem;color:#1f1206}
+  table.ports .pberth{font-style:italic;font-size:.76rem;color:#5f4a28}
+  table.ports .colhead td{font-size:.6rem;color:#6a501a}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -235,6 +253,7 @@
     .barlabel{flex-basis:42%;max-width:42%;font-size:.76rem}
     .f,select.f,textarea.f,.ctitle,.csub{font-size:16px}
     .del{min-width:44px;min-height:44px}
+    .lnkedit,.linkmini .ext{min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
     .stores{gap:.45rem}.stores .btn-ghost{flex:1 1 40%;min-height:46px}
   }
   @media print{
@@ -276,12 +295,13 @@
 <script>
 (function(){
   'use strict';
-  var KEY='librarians-passage-v4';
+  var KEY='librarians-passage-v5';
   var SEED=JSON.parse(document.getElementById('seed-crm').textContent);
 
   var LEDGER_DEFAULTS={ incomeMonthly:4385.48, expenses:[
     {name:'Quarters',kind:'Base rent',amount:1076},
-    {name:'Water & Sundries',kind:'Water, trash, pest — 3-mo avg',amount:122.36},
+    {name:'Water & Sundries',kind:'Water, trash, pest',amount:200},
+    {name:'Tavern Provisions',kind:'Food & drink',amount:200},
     {name:'Light & Heat',kind:'Electric — estimate',amount:250},
     {name:'Carriage Insurance',kind:'Auto policy',amount:165},
     {name:'Telegraph Line',kind:'AT&T internet',amount:65},
@@ -328,7 +348,8 @@
     passage:{label:'Passage (delivery)',type:'select',opt:'passage'},toll:{label:'Toll / cost per credit',type:'area'},
     firstPapers:{label:'Cost to first papers',type:'area'},bond:{label:'Residency (bond)',type:'area'},
     catch:{label:'The catch',type:'area',wide:true},berth:{label:'Location',type:'text'},
-    _people:{label:'People at this company',type:'computed',wide:true}
+    _people:{label:'People at this company',type:'computed',wide:true},
+    _company:{label:'Company (linked)',type:'computed'}
   };
   var LABEL_OVERRIDE={'schools:link':'Info page ↗','opportunities:link':'Application link ↗'};
   var CARDS={
@@ -339,7 +360,7 @@
     companies:{title:'name',sub:'city',badge:'contactType',noun:'company',
       body:['_people','contactType','phone','emailDomain','website','address','city','state','zip','country','linkedin','description']},
     people:{title:'name',sub:'company',badge:'contactType',noun:'person',
-      body:['title','contactType','email','phone','website','address','city','state','zip','linkedin','description']}
+      body:['_company','title','contactType','email','phone','website','address','city','state','zip','linkedin','description']}
   };
   var TABS=[{id:'dashboard',label:'Dashboard'},{id:'schools',label:'The Passage'},{id:'opportunities',label:'Opportunities'},
     {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'ledger',label:"Purser's Ledger"}];
@@ -389,7 +410,12 @@
 
   function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
   function assocPeople(cn){cn=norm(cn);if(!cn)return [];return state.people.filter(function(p){var pc=norm(p.company);return pc&&(cn.indexOf(pc)>=0||pc.indexOf(cn)>=0);});}
-  function computedField(ds,i,k){if(k==='_people'){var pl=assocPeople(state.companies[i].name);
+  function computedField(ds,i,k){
+    if(k==='_company'){var cn=norm(state.people[i].company);if(!cn)return '<div class="assoc empty">— no company noted —</div>';
+      var c=null;for(var j=0;j<state.companies.length;j++){var v=norm(state.companies[j].name);if(v&&(v.indexOf(cn)>=0||cn.indexOf(v)>=0)){c=state.companies[j];break;}}
+      if(!c)return '<div class="assoc empty">— not in the Companies tab yet —</div>';
+      return '<div class="assoc"><span class="ptag">'+esc(c.name)+(c.contactType?' <em>· '+esc(c.contactType)+'</em>':'')+'</span></div>';}
+    if(k==='_people'){var pl=assocPeople(state.companies[i].name);
     if(!pl.length)return '<div class="assoc empty">— none linked yet —</div>';
     return '<div class="assoc">'+pl.map(function(p){return '<span class="ptag">'+esc(p.name)+(p.title?' <em>· '+esc(p.title)+'</em>':'')+'</span>';}).join('')+'</div>';}
     return '';}
@@ -427,6 +453,9 @@
   }
   function addbar(ds,noun){return '<div class="addwrap"><button class="btn-brass" data-add="'+ds+'">＋ Add '+esc(noun)+'</button></div>';}
 
+  function passageKey(v){v=String(v||'');if(/on-campus/i.test(v))return 'oncampus';if(/hybrid/i.test(v))return 'hybrid';if(/in-person/i.test(v))return 'inperson';if(/unconfirm/i.test(v))return 'unconfirmed';return 'online';}
+  function passageSelect(ds,i){var v=state[ds][i].passage||'';return '<select class="f pchip pchip-'+passageKey(v)+'" data-ds="'+ds+'" data-i="'+i+'" data-k="passage" data-pchip>'+selOpts('passage',v)+'</select>';}
+  function linkMini(ds,i,k){var has=!!((state[ds][i][k]||'')+'').trim();return '<span class="linkmini"><a class="ext'+(has?'':' off')+'" data-openlink="'+ds+':'+i+':'+k+'" title="'+(has?'Open in new tab':'No link yet')+'">\u2197</a><button class="lnkedit" data-editlink="'+ds+':'+i+':'+k+'" title="Edit link" type="button">\u270e</button></span>';}
   function renderPortsTable(){
     var ds='schools',recs=state.schools;
     var cols=[['papers','Papers (degree & credits)'],['passage','Passage'],['toll','Toll / cost per credit'],['firstPapers','Cost to first papers'],['bond','Residency'],['catch','The catch'],['link','Info page']];
@@ -438,8 +467,8 @@
       idxs.forEach(function(i){var rec=recs[i];
         var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
           '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
-          '<textarea class="f pberth" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="berth" placeholder="location">'+esc(rec.berth||'')+'</textarea></td>';
-        body+='<tr>'+namecell+cols.map(function(c){return '<td>'+field(ds,i,c[0])+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
+          '<input class="f pberth" data-ds="'+ds+'" data-i="'+i+'" data-k="berth" value="'+esc(rec.berth||'')+'" placeholder="location"></td>';
+        body+='<tr>'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td>'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
       });
     });
     return card('The Chart of Ports','Where to school for the trade · Passage is a dropdown · tap ↗ for each program’s info page','',
@@ -514,8 +543,8 @@
       '<div class="cq-row"><button class="btn-brass" data-cq-send type="button">Send to the Quartermaster</button><span class="cq-hint">&#8984;/Ctrl+Enter to send</span></div>'+
       '<div class="cq-out">'+cqMsg+'</div></div>';
     return card('Dashboard','The control panel — the job campaign and the ports ahead','',
-      cqPanel+stats+'<div class="chartwrap"><div class="chart-top"><h3>Opportunities '+dims[dashDim].toLowerCase()+' tally</h3>'+picker+'</div>'+bars+'</div>'+
-      '<div class="chartwrap" style="border-top:1px solid #e2d2ab"><div class="chart-top"><h3>Potential ports by waters</h3></div>'+pbars+'</div>');
+      stats+'<div class="chartwrap"><div class="chart-top"><h3>Opportunities '+dims[dashDim].toLowerCase()+' tally</h3>'+picker+'</div>'+bars+'</div>'+
+      '<div class="chartwrap" style="border-top:1px solid #e2d2ab"><div class="chart-top"><h3>Potential ports by waters</h3></div>'+pbars+'</div>'+cqPanel);
   }
   function stat(n,l){return '<div class="stat"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
 
@@ -599,11 +628,16 @@
   });
   view.addEventListener('change',function(e){var t=e.target;
     if(t.id==='dashdim'){dashDim=t.value;renderView();return;}
+    if(t.dataset&&t.dataset.pchip){t.className='f pchip pchip-'+passageKey(t.value);}
     if(t.tagName==='SELECT'&&(t.dataset.k||t.dataset.ledger))persist();
     if(t.dataset.ledger)persist();
   });
   view.addEventListener('click',function(e){
     var cq=e.target.closest('[data-cq-send]');if(cq){cqSend();return;}
+    var ol=e.target.closest('[data-openlink]');
+    if(ol){var p=ol.dataset.openlink.split(':');var u=((state[p[0]][+p[1]][p[2]]||'')+'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
+    var el2=e.target.closest('[data-editlink]');
+    if(el2){var q=el2.dataset.editlink.split(':');var cur=(state[q[0]][+q[1]][q[2]]||'')+'';var nv=window.prompt('Info-page URL:',cur);if(nv!==null){recordUndo('edit');state[q[0]][+q[1]][q[2]]=nv.trim();save();renderView();}return;}
     var open=e.target.closest('[data-open]');
     if(open){var inp=open.parentNode.querySelector('input');var u=(inp&&inp.value||'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
     var tog=e.target.closest('[data-toggle]');

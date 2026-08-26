@@ -19,7 +19,7 @@ Six working tabs + an AI console. This doc lets a new Claude session continue se
 1. **Dashboard** (default) — stat tiles, a colored bar chart (dropdown: Stage/Status/Priority/Source/Company; zero-filled; Lost=red, Won=green, each category its own color), a "Potential ports by waters" mini-chart, and the **Captain's Quarters** AI console at the bottom.
 2. **The Passage** — a table of **35 library-tech / library-science programs** grouped by region (California Waters / The Texas Coast / Distant Shores). Region headings are **collapsible** (collapsed by default). Every cell editable; **Passage** is a colored badge-chip dropdown; info link is a ↗ (opens) + ✎ (edit URL via prompt). Data + real program links came from the ALA + ACRL/CJCLS national directories.
 3. **Opportunities / Companies / People** — collapsible editable cards. Header tags (Stage, Contact Type) are **badge-chip dropdowns** (colored). People link to their Company and Companies list their People (fuzzy name match). Opportunities show a blue **date tag**; each has an **Application link ↗** pulled from the notes.
-4. **Employment** — collapsible **Resumes / Cover Letters / Miscellaneous Notes** sections. Each doc is editable with **Download PDF** (print) + **Download Word** (.doc). Currently seeded with one placeholder note. **← PENDING: import Neal's real files (see below).**
+4. **Employment** — collapsible **Resumes / Cover Letters / Miscellaneous Notes / Credentials & Files** sections with **Open all / Collapse all**. Seeded with the **28 real documents imported from Neal's Drive Employment folder** (5 resumes, 13 cover letters, 4 notes, 6 linked binaries). Each doc is a **rich-text `contenteditable`** with a formatting toolbar (bold/italic/underline, heading, bullet + numbered list, link/unlink, clear), **Download PDF** (print) + **Download Word** (.doc), and a link back to its Drive original. Doc cards are collapsed by default; category headings are open.
 5. **Purser's Ledger** — budget tracker: The Month / Per-Paycheck toggle, editable income+expenses, share-of-takings % bars, $ signs, largest-first, view-aware Captain's Log.
 
 ## State & behavior
@@ -39,14 +39,18 @@ Six working tabs + an AI console. This doc lets a new Claude session continue se
 3. Optionally headless-render with a DOM-shim JXA harness (see scratchpad `h*.jxa`) to catch runtime errors across tabs.
 4. `git add -A && git commit && git push` → Netlify auto-deploys. Confirm live with `curl`.
 
-## PENDING: import the Employment Google Drive folder
-Neal wants his real resumes/cover letters/notes/images ported into the Employment tab ("work out of here"), matching Drive as closely as possible, editable, downloadable as PDF/Word. Site is now behind Netlify password, so embedding personal docs/images is acceptable.
-- **Employment** folder (owner gillespiealt@gmail.com), subfolders:
-  - Resumes: `1hBRp14GJHiC7N7_3C1ycFI0uaxdhYaL8`
-  - Cover Letters: `1AI_ZAWOwmibH0ckrsmwFcWW7bcZqIcY4`
-  - Misc Notes: `1-Sjw7aElfwLdiYm_ABktG4ZETJClOlih`
-- **Blocker:** the Google Drive MCP connector's *search* cannot list these folders' children (the personal folder's contents aren't in the connected account's search index), and Claude-in-Chrome isn't bridging to this session. **Direct file-ID lookups DO work** (`get_file_metadata`, `download_file_content`) — proven on the CRM sheet + folder.
-- **Path:** get **direct file links** from Neal (or connect Chrome), then for each doc use `download_file_content` with `exportMimeType: 'text/html'` (Google Docs) to preserve formatting, load into `state.employment` (`{category,title,body,source}`), consider upgrading the doc editor from a plain `<textarea>` to a rich `contenteditable` for fidelity. Images → save as assets (base64/data-URI or committed asset files).
+## DONE: the Employment Google Drive import
+Imported 2026-08-26. The folder is owned by Neal's **personal** account (`nealtgill@gmail.com`); the Drive MCP connector is authenticated as his **work** account (`@yaliberty.org`), which is why the earlier session could not list the folder's children. **Neal fixed this by sharing the Employment folder with his work account** — after that, `search_files` with `parentId = '<folder id>'` lists children normally. Folder ids: Resumes `1hBRp14GJHiC7N7_3C1ycFI0uaxdhYaL8`, Cover Letters `1AI_ZAWOwmibH0ckrsmwFcWW7bcZqIcY4`, Misc Notes `1-Sjw7aElfwLdiYm_ABktG4ZETJClOlih`.
+
+**How the content was extracted.** `read_file_content` (not `download_file_content`) — it returns a compact markdown-ish text rendering that preserves headings and bullets, and the 5 resumes are ~517 KB `.docx` files whose base64 would be far too large to pull through the tool channel. That text was converted to clean semantic HTML by a generator kept in the scratchpad (`emp/conv.py` + `emp/gen.py`, sources in `emp/src/*.txt`), then embedded as `<script type="application/json" id="seed-employment">` and read into `SEEDEMP`.
+
+**Fidelity note:** formatting is *reconstructed* (semantic h1–h4/ul/li/p in the app's own type), not a byte-copy of Google's export. Every doc keeps a `source` link to the Drive original for exact formatting.
+
+**Binary assets** (4 PDFs, a 2.8 MB JPEG headshot, a 1.9 MB HEIC) are **linked, not embedded** — the 27 MB degree scan alone would blow past the ~5 MB localStorage budget. They live in a **Credentials & Files** category as link-only cards.
+
+**Migration:** `d.employmentImported` merges the 28 docs into an already-saved copy by title and drops the old "How this tab works" placeholder, mirroring the `portsMerged` pattern.
+
+**Pasting is the escape hatch:** the editor sanitizes pasted HTML (`docSanitize`) and *inlines Google Docs' class-based `<style>` rules*, so Neal can paste straight out of a Google Doc and keep its formatting. The sanitizer strips script/style/iframe/form nodes, `on*` handlers, `javascript:` URLs, and all but a safe list of CSS properties — verified against a hostile paste.
 
 ## Neal's preferences (this session)
 - Wants clean **tag/chip** styling matching the badges; **honest** data (never fabricate tuition — mark "verify"); **collapsible** sections; **mobile-friendly**; keep **Gemini 3.6 Flash**.

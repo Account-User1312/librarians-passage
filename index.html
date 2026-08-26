@@ -259,6 +259,9 @@
   table.ports td:nth-child(1){min-width:11rem}
   .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
   tr.region .chev{display:inline-flex;color:var(--brass);vertical-align:middle}
+  .docbody{min-height:13rem;font-family:Georgia,'Times New Roman',serif;line-height:1.55;width:100%}
+  .docacts{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem;align-items:center}
+  .docacts .tbtn{text-decoration:none;display:inline-flex;align-items:center;padding:.4rem .8rem}
   [hidden]{display:none !important}
 
   @media (max-width:700px){
@@ -405,21 +408,23 @@
       body:['_company','title','email','phone','website','address','city','state','zip','linkedin','description']}
   };
   var TABS=[{id:'dashboard',label:'Dashboard'},{id:'schools',label:'The Passage'},{id:'opportunities',label:'Opportunities'},
-    {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'ledger',label:"Purser's Ledger"}];
+    {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'employment',label:'Employment'},{id:'ledger',label:"Purser's Ledger"}];
 
-  var DEFAULTS={schools:SCHOOLS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};
+  var DEFAULTS={schools:SCHOOLS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],employment:[{category:'Miscellaneous Notes',title:'How this tab works',body:'Add your resumes, cover letters, and notes here.\n\n• Click + Add in a section to create a document.\n• Edit the text, then Download PDF or Download Word.\n• Once the Employment Drive folder finishes syncing, imported docs appear here with a link back to the Drive original.',source:''}],ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};
 
   function clone(o){return JSON.parse(JSON.stringify(o));}
   function load(){try{var raw=localStorage.getItem(KEY);if(!raw)return clone(DEFAULTS);var d=JSON.parse(raw);
     ['schools','people','companies','opportunities'].forEach(function(k){if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
     if(!d.ledger||typeof d.ledger.incomeMonthly!=='number'||!Array.isArray(d.ledger.expenses))d.ledger=clone(DEFAULTS.ledger);
+    if(!Array.isArray(d.employment))d.employment=clone(DEFAULTS.employment);
     if(Array.isArray(d.schools))d.schools.forEach(function(s){if(s.passage==='100% online')s.passage='Fully online';});
     if(Array.isArray(d.schools)&&!d.portsMerged){var _hn={};d.schools.forEach(function(s){_hn[(s.name||'').toLowerCase()]=1;});DEFAULTS.schools.forEach(function(s){if(!_hn[(s.name||'').toLowerCase()])d.schools.push(clone(s));});d.portsMerged=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     return d;}
     catch(e){return clone(DEFAULTS);}}
   var state=load(), active='dashboard', ledgerView='month', dashDim='status', saveTimer=null;
-  var EXP={schools:{},opportunities:{},companies:{},people:{}};
-  var EXPREG={};
+  var EXP={schools:{},opportunities:{},companies:{},people:{},employment:{}};
+  var EXPREG={};var EXPEMP={};
+  var CATS=['Resumes','Cover Letters','Miscellaneous Notes'];
   var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
   var cqMsg='';
 
@@ -632,6 +637,35 @@
   function stat(n,l){return '<div class="stat"><div class="n">'+n+'</div><div class="l">'+esc(l)+'</div></div>';}
 
   /* ---------- ledger (faithful to the original) ---------- */
+  function docCard(i){var d=state.employment[i];var op=(EXP.employment[i]!==undefined)?EXP.employment[i]:true;
+    return '<div class="card"><div class="chead"><button class="chev'+(op?' open':'')+'" data-toggle="employment:'+i+'" type="button">▶</button>'+
+      '<input class="ctitle" data-ds="employment" data-i="'+i+'" data-k="title" value="'+esc(d.title||'')+'" placeholder="(untitled)">'+
+      '<span class="badge b-neutral">'+esc(d.category||'')+'</span>'+
+      '<button class="del" data-del="employment:'+i+'" title="Strike">&times;</button></div>'+
+      '<div class="cbody'+(op?' open':'')+'" id="cbody-employment-'+i+'">'+
+        '<div class="fb wide"><label class="fl">Content (editable)</label><textarea class="f docbody" data-ds="employment" data-i="'+i+'" data-k="body">'+esc(d.body||'')+'</textarea></div>'+
+        '<div class="docacts">'+(d.source?'<a class="tbtn" href="'+esc(d.source)+'" target="_blank" rel="noopener">Open Drive original ↗</a>':'')+
+          '<button class="tbtn" data-docpdf="'+i+'" type="button">Download PDF</button>'+
+          '<button class="tbtn" data-docword="'+i+'" type="button">Download Word</button></div>'+
+      '</div></div>';}
+  function renderEmployment(){
+    var body='<div class="cards">';
+    CATS.forEach(function(cat){var op=EXPEMP[cat]!==false;var idxs=[];state.employment.forEach(function(d,i){if((d.category||'Miscellaneous Notes')===cat)idxs.push(i);});
+      body+='<div class="regionbar"><button class="chev'+(op?' open':'')+'" data-empcat="'+esc(cat)+'" type="button">▶</button> '+esc(cat)+' <span class="rgcount">('+idxs.length+')</span></div>';
+      if(op){if(!idxs.length)body+='<div class="assoc empty" style="padding:.3rem 1rem">— none yet —</div>';idxs.forEach(function(i){body+=docCard(i);});
+        body+='<div class="addwrap"><button class="btn-brass" data-empadd="'+esc(cat)+'">＋ Add to '+esc(cat)+'</button></div>';}
+    });
+    body+='</div>';
+    return card('Employment','Resumes, cover letters & notes — edit here, then Download PDF or Word. Text is editable; use the Drive-original link for full formatting.','',body);
+  }
+  function docPrint(i){var d=state.employment[i];if(!d)return;var w=window.open('','_blank');if(!w){alert('Allow pop-ups to print/save as PDF.');return;}
+    var esc2=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+esc2(d.title||'Document')+'</title><style>body{font-family:Georgia,\'Times New Roman\',serif;max-width:7.5in;margin:0.9in auto;line-height:1.5;color:#111;padding:0 1rem}h2{margin:0 0 .6rem}div.b{white-space:pre-wrap}</style></head><body><h2>'+esc2(d.title||'')+'</h2><div class="b">'+esc2(d.body||'')+'</div></body></html>');
+    w.document.close();w.focus();setTimeout(function(){w.print();},350);}
+  function docWord(i){var d=state.employment[i];if(!d)return;
+    var esc2=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+    var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>'+esc2(d.title)+'</title></head><body><h2>'+esc2(d.title||'')+'</h2><div style="white-space:pre-wrap;font-family:Calibri,Arial,sans-serif;font-size:11pt">'+esc2(d.body||'').replace(/\n/g,'<br>')+'</div></body></html>';
+    var blob=new Blob(['﻿'+html],{type:'application/msword'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=((d.title||'document').replace(/[^\w.-]+/g,'_'))+'.doc';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);}
   function renderLedger(){
     var L=state.ledger, incomeM=L.incomeMonthly, exps=L.expenses, half=(ledgerView==='check');
     var idxs=exps.map(function(_,i){return i;}).sort(function(a,b){return exps[b].amount-exps[a].amount;});
@@ -690,6 +724,7 @@
   function renderView(){var el=document.getElementById('view');
     if(active==='dashboard')el.innerHTML=renderDashboard();
     else if(active==='ledger')el.innerHTML=renderLedger();
+    else if(active==='employment')el.innerHTML=renderEmployment();
     else if(active==='schools')el.innerHTML=renderPortsTable();
     else el.innerHTML=renderCards(active);
     autosizeAll();}
@@ -719,6 +754,10 @@
     var cq=e.target.closest('[data-cq-send]');if(cq){cqSend();return;}
     var rgt=e.target.closest('[data-rgtoggle]');if(rgt){EXPREG[rgt.dataset.rgtoggle]=!EXPREG[rgt.dataset.rgtoggle];renderView();return;}
     var rga=e.target.closest('[data-rgall]');if(rga){var onn=rga.dataset.rgall==='1';var seen={};state.schools.forEach(function(s){seen[s.region||'—']=1;});REGION_ORDER.forEach(function(r){seen[r]=1;});Object.keys(seen).forEach(function(r){EXPREG[r]=onn;});renderView();return;}
+    var ec=e.target.closest('[data-empcat]');if(ec){EXPEMP[ec.dataset.empcat]=(EXPEMP[ec.dataset.empcat]===false);renderView();return;}
+    var ea=e.target.closest('[data-empadd]');if(ea){recordUndo('add');state.employment.push({category:ea.dataset.empadd,title:'Untitled',body:'',source:''});EXP.employment[state.employment.length-1]=true;save();renderView();return;}
+    var dp=e.target.closest('[data-docpdf]');if(dp){docPrint(+dp.dataset.docpdf);return;}
+    var dw=e.target.closest('[data-docword]');if(dw){docWord(+dw.dataset.docword);return;}
     var ol=e.target.closest('[data-openlink]');
     if(ol){var p=ol.dataset.openlink.split(':');var u=((state[p[0]][+p[1]][p[2]]||'')+'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
     var el2=e.target.closest('[data-editlink]');
@@ -726,7 +765,7 @@
     var open=e.target.closest('[data-open]');
     if(open){var inp=open.parentNode.querySelector('input');var u=(inp&&inp.value||'').trim();if(u){if(!/^https?:\/\//i.test(u))u='https://'+u;window.open(u,'_blank','noopener');}return;}
     var tog=e.target.closest('[data-toggle]');
-    if(tog){var p=tog.dataset.toggle.split(':'),ds=p[0],i=+p[1];EXP[ds][i]=(EXP[ds][i]!==undefined)?!EXP[ds][i]:!(CARDS[ds].defaultOpen);
+    if(tog){var p=tog.dataset.toggle.split(':'),ds=p[0],i=+p[1];if(!EXP[ds])EXP[ds]={};EXP[ds][i]=(EXP[ds][i]!==undefined)?!EXP[ds][i]:!((CARDS[ds]||{}).defaultOpen);
       var b=document.getElementById('cbody-'+ds+'-'+i);if(b){b.classList.toggle('open',EXP[ds][i]);if(EXP[ds][i]){var ts=b.querySelectorAll('textarea');for(var j=0;j<ts.length;j++)autosize(ts[j]);}}tog.classList.toggle('open',EXP[ds][i]);return;}
     var xall=e.target.closest('[data-xall]');
     if(xall){var q=xall.dataset.xall.split(':'),d=q[0],on=q[1]==='1';EXP[d]={};if(on)state[d].forEach(function(_,i){EXP[d][i]=true;});else state[d].forEach(function(_,i){EXP[d][i]=false;});renderView();return;}

@@ -19,8 +19,8 @@ Six working tabs + an AI console. This doc lets a new Claude session continue se
 1. **Dashboard** (default) — stat tiles, a colored bar chart (dropdown: Stage/Status/Priority/Source/Company; zero-filled; Lost=red, Won=green, each category its own color), a "Potential ports by waters" mini-chart, and the **Captain's Quarters** AI console at the bottom.
 2. **The Passage** — a table of **35 library-tech / library-science programs** grouped by region (California Waters / The Texas Coast / Distant Shores). Region headings are **collapsible** (collapsed by default). Every cell editable; **Passage** is a colored badge-chip dropdown; info link is a ↗ (opens) + ✎ (edit URL via prompt). Data + real program links came from the ALA + ACRL/CJCLS national directories.
 3. **Opportunities / Companies / People** — collapsible editable cards. Header tags (Stage, Contact Type) are **badge-chip dropdowns** (colored). People link to their Company and Companies list their People (fuzzy name match). Opportunities show a blue **date tag**; each has an **Application link ↗** pulled from the notes.
-4. **Employment** — collapsible **Resumes / Cover Letters / Miscellaneous Notes / Credentials & Files** sections with **Open all / Collapse all**. Seeded with the **28 real documents imported from Neal's Drive Employment folder** (5 resumes, 13 cover letters, 4 notes, 6 linked binaries). Each doc is a **rich-text `contenteditable`** with a formatting toolbar (bold/italic/underline, heading, bullet + numbered list, link/unlink, clear), **Download PDF** (print) + **Download Word** (.doc), and a link back to its Drive original. Doc cards are collapsed by default; category headings are open.
-5. **Purser's Ledger** — budget tracker: The Month / Per-Paycheck toggle, editable income+expenses, share-of-takings % bars, $ signs, largest-first, view-aware Captain's Log.
+4. **Employment** — collapsible **Resumes / Cover Letters / Miscellaneous Notes / Credentials & Files** sections with **Open all / Collapse all**. Credentials cards are **asset cards**: an image or PDF preview straight from `assets/`, with *View full size / Open PDF*, *Download*, and *Drive original* — no editor and no descriptive text block. Seeded with the **28 real documents imported from Neal's Drive Employment folder** (5 resumes, 13 cover letters, 4 notes, 6 linked binaries). Each doc is a **rich-text `contenteditable`** with a formatting toolbar (bold/italic/underline, heading, bullet + numbered list, link/unlink, clear), **Download PDF** (print) + **Download Word** (.doc), and a link back to its Drive original. Doc cards are collapsed by default; category headings are open.
+5. **Purser's Ledger** — budget tracker (Water & Sundries is the **3-month average, 122.36**; Tavern Provisions = dining out, **Ship's Provisions** = groceries): The Month / Per-Paycheck toggle, editable income+expenses, share-of-takings % bars, $ signs, largest-first, view-aware Captain's Log.
 
 ## State & behavior
 - All data persists in `localStorage` key **`librarians-passage-v5`**. Everything is inline-editable.
@@ -51,6 +51,20 @@ Imported 2026-08-26. The folder is owned by Neal's **personal** account (`nealtg
 **Migration:** `d.employmentImported` merges the 28 docs into an already-saved copy by title and drops the old "How this tab works" placeholder, mirroring the `portsMerged` pattern.
 
 **Pasting is the escape hatch:** the editor sanitizes pasted HTML (`docSanitize`) and *inlines Google Docs' class-based `<style>` rules*, so Neal can paste straight out of a Google Doc and keep its formatting. The sanitizer strips script/style/iframe/form nodes, `on*` handlers, `javascript:` URLs, and all but a safe list of CSS properties — verified against a hostile paste.
+
+## Assets (`assets/`)
+Binary credentials live as **real files in the repo**, not in `localStorage` (a 5 MB budget can't hold them) and not hot-linked from Drive:
+`neal-headshot.jpg` (from Neal's Mac, downscaled to 1400px), `neal-degree-chapman-photo.jpg` (the Drive **.heic** converted with `sips` — browsers can't render HEIC), `neal-degree-chapman.pdf`, `neal-typing-certification.pdf`, `neal-transcripts-chapman.pdf`. ~880 KB total.
+
+**Pulling a binary out of Drive without blowing up context:** `download_file_content` on anything sizeable returns an *error* saying the result was written to a file under `…/tool-results/…txt`. That file is JSON `{content: <base64>, …}` — decode it with python straight to disk. This is the trick that makes multi-MB assets practical; never paste base64 through the transcript.
+
+**Still Drive-only:** `Neal SCC Degree Chapman Univ.pdf` (27 MB) — byte-for-byte the same document as the 80 KB compressed copy, so it is deliberately not committed. Its card shows a "not aboard yet" note plus the Drive link. To add any asset later: drop the file in `assets/` and set the matching `asset.file` path in `emp/gen.py`, then regenerate.
+
+## Document export
+`docPrint` / `docWord` deliberately drop the ship's livery: Times New Roman 12pt, 1.15 line-height, 1in letter margins, Google-Docs link blue, **no injected title heading** — the aim is a page that looks like the Drive original, not like the site. Note `docSanitize` strips `class`, so print CSS must be **element-keyed**; class-keyed rules silently do nothing.
+
+## Mobile (iOS + Android)
+Verified at 375×812: no horizontal overflow on any tab, `.docrich` forced to **16px** on small screens (below 16px iOS zooms the page on focus), toolbar and action buttons at a 44px minimum, and the embedded `<object>` PDF preview is **hidden under 700px** (iOS Safari renders it blank) leaving the Open/Download buttons.
 
 ## Neal's preferences (this session)
 - Wants clean **tag/chip** styling matching the badges; **honest** data (never fabricate tuition — mark "verify"); **collapsible** sections; **mobile-friendly**; keep **Gemini 3.6 Flash**.

@@ -26,14 +26,14 @@
     -webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:rgba(197,164,68,.25);overflow-x:hidden}
   @supports (min-height:100dvh){body{min-height:100dvh}}
   .wrap{max-width:1120px;margin:0 auto;padding:0 1.1rem 5rem}
-  .navbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;display:flex;align-items:center;
-    justify-content:space-between;gap:1rem;padding:0 2rem;background-color:#110804;
+  .navbar{position:sticky;top:0;min-height:64px;z-index:100;display:flex;align-items:center;
+    justify-content:space-between;flex-wrap:wrap;gap:.35rem .7rem;padding:.4rem 1.1rem;background-color:#110804;
     border-bottom:2px solid var(--brass-dark);
     background-image:repeating-linear-gradient(90deg,transparent 0 16px,#ffffff05 16px 17px)}
   .nav-brand{font-family:'IM Fell English SC',Georgia,serif;font-size:1.1rem;letter-spacing:.066em;
     color:var(--brass-bright);background:none;border:0;cursor:pointer;white-space:nowrap;flex:0 0 auto;padding:0}
   .nav-brand:hover{color:var(--gold-sheen)}
-  .nav-search{position:relative;flex:1 1 24rem;max-width:34rem;display:flex;align-items:center}
+  .nav-search{position:relative;flex:0 1 14rem;min-width:9.5rem;display:flex;align-items:center}
   .nav-search-ico{position:absolute;left:.8rem;color:var(--brass-dark);font-size:1rem;pointer-events:none}
   .nav-search-in{width:100%;font-family:'IM Fell English',Georgia,serif;font-size:16px;color:var(--text-light);
     background:#1a0e06;border:1px solid var(--brass-dark);border-radius:2px;
@@ -48,7 +48,6 @@
     border:1px solid var(--brass-dark);border-radius:3px;padding:.32rem .7rem;white-space:nowrap;flex:0 0 auto}
   .btn-amb:hover{color:var(--brass-bright);border-color:var(--brass)}
   .btn-amb[aria-pressed="true"]{color:var(--brass-bright);border-color:var(--brass);background:#c5a4441a}
-  body{padding-top:64px}
   .srow{cursor:pointer}
   .srow:hover{box-shadow:0 0 0 1px var(--brass-dark)}
   .srow .chead{cursor:pointer}
@@ -65,12 +64,12 @@
   .rule{width:190px;height:1px;margin:1.1rem auto 1rem;background:linear-gradient(90deg,transparent,var(--rope),var(--brass-dark),var(--brass),var(--brass-dark),var(--rope),transparent)}
   .standfirst{font-family:'IM Fell English',Georgia,serif;font-style:italic;font-size:.98rem;color:var(--text-muted);margin:0 auto;max-width:42rem;line-height:1.5}
 
-  .tabs{display:flex;justify-content:center;flex-wrap:wrap;margin-bottom:1.4rem}
-  .tab{font-family:'IM Fell English SC',Georgia,serif;font-size:.86rem;letter-spacing:.05em;
-    background:linear-gradient(180deg,var(--wood-plank) 0%,var(--wood-mid) 100%);color:var(--text-muted);
-    border:1px solid #7a5f1e59;padding:.68rem 1.15rem;cursor:pointer;transition:color .2s,background .2s,border-color .2s;margin:-1px 0 0 -1px}
-  .tab:hover{color:var(--parchment-mid)}
-  .tab[aria-selected="true"]{background:linear-gradient(180deg,var(--brass) 0%,#a07a28 100%);color:var(--wood-darkest);border-color:var(--brass-bright);z-index:1}
+  .tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:.12rem;flex:1 1 auto;margin:0}
+  .tab{font-family:Lora,Georgia,serif;font-size:.82rem;letter-spacing:normal;background:transparent;
+    color:var(--text-muted);border:0;border-radius:2px;padding:.38rem .6rem;cursor:pointer;
+    transition:color .2s,background .2s;margin:0;white-space:nowrap}
+  .tab:hover{color:var(--brass-bright);background:#c5a4440d}
+  .tab[aria-selected="true"]{background:#c5a4441a;color:var(--brass-bright)}
   .tab:focus-visible{outline:2px solid var(--gold-sheen);outline-offset:2px;z-index:2}
 
   .ledger{background:var(--parchment-light);border:1px solid var(--parchment-dark);border-radius:3px;
@@ -332,10 +331,13 @@
   @media (max-width:700px){
     .wrap{padding-left:max(.7rem,env(safe-area-inset-left));padding-right:max(.7rem,env(safe-area-inset-right))}
     body{padding-top:0}
-    .navbar{position:static;height:auto;flex-wrap:wrap;padding:.55rem .7rem;gap:.5rem}
+  @media (min-width:701px) and (max-width:1200px){.nav-brand{font-size:0}
+    .nav-brand::before{content:'\2693';font-size:1.15rem}}
+    .navbar{position:static;min-height:0;padding:.55rem .7rem;gap:.5rem}
     .nav-brand{font-size:1rem;flex:1 1 auto}
     .btn-amb{min-height:2.75rem;padding-left:.85rem;padding-right:.85rem}
-    .nav-search{flex:1 1 100%;order:3;max-width:none}
+    .nav-search{flex:1 1 100%;order:3;min-width:0}
+    .tabs{flex:1 1 100%;order:4;gap:.2rem}
     .docrich{font-size:16px;padding:.7rem .8rem}
     .docrich h1{font-size:1.1rem}.docrich h2{font-size:1rem}.docrich h3{font-size:.95rem}
     .doctb{gap:.3rem}
@@ -346,7 +348,7 @@
     .assetpdf{display:none}
     .toolbtns{flex-wrap:wrap}
     .toolbtns .tbtn{min-height:2.4rem}
-    .tab{flex:1 1 30%;padding:.62rem .4rem;font-size:.78rem;min-height:46px}
+    .tab{flex:1 1 30%;padding:.5rem .3rem;font-size:.76rem;min-height:44px}
     .ctitle{flex-basis:100%}
     .csub{padding-left:.7rem}
     .ltable td,.ltable th{padding-left:.55rem;padding-right:.55rem}
@@ -410,6 +412,7 @@
 <body>
 <nav class="navbar" aria-label="Ship&rsquo;s bar">
   <button class="nav-brand" type="button" data-home>&#9875; Neal&rsquo;s Passage</button>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Sections"></div>
   <div class="nav-search">
     <span class="nav-search-ico" aria-hidden="true">&#9906;</span>
     <input type="search" id="q" class="nav-search-in" autocomplete="off" spellcheck="false"
@@ -426,7 +429,6 @@
 </header>
 
 <div class="wrap">
-  <div class="tabs" id="tabs" role="tablist" aria-label="Sections"></div>
   <div id="view"></div>
   <div class="stores">
     <button class="btn-ghost" id="btn-undo" type="button" title="Undo (Ctrl/Cmd+Z)" disabled>↶ Undo</button>

@@ -388,6 +388,7 @@
     <button class="btn-ghost" id="btn-export" type="button">Back up data</button>
     <button class="btn-ghost" id="btn-import" type="button">Load a copy</button>
     <button class="btn-ghost" id="btn-print" type="button">Save as PDF</button>
+    <button class="btn-ghost" id="btn-ambient" type="button" aria-pressed="false" title="A wind-and-sea bed, generated in the browser">&#9654; Ambient Audio</button>
     <button class="btn-ghost danger" id="btn-reset" type="button">Reset to defaults</button>
     <input type="file" id="file-import" accept="application/json,.json" hidden>
   </div>
@@ -1086,6 +1087,51 @@
     fr.onload=function(){try{var d=JSON.parse(fr.result);['schools','people','companies','opportunities'].forEach(function(k){if(!Array.isArray(d[k]))throw 0;});
       if(!d.ledger)d.ledger=clone(DEFAULTS.ledger);recordUndo('import');state=d;save();render();flash('Log restored.');}catch(err){flash("That file isn't a log this book knows.");}};
     fr.readAsText(f);e.target.value='';});
+  /* ---------- ambient audio ----------
+     Ported from the Saltwind Library archive: nothing is downloaded, the bed is
+     generated in the browser. A looping 3s white-noise buffer through a 320 Hz
+     lowpass, with a 0.12 Hz sine swelling the gain so it breathes like wind. */
+  var AMB_KEY='librarians-passage-ambient';
+  var amb={ctx:null,gain:null,on:false};
+  function ambStart(){
+    if(amb.ctx)return true;
+    var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+    var ctx;try{ctx=new AC();}catch(e){return false;}
+    var buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*3),ctx.sampleRate),d=buf.getChannelData(0);
+    for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    var src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
+    var lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=320;lp.Q.value=1;
+    var g=ctx.createGain();
+    var lfo=ctx.createOscillator();lfo.type='sine';lfo.frequency.value=0.12;
+    var depth=ctx.createGain();depth.gain.value=0.02;
+    lfo.connect(depth);depth.connect(g.gain);
+    src.connect(lp);lp.connect(g);g.connect(ctx.destination);
+    src.start(0);lfo.start(0);
+    try{ctx.resume();}catch(e){}
+    try{g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(0.045,ctx.currentTime+2);}
+    catch(e){g.gain.value=0.045;}
+    amb.ctx=ctx;amb.gain=g;return true;}
+  function ambStop(){
+    if(!amb.ctx)return;
+    var ctx=amb.ctx,g=amb.gain;
+    try{g.gain.cancelScheduledValues(ctx.currentTime);
+      g.gain.setValueAtTime(g.gain.value,ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0,ctx.currentTime+0.8);}catch(e){}
+    setTimeout(function(){try{ctx.close();}catch(e){}},900);
+    amb.ctx=null;amb.gain=null;}
+  function ambSet(on,remember){
+    amb.on=!!on;
+    if(amb.on){if(!ambStart())amb.on=false;}else{ambStop();}
+    var b=document.getElementById('btn-ambient');
+    if(b){b.innerHTML=(amb.on?'❚❚':'▶')+' Ambient Audio';b.setAttribute('aria-pressed',amb.on?'true':'false');}
+    if(remember!==false){try{localStorage.setItem(AMB_KEY,amb.on?'1':'0');}catch(e){}}}
+  document.getElementById('btn-ambient').addEventListener('click',function(){ambSet(!amb.on);});
+  /* browsers block audio until a gesture, so a remembered choice waits for the first one */
+  try{if(localStorage.getItem(AMB_KEY)==='1'){
+    var ambKick=function(){document.removeEventListener('pointerdown',ambKick,true);
+      document.removeEventListener('keydown',ambKick,true);ambSet(true,false);};
+    document.addEventListener('pointerdown',ambKick,true);
+    document.addEventListener('keydown',ambKick,true);}}catch(e){}
   document.getElementById('btn-print').addEventListener('click',function(){window.print();});
   document.getElementById('btn-reset').addEventListener('click',function(){if(!confirm('Reset every tab (chart, CRM, and ledger) to defaults? Your changes will be lost.'))return;
     recordUndo('reset');state=clone(DEFAULTS);EXP={schools:{},opportunities:{},companies:{},people:{}};save();render();flash('Reset to defaults.');});

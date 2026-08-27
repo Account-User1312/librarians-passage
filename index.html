@@ -422,6 +422,9 @@
   ]};
 
   var SCHOOLS=[
+    {region:'The Empire Coast',name:'Queens College, CUNY',berth:'Flushing · Queens',papers:'M.L.S. — ALA-accredited since 1970',passage:'Unconfirmed',toll:'$470/credit (NY resident)',firstPapers:'Full-time capped $5,545/semester',bond:'Live in NY ~1 yr',flag:'best',flagText:'Cheapest MLS',catch:'No certificate or associate route exists anywhere in NY, so the MLS is the entry point. At $470/credit this is about the cheapest ALA-accredited MLS in the country for a resident. Credit total unconfirmed — verify.',link:'https://www.qc.cuny.edu/academics/sis/'},
+    {region:'The Empire Coast',name:'University at Albany (SUNY)',berth:'Albany',papers:'M.S. Information Science — ALA-accredited; school-library track 36 cr',passage:'Fully online',toll:'$471/credit (NY resident)',firstPapers:'~$17,000 at 36 cr — tuition only',bond:'Live in NY ~1 yr',flag:'good',flagText:'Online',catch:'SUNY-wide resident graduate rate. Albany publishes ~$616/credit once fees are added, so budget above the tuition-only figure.',link:'https://www.albany.edu/cehc/programs/ms-information-science'},
+    {region:'The Empire Coast',name:'University at Buffalo (SUNY)',berth:'Buffalo',papers:'M.S. Information & Library Science — ALA-accredited',passage:'Fully online',toll:'$471/credit (NY resident)',firstPapers:'verify — credit total unconfirmed',bond:'Live in NY ~1 yr',flag:'good',flagText:'Online',catch:'100% online option, continuously ALA-accredited since 1970. Same SUNY resident rate as Albany.',link:'https://ed.buffalo.edu/academics/masters/library-science.html'},
     {region:'California Waters',name:'Santa Ana College',berth:'Santa Ana · Orange County',papers:'Certificate of Achievement + A.A., Library Technology',passage:'Online + on-campus',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000 (cert, once resident)',bond:'Live in CA ~1 yr',flag:'best',flagText:'Best in CA',catch:'Nearest port to Irvine; cheapest once resident; opens SJSU in-state for the MLS later.',link:'https://libguides.sac.edu/LTProgram/library-technology'},
     {region:'California Waters',name:'Palomar College',berth:'San Marcos · San Diego County',papers:'Certificate + A.S., Library & Information Technology',passage:'Fully online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Fully-online, well-worn program — take it from anywhere in the state.',link:'https://www.palomar.edu/library/library-and-information-technology-program/'},
     {region:'California Waters',name:'Fresno City College',berth:'Fresno',papers:'Library Technology certificate / degree (~4 semesters)',passage:'Fully online',toll:'~$46/unit (resident)',firstPapers:'~$750–1,000',bond:'Live in CA ~1 yr',flag:'good',flagText:'Solid',catch:'Another fully-online option; no edge over Santa Ana unless the courses fit better.',link:'https://www.fresnocitycollege.edu/academics/library/library-technology.html'},
@@ -458,9 +461,11 @@
     {"region": "Distant Shores", "name": "Wilbur Wright College", "berth": "Chicago, IL", "papers": "AAS + Certificate, Library Technology", "passage": "Fully online", "catch": "Chicago City Colleges; distance option.", "link": "https://www.ccc.edu/colleges/wright/", "flag": "good", "flagText": "Online", "toll": "In-state cheap; out-of-state varies — verify", "firstPapers": "Verify at program", "bond": "None (out-of-state)"},
     {"region": "Distant Shores", "name": "White Mountains Community College", "berth": "Berlin, NH", "papers": "Certificate, Library Technology", "passage": "Unconfirmed", "catch": "New Hampshire option; verify online.", "link": "https://www.wmcc.edu/program/library-technology/", "flag": "warn", "flagText": "Verify online", "toll": "In-state cheap; out-of-state varies — verify", "firstPapers": "Verify at program", "bond": "None (out-of-state)"}
   ];
-  var REGION_ORDER=['California Waters','The Texas Coast','Distant Shores'];
+  var REGION_ORDER=['California Waters','The Texas Coast','The Empire Coast','Distant Shores'];
   var REGION_SUB={'California Waters':'in-state toll shown — unlocked only after ye drop anchor ~1 year',
-    'The Texas Coast':'in-state now — no bond, no waiting','Distant Shores':'out-of-state online fleet — no move, but a dearer toll'};
+    'The Texas Coast':'in-state now — no bond, no waiting',
+    'The Empire Coast':'no certificate or associate berth in the whole state — ALA lists none; the in-state saving lands at the MLS',
+    'Distant Shores':'out-of-state online fleet — no move, but a dearer toll'};
 
   var OPTIONS=Object.assign({region:REGION_ORDER.slice(),passage:['Fully online','Online + on-campus','Hybrid','In-person','Unconfirmed']}, SEED.options||{});
 
@@ -532,6 +537,9 @@
       d.employmentAssets=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
     if(Array.isArray(d.schools))d.schools.forEach(function(s){if(s.passage==='100% online')s.passage='Fully online';});
+    if(Array.isArray(d.schools)&&!d.portsNY){var _ny={};d.schools.forEach(function(x){_ny[(x.name||'').toLowerCase()]=1;});
+      DEFAULTS.schools.forEach(function(x){if(x.region==='The Empire Coast'&&!_ny[(x.name||'').toLowerCase()])d.schools.push(clone(x));});
+      d.portsNY=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     if(Array.isArray(d.schools)&&!d.portsMerged){var _hn={};d.schools.forEach(function(s){_hn[(s.name||'').toLowerCase()]=1;});DEFAULTS.schools.forEach(function(s){if(!_hn[(s.name||'').toLowerCase()])d.schools.push(clone(s));});d.portsMerged=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     return d;}
     catch(e){return clone(DEFAULTS);}}

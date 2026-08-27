@@ -26,6 +26,37 @@
     -webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:rgba(197,164,68,.25);overflow-x:hidden}
   @supports (min-height:100dvh){body{min-height:100dvh}}
   .wrap{max-width:1120px;margin:0 auto;padding:0 1.1rem 5rem}
+  .navbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;display:flex;align-items:center;
+    justify-content:space-between;gap:1rem;padding:0 2rem;background-color:#110804;
+    border-bottom:2px solid var(--brass-dark);
+    background-image:repeating-linear-gradient(90deg,transparent 0 16px,#ffffff05 16px 17px)}
+  .nav-brand{font-family:'IM Fell English SC',Georgia,serif;font-size:1.1rem;letter-spacing:.066em;
+    color:var(--brass-bright);background:none;border:0;cursor:pointer;white-space:nowrap;flex:0 0 auto;padding:0}
+  .nav-brand:hover{color:var(--gold-sheen)}
+  .nav-search{position:relative;flex:1 1 24rem;max-width:34rem;display:flex;align-items:center}
+  .nav-search-ico{position:absolute;left:.8rem;color:var(--brass-dark);font-size:1rem;pointer-events:none}
+  .nav-search-in{width:100%;font-family:'IM Fell English',Georgia,serif;font-size:16px;color:var(--text-light);
+    background:#1a0e06;border:1px solid var(--brass-dark);border-radius:2px;
+    padding:.5rem 1.9rem .5rem 2.5rem;-webkit-appearance:none;appearance:none}
+  .nav-search-in::placeholder{color:#7a5f3c;font-style:italic}
+  .nav-search-in:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 2px #c5a4442e}
+  .nav-search-in::-webkit-search-cancel-button{display:none}
+  .nav-search-x{position:absolute;right:.35rem;background:none;border:0;color:var(--brass-dark);
+    font-size:1.15rem;line-height:1;cursor:pointer;padding:.2rem .35rem}
+  .nav-search-x:hover{color:var(--rust)}
+  .btn-amb{font-family:Lora,serif;font-size:.72rem;color:#7a5f3c;background:transparent;cursor:pointer;
+    border:1px solid var(--brass-dark);border-radius:3px;padding:.32rem .7rem;white-space:nowrap;flex:0 0 auto}
+  .btn-amb:hover{color:var(--brass-bright);border-color:var(--brass)}
+  .btn-amb[aria-pressed="true"]{color:var(--brass-bright);border-color:var(--brass);background:#c5a4441a}
+  body{padding-top:64px}
+  .srow{cursor:pointer}
+  .srow:hover{box-shadow:0 0 0 1px var(--brass-dark)}
+  .srow .chead{cursor:pointer}
+  .srow-t{flex:1 1 55%;min-width:8rem;font-family:'IM Fell English SC',Georgia,serif;
+    font-size:1rem;color:var(--text-parchment)}
+  .srow-s{padding:.1rem .9rem .65rem .9rem;font-family:Lora,serif;font-size:.8rem;
+    color:#7a5f3c;font-style:italic;overflow-wrap:anywhere}
+  .srow-s mark{background:#c5a44455;color:var(--text-parchment);border-radius:2px;padding:0 .12rem}
   header{text-align:center;padding:3.2rem 1rem 1.7rem;background:linear-gradient(180deg,var(--sea-dark) 0%,transparent 100%);
     border-bottom:1px solid #7a5f1e40;margin-bottom:1.6rem}
   .eyebrow{font-family:Lora,serif;font-style:italic;font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--brass-muted);margin:0 0 1rem}
@@ -300,6 +331,11 @@
 
   @media (max-width:700px){
     .wrap{padding-left:max(.7rem,env(safe-area-inset-left));padding-right:max(.7rem,env(safe-area-inset-right))}
+    body{padding-top:0}
+    .navbar{position:static;height:auto;flex-wrap:wrap;padding:.55rem .7rem;gap:.5rem}
+    .nav-brand{font-size:1rem;flex:1 1 auto}
+    .btn-amb{min-height:2.75rem;padding-left:.85rem;padding-right:.85rem}
+    .nav-search{flex:1 1 100%;order:3;max-width:none}
     .docrich{font-size:16px;padding:.7rem .8rem}
     .docrich h1{font-size:1.1rem}.docrich h2{font-size:1rem}.docrich h3{font-size:.95rem}
     .doctb{gap:.3rem}
@@ -372,6 +408,16 @@
 </style>
 </head>
 <body>
+<nav class="navbar" aria-label="Ship&rsquo;s bar">
+  <button class="nav-brand" type="button" data-home>&#9875; Neal&rsquo;s Passage</button>
+  <div class="nav-search">
+    <span class="nav-search-ico" aria-hidden="true">&#9906;</span>
+    <input type="search" id="q" class="nav-search-in" autocomplete="off" spellcheck="false"
+      placeholder="Search ports, berths, folk &amp; papers&hellip;" aria-label="Search everything">
+    <button class="nav-search-x" id="q-clear" type="button" title="Clear search" hidden>&times;</button>
+  </div>
+  <button class="btn-amb" id="btn-ambient" type="button" aria-pressed="false" title="A wind-and-sea bed, generated in the browser">&#9654; Ambient Audio</button>
+</nav>
 <header>
   <p class="eyebrow">Chart &middot; Logbook &middot; Purse</p>
   <h1>Neal's Passage</h1>
@@ -388,7 +434,6 @@
     <button class="btn-ghost" id="btn-export" type="button">Back up data</button>
     <button class="btn-ghost" id="btn-import" type="button">Load a copy</button>
     <button class="btn-ghost" id="btn-print" type="button">Save as PDF</button>
-    <button class="btn-ghost" id="btn-ambient" type="button" aria-pressed="false" title="A wind-and-sea bed, generated in the browser">&#9654; Ambient Audio</button>
     <button class="btn-ghost danger" id="btn-reset" type="button">Reset to defaults</button>
     <input type="file" id="file-import" accept="application/json,.json" hidden>
   </div>
@@ -985,7 +1030,58 @@
   function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" data-tab="'+t.id+'" aria-selected="'+(t.id===active)+'">'+esc(t.label)+'</button>';}).join('');}
   function autosize(el){el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
   function autosizeAll(){var ts=document.querySelectorAll('#view textarea');for(var i=0;i<ts.length;i++){if(ts[i].offsetParent!==null)autosize(ts[i]);}}
+  /* ---------- search ---------- */
+  var query='';
+  var SFIELDS={
+    schools:['name','berth','region','papers','passage','toll','firstPapers','bond','catch','link','flagText'],
+    opportunities:['name','company','stage','status','priority','source','lossReason','payHourly','paySalary','closeDate','description','link'],
+    companies:['name','contactType','phone','emailDomain','website','address','city','state','zip','country','linkedin','description'],
+    people:['name','company','title','email','phone','website','address','city','state','zip','linkedin','description','contactType','tag']};
+  var SLABEL={schools:'The Passage',opportunities:'Opportunities',companies:'Companies',
+    people:'People',employment:'Employment',ledger:"Purser's Ledger"};
+  function snippet(v,q){var p=v.toLowerCase().indexOf(q);if(p<0)return '';
+    var a=Math.max(0,p-45);return (a?'…':'')+v.slice(a,p+q.length+70).replace(/\s+/g,' ')+(p+q.length+70<v.length?'…':'');}
+  function hilite(t,q){var out='',low=t.toLowerCase(),i=0,p;
+    while((p=low.indexOf(q,i))>=0){out+=esc(t.slice(i,p))+'<mark>'+esc(t.slice(p,p+q.length))+'</mark>';i=p+q.length;}
+    return out+esc(t.slice(i));}
+  function searchAll(raw){
+    var q=String(raw||'').trim().toLowerCase();if(!q)return [];
+    var hits=[];
+    Object.keys(SFIELDS).forEach(function(ds){
+      (state[ds]||[]).forEach(function(rec,i){
+        var fields=SFIELDS[ds],snip='';
+        for(var k=0;k<fields.length;k++){var v=rec[fields[k]]==null?'':String(rec[fields[k]]);
+          if(v.toLowerCase().indexOf(q)>=0){snip=snippet(v,q);break;}}
+        if(snip==='')return;
+        hits.push({ds:ds,i:i,label:SLABEL[ds],title:rec.name||'(untitled)',snip:snip});});});
+    (state.employment||[]).forEach(function(d,i){
+      if(!d)return;
+      var pool=[d.title||'',d.category||'',d.body||''],snip='';
+      for(var k=0;k<pool.length;k++){if(pool[k].toLowerCase().indexOf(q)>=0){snip=snippet(pool[k],q);break;}}
+      if(snip==='')return;
+      hits.push({ds:'employment',i:i,label:SLABEL.employment,title:d.title||'(untitled)',snip:snip});});
+    ((state.ledger||{}).expenses||[]).forEach(function(e,i){
+      if(!e)return;var pool=(e.name||'')+' · '+(e.kind||'');
+      if(pool.toLowerCase().indexOf(q)<0)return;
+      hits.push({ds:'ledger',i:i,label:SLABEL.ledger,title:e.name||'',snip:(e.kind||'')+' · '+money(e.amount||0)});});
+    return hits;}
+  function renderSearch(){
+    var q=query.trim(),hits=searchAll(q),groups={},order=[];
+    hits.forEach(function(h){if(!groups[h.label]){groups[h.label]=[];order.push(h.label);}groups[h.label].push(h);});
+    var body='<div class="cards">';
+    if(!hits.length)body+='<div class="assoc empty" style="padding:.6rem 1rem">Nothing found in these waters.</div>';
+    order.forEach(function(g){
+      body+='<div class="regionbar">'+esc(g)+' <span class="rgcount">('+groups[g].length+')</span></div>';
+      groups[g].forEach(function(h){
+        body+='<div class="card srow" data-goto="'+h.ds+':'+h.i+'">'+
+          '<div class="chead"><span class="srow-t">'+hilite(h.title,q.toLowerCase())+'</span>'+
+          '<span class="badge b-neutral">'+esc(h.label)+'</span></div>'+
+          (h.snip?'<div class="srow-s">'+hilite(h.snip,q.toLowerCase())+'</div>':'')+'</div>';});});
+    body+='</div>';
+    return card('Search',hits.length+' record'+(hits.length===1?'':'s')+' matching “'+esc(q)+'”','',body);}
+
   function renderView(){var el=document.getElementById('view');
+    if(query.trim()){el.innerHTML=renderSearch();autosizeAll();return;}
     if(active==='dashboard')el.innerHTML=renderDashboard();
     else if(active==='ledger')el.innerHTML=renderLedger();
     else if(active==='employment')el.innerHTML=renderEmployment();
@@ -1035,6 +1131,18 @@
     docSync(ed);
   });
   view.addEventListener('click',function(e){
+    var gt=e.target.closest('[data-goto]');
+    if(gt){var pp=gt.dataset.goto.split(':'),ds=pp[0],ix=+pp[1];
+      clearSearch(true);
+      if(ds==='schools'){active='schools';EXPREG[(state.schools[ix]||{}).region||'—']=true;}
+      else if(ds==='ledger'){active='ledger';}
+      else if(ds==='employment'){active='employment';
+        EXPEMP[(state.employment[ix]||{}).category||'Miscellaneous Notes']=true;EXP.employment[ix]=true;}
+      else{active=ds;if(EXP[ds])EXP[ds][ix]=true;}
+      renderTabs();renderView();
+      setTimeout(function(){var t=document.querySelector('[data-ds="'+ds+'"][data-i="'+ix+'"]');
+        if(t&&t.scrollIntoView)t.scrollIntoView({block:'center',behavior:'smooth'});},60);
+      return;}
     var cq=e.target.closest('[data-cq-send]');if(cq){cqSend();return;}
     var rgt=e.target.closest('[data-rgtoggle]');if(rgt){EXPREG[rgt.dataset.rgtoggle]=!EXPREG[rgt.dataset.rgtoggle];renderView();return;}
     var rga=e.target.closest('[data-rgall]');if(rga){var onn=rga.dataset.rgall==='1';var seen={};state.schools.forEach(function(s){seen[s.region||'—']=1;});REGION_ORDER.forEach(function(r){seen[r]=1;});Object.keys(seen).forEach(function(r){EXPREG[r]=onn;});renderView();return;}
@@ -1125,6 +1233,17 @@
     var b=document.getElementById('btn-ambient');
     if(b){b.innerHTML=(amb.on?'❚❚':'▶')+' Ambient Audio';b.setAttribute('aria-pressed',amb.on?'true':'false');}
     if(remember!==false){try{localStorage.setItem(AMB_KEY,amb.on?'1':'0');}catch(e){}}}
+  function clearSearch(silent){var qi=document.getElementById('q');
+    if(qi)qi.value='';query='';var x=document.getElementById('q-clear');if(x)x.hidden=true;
+    if(!silent)renderView();}
+  document.getElementById('q').addEventListener('input',function(){
+    query=this.value;document.getElementById('q-clear').hidden=!query;renderView();});
+  document.getElementById('q').addEventListener('keydown',function(e){
+    if(e.key==='Escape'){clearSearch();this.blur();}});
+  document.getElementById('q-clear').addEventListener('click',function(){
+    clearSearch();document.getElementById('q').focus();});
+  document.querySelector('[data-home]').addEventListener('click',function(){
+    clearSearch(true);active='dashboard';renderTabs();renderView();window.scrollTo(0,0);});
   document.getElementById('btn-ambient').addEventListener('click',function(){ambSet(!amb.on);});
   /* browsers block audio until a gesture, so a remembered choice waits for the first one */
   try{if(localStorage.getItem(AMB_KEY)==='1'){

@@ -294,6 +294,11 @@
   table.ports td:nth-child(1){min-width:11rem}
   .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
   tr.region .chev{display:inline-flex;color:var(--brass);vertical-align:middle}
+  table.ports tr.tier td{padding:.55rem 1.3rem .4rem;background:#f0e2b8;
+    border-top:2px solid var(--brass-dark);border-bottom:1px solid var(--parchment-dark);
+    font-family:'IM Fell English SC',Georgia,serif;font-size:.62rem;letter-spacing:.13em;
+    text-transform:uppercase;color:#6a501a}
+  table.ports tr.tier .rgcount{letter-spacing:normal;text-transform:none}
   .docbody{min-height:13rem;font-family:Georgia,'Times New Roman',serif;line-height:1.55;width:100%}
   .docrich{min-height:13rem;font-family:Georgia,'Times New Roman',serif;line-height:1.55;width:100%;
     padding:.9rem 1.05rem;overflow-wrap:break-word;cursor:text}
@@ -373,6 +378,8 @@
     table.ports{min-width:0;width:100%;display:block}
     table.ports tbody{display:block}
     table.ports tr.colhead{display:none}
+    table.ports tr.tier{display:block}
+    table.ports tr.tier td{display:block;width:auto;padding:.5rem .8rem .4rem !important}
     table.ports tr.region{display:block}
     table.ports tr.region td{display:block;width:auto;min-width:0}
     table.ports tr.drow{display:block;margin:.55rem;border:1px solid var(--parchment-dark);
@@ -791,6 +798,10 @@
       '<select class="tagsel-native" data-ds="'+ds+'" data-i="'+i+'" data-k="'+field+'" data-tagspan="'+id+'">'+selOpts(optKey,v)+'</select></span>';}
   function passageSelect(ds,i){return tagSel(ds,i,'passage','passage');}
   function linkMini(ds,i,k){var has=!!((state[ds][i][k]||'')+'').trim();return '<span class="linkmini"><a class="ext'+(has?'':' off')+'" data-openlink="'+ds+':'+i+':'+k+'" title="'+(has?'Open in new tab':'No link yet')+'">\u2197</a><button class="lnkedit" data-editlink="'+ds+':'+i+':'+k+'" title="Edit link" type="button">\u270e</button></span>';}
+  function portTier(rec){var p=String((rec&&rec.papers)||'');
+    return (/^\s*M\.[A-Z]/.test(p)||/\bmaster/i.test(p))?'masters':'junior';}
+  function tierRow(label,n,span){return '<tr class="tier"><td colspan="'+span+'">'+label+
+    ' <span class="rgcount">('+n+')</span></td></tr>';}
   function renderPortsTable(){
     var ds='schools',recs=state.schools;
     var cols=[['papers','Papers (degree & credits)'],['passage','Passage'],['toll','Toll / cost per credit'],['firstPapers','Cost to first papers'],['bond','Residency'],['catch','The catch'],['link','Info page']];
@@ -802,12 +813,20 @@
       var op=EXPREG[reg]===true;
       body+='<tr class="region"><td colspan="'+(cols.length+2)+'"><button class="chev'+(op?' open':'')+'" data-rgtoggle="'+esc(reg)+'" type="button" aria-label="Toggle heading">▶</button> ⚓ '+esc(reg)+' <span class="rgcount">('+idxs.length+')</span>'+(REGION_SUB[reg]?'<span class="rsub">'+esc(REGION_SUB[reg])+'</span>':'')+'</td></tr>';
       if(op){body+=colhead;
-        idxs.forEach(function(i){var rec=recs[i];
+        var drow=function(i){var rec=recs[i];
           var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
             '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
             '<input class="f pharbour" data-ds="'+ds+'" data-i="'+i+'" data-k="harbour" value="'+esc(rec.harbour||'')+'" placeholder="location"></td>';
-          body+='<tr class="drow">'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td data-label="'+esc(c[1])+'">'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';
-        });
+          return '<tr class="drow">'+namecell+cols.map(function(c){var inner=c[0]==='passage'?passageSelect(ds,i):(c[0]==='link'?linkMini(ds,i,'link'):field(ds,i,c[0]));return '<td data-label="'+esc(c[1])+'">'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';};
+        /* split the heading into the two rungs: papers ye can earn at a junior
+           college, and the ALA-accredited master's above them */
+        var jr=[],ms=[];
+        idxs.forEach(function(i){(portTier(recs[i])==='masters'?ms:jr).push(i);});
+        var span=cols.length+2;
+        if(jr.length)body+=tierRow('Certificate & associate',jr.length,span);
+        jr.forEach(function(i){body+=drow(i);});
+        if(ms.length)body+=tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span);
+        ms.forEach(function(i){body+=drow(i);});
       }
     });
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,

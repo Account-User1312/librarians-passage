@@ -812,7 +812,7 @@
     order.forEach(function(reg){var idxs=[];recs.forEach(function(r,i){if((r.region||'—')===reg)idxs.push(i);});if(!idxs.length)return;
       var op=EXPREG[reg]===true;
       body+='<tr class="region"><td colspan="'+(cols.length+2)+'"><button class="chev'+(op?' open':'')+'" data-rgtoggle="'+esc(reg)+'" type="button" aria-label="Toggle heading">▶</button> ⚓ '+esc(reg)+' <span class="rgcount">('+idxs.length+')</span>'+(REGION_SUB[reg]?'<span class="rsub">'+esc(REGION_SUB[reg])+'</span>':'')+'</td></tr>';
-      if(op){body+=colhead;
+      if(op){
         var drow=function(i){var rec=recs[i];
           var namecell='<td class="pn">'+(rec.flag?'<span class="flag flag-'+esc(rec.flag)+'">'+esc(rec.flagText||'')+'</span>':'')+
             '<textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
@@ -823,10 +823,12 @@
         var jr=[],ms=[];
         idxs.forEach(function(i){(portTier(recs[i])==='masters'?ms:jr).push(i);});
         var span=cols.length+2;
-        if(jr.length)body+=tierRow('Certificate & associate',jr.length,span);
-        jr.forEach(function(i){body+=drow(i);});
-        if(ms.length)body+=tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span);
-        ms.forEach(function(i){body+=drow(i);});
+        /* the column heads ride along under each band, so ye never lose them
+           partway down a long heading */
+        if(jr.length){body+=tierRow('Certificate & associate',jr.length,span)+colhead;
+          jr.forEach(function(i){body+=drow(i);});}
+        if(ms.length){body+=tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span)+colhead;
+          ms.forEach(function(i){body+=drow(i);});}
       }
     });
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,

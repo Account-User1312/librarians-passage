@@ -289,13 +289,16 @@
   .pt-inperson{color:#37214f;background:#e2d5f2;border-color:#8a6fb0}
   .pt-unconfirmed{color:#6a2410;background:#f0dcc4;border-color:#c06f8a}
   .scroller{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  /* A wrapper with overflow-x is already a scroll box on both axes, so a sticky
-     row can only lock if that box owns the vertical scrolling too. Give the
-     chart its own pane and the column heads stay put, spreadsheet-style. */
-  .portscroll{max-height:calc(100vh - 8rem);overflow:auto;overscroll-behavior:contain}
-  table.ports tr.colhead td{position:sticky;top:0;z-index:3;
+  /* A sticky row anchors to the nearest scroll box, so the chart must NOT sit in
+     one — otherwise scrolling the page carries the wrapper and the heads off
+     together. No overflow here; the table fits the column widths instead, and
+     the heads lock to the viewport just under the nav bar. */
+  .portscroll{overflow:visible}
+  .portcard{overflow:visible}
+  @media (max-width:1179px){.portscroll{overflow-x:auto}}
+  table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;
     background:var(--parchment-mid);box-shadow:inset 0 -1px 0 var(--brass-dark)}
-  table.ports{min-width:1080px}
+  table.ports{width:100%;min-width:0}
   table.ports textarea.f{min-width:6.5rem}
   table.ports td:nth-child(1){min-width:11rem}
   .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
@@ -381,7 +384,6 @@
     /* The chart of ports is 8 columns wide; on a phone each port becomes a
        stacked label/value card instead of something you scroll sideways. */
     .scroller{overflow-x:visible}
-    .portscroll{max-height:none;overflow:visible}
     table.ports tr.colhead td,table.ports tr.region td{position:static}
     table.ports{min-width:0;width:100%;display:block}
     table.ports tbody{display:block}
@@ -841,7 +843,7 @@
       }
     });
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,
-      '<div class="scroller portscroll"><table class="ports"><tbody>'+body+'</tbody></table></div>'+addbar('schools','port'));
+      '<div class="scroller portscroll"><table class="ports"><tbody>'+body+'</tbody></table></div>'+addbar('schools','port'),'portcard');
   }
   /* ---------- dashboard ---------- */
   function resolveMatch(arr,match){
@@ -1065,7 +1067,7 @@
   }
 
   /* ---------- shell ---------- */
-  function card(title,cad,tools,inner){return '<div class="ledger"><div class="lhead"><h2>'+esc(title)+'</h2><span class="cad">'+cad+'</span>'+(tools||'')+'</div>'+inner+'</div>';}
+  function card(title,cad,tools,inner,cls){return '<div class="ledger'+(cls?' '+cls:'')+'"><div class="lhead"><h2>'+esc(title)+'</h2><span class="cad">'+cad+'</span>'+(tools||'')+'</div>'+inner+'</div>';}
   function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" data-tab="'+t.id+'" aria-selected="'+(t.id===active)+'">'+esc(t.label)+'</button>';}).join('');}
   function autosize(el){el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
   function autosizeAll(){var ts=document.querySelectorAll('#view textarea');for(var i=0;i<ts.length;i++){if(ts[i].offsetParent!==null)autosize(ts[i]);}}
@@ -1288,6 +1290,16 @@
     clearSearch();document.getElementById('q').focus();});
   document.querySelector('[data-home]').addEventListener('click',function(){
     clearSearch(true);active='dashboard';renderTabs();renderView();window.scrollTo(0,0);});
+  /* the heads lock under the bar, so the offset has to track its real height */
+  function syncNavHeight(){var n=document.querySelector('.navbar');if(!n)return;
+    var st=getComputedStyle(n).position;
+    document.documentElement.style.setProperty('--navh',(st==='sticky'?n.getBoundingClientRect().height:0)+'px');}
+  syncNavHeight();
+  window.addEventListener('resize',syncNavHeight);
+  window.addEventListener('load',syncNavHeight);
+  requestAnimationFrame(syncNavHeight);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(syncNavHeight).catch(function(){});
+  if(window.ResizeObserver){try{new ResizeObserver(syncNavHeight).observe(document.querySelector('.navbar'));}catch(e){}}
   document.getElementById('btn-ambient').addEventListener('click',function(){ambSet(!amb.on);});
   /* browsers block audio until a gesture, so a remembered choice waits for the first one */
   try{if(localStorage.getItem(AMB_KEY)==='1'){

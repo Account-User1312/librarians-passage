@@ -562,7 +562,7 @@
     schools:{title:'name',sub:'harbour',badge:'flag',region:true,defaultOpen:true,noun:'port',
       body:['region','papers','passage','toll','firstPapers','bond','catch','link']},
     opportunities:{title:'name',sub:'company',badge:'stage',dateField:'closeDate',noun:'opportunity',
-      body:['status','priority','source','lossReason','payHourly','paySalary','closeDate','link','description']},
+      body:['stage','status','priority','source','lossReason','payHourly','paySalary','closeDate','link','description']},
     companies:{title:'name',sub:'city',badge:'contactType',noun:'company',
       body:['_people','phone','emailDomain','website','address','city','state','zip','country','linkedin','description']},
     people:{title:'name',sub:'company',badge:'contactType',noun:'person',
@@ -1148,6 +1148,11 @@
   view.addEventListener('change',function(e){var t=e.target;
     if(t.id==='dashdim'){dashDim=t.value;renderView();return;}
     if(t.dataset&&t.dataset.tagspan){var sp=document.getElementById(t.dataset.tagspan);if(sp){sp.textContent=t.value||'—';sp.className='badge '+colorClass(t.dataset.k,t.value);}}
+    if(t.dataset&&t.dataset.ds&&t.dataset.k&&CARDS[t.dataset.ds]&&t.dataset.k===CARDS[t.dataset.ds].badge){
+      var q='[data-ds="'+t.dataset.ds+'"][data-i="'+t.dataset.i+'"][data-k="'+t.dataset.k+'"]';
+      [].forEach.call(view.querySelectorAll(q),function(el){if(el!==t&&el.value!==t.value)el.value=t.value;});
+      var chip=document.getElementById('tg-'+t.dataset.ds+'-'+t.dataset.i+'-'+t.dataset.k);
+      if(chip){chip.textContent=t.value||'—';chip.className='badge '+colorClass(t.dataset.k,t.value);}}
     if(t.tagName==='SELECT'&&(t.dataset.k||t.dataset.ledger))persist();
     if(t.dataset.ledger)persist();
   });

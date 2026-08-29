@@ -272,9 +272,11 @@
   table.ports td,table.ports .f{color:#2a1707}
   table.ports .f{font-size:.9rem}
   table.ports td{padding:.6rem .8rem}
+  @media (max-width:1200px){table.ports td{padding:.55rem .4rem}
+    table.ports tr.colhead td{padding-left:.4rem;padding-right:.4rem}}
   table.ports .ptitle{font-size:.98rem;color:#1f1206}
   table.ports .pharbour{font-style:italic;font-size:.76rem;color:#5f4a28}
-  table.ports .colhead td{font-size:.6rem;color:#6a501a}
+  table.ports .colhead td{font-size:.6rem;color:#3d2a08}
   .modal-ov{position:fixed;inset:0;background:#0a0603cc;display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
   .modal{background:var(--parchment-light);border:1px solid var(--parchment-dark);border-radius:4px;box-shadow:var(--shadow-deep);padding:1.4rem 1.5rem;max-width:26rem;width:100%}
   .modal h3{font-family:'IM Fell English SC',Georgia,serif;color:var(--text-parchment);margin:0 0 1rem;font-size:1.1rem}
@@ -282,8 +284,7 @@
   .modal .f{margin-bottom:.3rem;width:100%}
   .modal-btns{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.2rem}
   .tagsel{position:relative;display:inline-block;max-width:100%;min-width:0}
-  .tagsel .badge{white-space:normal;overflow-wrap:anywhere}
-  table.ports td{overflow-wrap:anywhere}
+  table.ports td{overflow-wrap:break-word}
   .tagsel .badge{cursor:pointer}
   .tagsel-native{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;margin:0;padding:0}
   .pt-online{color:#173252;background:#cfe0f0;border-color:#6b93c0}
@@ -298,8 +299,8 @@
      the heads lock to the viewport just under the nav bar. */
   .portscroll{overflow:visible}
   .portcard{overflow:visible}
-  table.ports tr.colhead td{background:var(--parchment-mid);
-    box-shadow:inset 0 -1px 0 var(--brass-dark)}
+  table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#3d2a08;
+    background:var(--parchment-mid);box-shadow:inset 0 -1px 0 var(--brass-dark)}
   table.ports{width:100%;min-width:0;table-layout:fixed}
   table.ports textarea.f,table.ports .f{min-width:0;width:100%}
   .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
@@ -307,7 +308,7 @@
   table.ports tr.tier td{padding:.55rem 1.3rem .4rem;background:#f0e2b8;
     border-top:2px solid var(--brass-dark);border-bottom:1px solid var(--parchment-dark);
     font-family:'IM Fell English SC',Georgia,serif;font-size:.62rem;letter-spacing:.13em;
-    text-transform:uppercase;color:#6a501a}
+    text-transform:uppercase;color:#3d2a08}
   table.ports tr.tier .rgcount{letter-spacing:normal;text-transform:none}
   .docbody{min-height:13rem;font-family:Georgia,'Times New Roman',serif;line-height:1.55;width:100%}
   .docrich{min-height:13rem;font-family:Georgia,'Times New Roman',serif;line-height:1.55;width:100%;
@@ -401,6 +402,7 @@
     table.ports{min-width:0;width:100%;display:block}
     table.ports tbody{display:block}
     table.ports tr.colhead{display:none}
+    table.ports tr.colhead td{position:static}
     table.ports tr.tier{display:block}
     table.ports tr.tier td{display:block;width:auto;padding:.5rem .8rem .4rem !important}
     table.ports tr.region{display:block}
@@ -818,7 +820,7 @@
     return (/^\s*M\.[A-Z]/.test(p)||/\bmaster/i.test(p))?'masters':'junior';}
   function tierRow(label,n,span){return '<tr class="tier"><td colspan="'+span+'">'+label+
     ' <span class="rgcount">('+n+')</span></td></tr>';}
-  var PORTCOLS='<colgroup>'+['15%','13%','12%','11%','11%','9%','17%','9%','3%']
+  var PORTCOLS='<colgroup>'+['14%','13%','16%','11%','11%','10%','13%','9%','3%']
     .map(function(w){return '<col style="width:'+w+'">';}).join('')+'</colgroup>';
   function renderPortsTable(){
     var ds='schools',recs=state.schools;
@@ -1298,6 +1300,15 @@
   document.querySelector('[data-home]').addEventListener('click',function(){
     clearSearch(true);active='dashboard';renderTabs();renderView();window.scrollTo(0,0);});
   if(window.ResizeObserver){try{new ResizeObserver(syncNavHeight).observe(document.querySelector('.navbar'));}catch(e){}}
+  /* the heads lock under the bar, so the offset has to track its real height */
+  function syncNavHeight(){var n=document.querySelector('.navbar');if(!n)return;
+    var st=getComputedStyle(n).position;
+    document.documentElement.style.setProperty('--navh',(st==='sticky'?n.getBoundingClientRect().height:0)+'px');}
+  syncNavHeight();
+  window.addEventListener('resize',syncNavHeight);
+  window.addEventListener('load',syncNavHeight);
+  requestAnimationFrame(syncNavHeight);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(syncNavHeight).catch(function(){});
   document.getElementById('btn-ambient').addEventListener('click',function(){ambSet(!amb.on);});
   /* browsers block audio until a gesture, so a remembered choice waits for the first one */
   try{if(localStorage.getItem(AMB_KEY)==='1'){

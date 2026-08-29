@@ -297,8 +297,8 @@
      the heads lock to the viewport just under the nav bar. */
   .portscroll{overflow:visible}
   .portcard{overflow:visible}
-  table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;
-    background:var(--parchment-mid);box-shadow:inset 0 -1px 0 var(--brass-dark)}
+  table.ports tr.colhead td{background:var(--parchment-mid);
+    box-shadow:inset 0 -1px 0 var(--brass-dark)}
   table.ports{width:100%;min-width:0;table-layout:fixed}
   table.ports textarea.f,table.ports .f{min-width:0;width:100%}
   .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
@@ -397,7 +397,6 @@
     /* The chart of ports is 8 columns wide; on a phone each port becomes a
        stacked label/value card instead of something you scroll sideways. */
     .scroller{overflow-x:visible}
-    table.ports tr.colhead td,table.ports tr.region td{position:static}
     table.ports{min-width:0;width:100%;display:block}
     table.ports tbody{display:block}
     table.ports tr.colhead{display:none}
@@ -843,11 +842,10 @@
         var span=cols.length+2;
         /* the column heads ride along under each band, so ye never lose them
            partway down a long heading */
-        body+=colhead;
-        if(jr.length)body+=tierRow('Certificate & associate',jr.length,span);
-        jr.forEach(function(i){body+=drow(i);});
-        if(ms.length)body+=tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span);
-        ms.forEach(function(i){body+=drow(i);});
+        if(jr.length){body+=colhead+tierRow('Certificate & associate',jr.length,span);
+          jr.forEach(function(i){body+=drow(i);});}
+        if(ms.length){body+=colhead+tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span);
+          ms.forEach(function(i){body+=drow(i);});}
       }
     });
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,
@@ -1298,15 +1296,6 @@
     clearSearch();document.getElementById('q').focus();});
   document.querySelector('[data-home]').addEventListener('click',function(){
     clearSearch(true);active='dashboard';renderTabs();renderView();window.scrollTo(0,0);});
-  /* the heads lock under the bar, so the offset has to track its real height */
-  function syncNavHeight(){var n=document.querySelector('.navbar');if(!n)return;
-    var st=getComputedStyle(n).position;
-    document.documentElement.style.setProperty('--navh',(st==='sticky'?n.getBoundingClientRect().height:0)+'px');}
-  syncNavHeight();
-  window.addEventListener('resize',syncNavHeight);
-  window.addEventListener('load',syncNavHeight);
-  requestAnimationFrame(syncNavHeight);
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(syncNavHeight).catch(function(){});
   if(window.ResizeObserver){try{new ResizeObserver(syncNavHeight).observe(document.querySelector('.navbar'));}catch(e){}}
   document.getElementById('btn-ambient').addEventListener('click',function(){ambSet(!amb.on);});
   /* browsers block audio until a gesture, so a remembered choice waits for the first one */

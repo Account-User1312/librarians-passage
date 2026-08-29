@@ -97,7 +97,7 @@
   .del{background:none;border:none;cursor:pointer;color:#b89a5e;font-size:1.15rem;line-height:1;padding:.2rem .35rem;border-radius:2px;transition:color .18s,background .18s}
   .del:hover{color:var(--rust);background:#00000010}
   .flag{display:inline-block;font-family:'IM Fell English SC',Georgia,serif;font-size:.55rem;letter-spacing:.08em;
-    text-transform:uppercase;padding:.18rem .5rem;border-radius:2px;border:1px solid;white-space:nowrap}
+    text-transform:uppercase;padding:.18rem .5rem;border-radius:2px;border:1px solid;white-space:nowrap;white-space:normal;overflow-wrap:anywhere;max-width:100%}
   .flag-best{color:#5a4410;background:#f0e2b0;border-color:var(--brass-dark)}
   .flag-good{color:#1f4d38;background:#dcecc9;border-color:var(--seafoam)}
   .flag-warn,.flag-dear{color:#7a2f16;background:#f0dcc4;border-color:var(--rust)}
@@ -280,7 +280,9 @@
   .modal .fl{display:block;margin-bottom:.2rem}
   .modal .f{margin-bottom:.3rem;width:100%}
   .modal-btns{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.2rem}
-  .tagsel{position:relative;display:inline-block}
+  .tagsel{position:relative;display:inline-block;max-width:100%;min-width:0}
+  .tagsel .badge{white-space:normal;overflow-wrap:anywhere}
+  table.ports td{overflow-wrap:anywhere}
   .tagsel .badge{cursor:pointer}
   .tagsel-native{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;margin:0;padding:0}
   .pt-online{color:#173252;background:#cfe0f0;border-color:#6b93c0}
@@ -295,12 +297,10 @@
      the heads lock to the viewport just under the nav bar. */
   .portscroll{overflow:visible}
   .portcard{overflow:visible}
-  @media (max-width:1179px){.portscroll{overflow-x:auto}}
   table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;
     background:var(--parchment-mid);box-shadow:inset 0 -1px 0 var(--brass-dark)}
-  table.ports{width:100%;min-width:0}
-  table.ports textarea.f{min-width:6.5rem}
-  table.ports td:nth-child(1){min-width:11rem}
+  table.ports{width:100%;min-width:0;table-layout:fixed}
+  table.ports textarea.f,table.ports .f{min-width:0;width:100%}
   .rgcount{font-family:Lora,serif;font-style:italic;color:var(--rope-light);font-size:.72rem;margin-left:.15rem}
   tr.region .chev{display:inline-flex;color:var(--brass);vertical-align:middle}
   table.ports tr.tier td{padding:.55rem 1.3rem .4rem;background:#f0e2b8;
@@ -381,6 +381,19 @@
     .tagsel .badge,.chead .badge{white-space:normal;overflow-wrap:anywhere}
     .badge{max-width:100%}
     .ltable td{padding-top:.45rem;padding-bottom:.45rem}
+        .share{width:20%}.sbar{display:none}
+    .lmoney .f{width:5.5rem}
+    .barlabel{flex-basis:42%;max-width:42%;font-size:.76rem}
+    .f,select.f,textarea.f,.ctitle,.csub{font-size:16px}
+    .del{min-width:44px;min-height:44px}
+    .lnkedit,.linkmini .ext{min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+    select.pchip{font-size:.62rem;min-height:0}
+    .stores{gap:.45rem}.stores .btn-ghost{flex:1 1 40%;min-height:46px}
+  }
+  /* Eight columns need roughly 950px to stay legible. Below that the chart
+     stops being a table and each port becomes a stacked label/value card,
+     which also means there is nothing to lock. */
+  @media (max-width:949px){
     /* The chart of ports is 8 columns wide; on a phone each port becomes a
        stacked label/value card instead of something you scroll sideways. */
     .scroller{overflow-x:visible}
@@ -407,15 +420,8 @@
     table.ports tr.drow td>*{flex:1 1 auto;min-width:0}
     table.ports td:nth-child(1){min-width:0}
     table.ports textarea.f,table.ports .f{min-width:0}
-    .share{width:20%}.sbar{display:none}
-    .lmoney .f{width:5.5rem}
-    .barlabel{flex-basis:42%;max-width:42%;font-size:.76rem}
-    .f,select.f,textarea.f,.ctitle,.csub{font-size:16px}
-    .del{min-width:44px;min-height:44px}
-    .lnkedit,.linkmini .ext{min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center}
-    select.pchip{font-size:.62rem;min-height:0}
-    .stores{gap:.45rem}.stores .btn-ghost{flex:1 1 40%;min-height:46px}
   }
+
   @media print{
     body{background:#fff !important;background-image:none !important;color:#1a1208}
     .tabs,.stores,.saved,.toolbtns,.laddbar,.addwrap,.del,.ext,.chev,.lsub-toggle{display:none !important}
@@ -812,6 +818,8 @@
     return (/^\s*M\.[A-Z]/.test(p)||/\bmaster/i.test(p))?'masters':'junior';}
   function tierRow(label,n,span){return '<tr class="tier"><td colspan="'+span+'">'+label+
     ' <span class="rgcount">('+n+')</span></td></tr>';}
+  var PORTCOLS='<colgroup>'+['15%','13%','12%','11%','11%','9%','17%','9%','3%']
+    .map(function(w){return '<col style="width:'+w+'">';}).join('')+'</colgroup>';
   function renderPortsTable(){
     var ds='schools',recs=state.schools;
     var cols=[['papers','Papers (degree & credits)'],['passage','Passage'],['toll','Toll / cost per credit'],['firstPapers','Cost to first papers'],['bond','Residency'],['catch','The catch'],['link','Info page']];
@@ -843,7 +851,7 @@
       }
     });
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,
-      '<div class="scroller portscroll"><table class="ports"><tbody>'+body+'</tbody></table></div>'+addbar('schools','port'),'portcard');
+      '<div class="scroller portscroll"><table class="ports">'+PORTCOLS+'<tbody>'+body+'</tbody></table></div>'+addbar('schools','port'),'portcard');
   }
   /* ---------- dashboard ---------- */
   function resolveMatch(arr,match){

@@ -845,10 +845,12 @@
         var span=cols.length+2;
         /* the column heads ride along under each band, so ye never lose them
            partway down a long heading */
-        if(jr.length){body+=colhead+tierRow('Certificate & associate',jr.length,span);
-          jr.forEach(function(i){body+=drow(i);});}
-        if(ms.length){body+=colhead+tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span);
-          ms.forEach(function(i){body+=drow(i);});}
+        /* one head per heading now — it sticks, so it does not need repeating */
+        body+=colhead;
+        if(jr.length)body+=tierRow('Certificate & associate',jr.length,span);
+        jr.forEach(function(i){body+=drow(i);});
+        if(ms.length)body+=tierRow('Master\u2019s \u2014 ALA-accredited',ms.length,span);
+        ms.forEach(function(i){body+=drow(i);});
       }
     });
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,

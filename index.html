@@ -590,6 +590,7 @@
     {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'employment',label:'Employment'},{id:'docks',label:'The Docks'},{id:'ledger',label:"Purser's Ledger"}];
 
   /* ---------- the docks: moorings ashore, grouped by port city ---------- */
+  var DOCKS_REV=3;   /* bump whenever moorings are added to DOCKS */
   var DOCK_ORDER=['Huntington Beach, CA','Fullerton, CA','Costa Mesa, CA','Anaheim, CA',
     'Long Beach, CA','Hermosa Beach, CA','Hawthorne, CA','Inglewood, CA','Los Angeles, CA'];
   var DOCKS=[
@@ -687,7 +688,79 @@
      tolls:'No application fee published',
      riggings:'Pool \u00b7 fitness center \u00b7 gated \u00b7 in-unit washer/dryer \u00b7 dishwasher \u00b7 pet-friendly',
      catch:'The standout on space \u2014 a true 1 bd at 850\u20131,350 sq ft for $1,500, with in-unit laundry. That is roughly half the rent of Huntington Continental for more room. South LA (90003); walk the block before ye sign. Contact 424-419-2592.',
-     link:'https://www.apartments.com/108-w-84th-st-los-angeles-ca/vs6vwqg/'}
+     link:'https://www.apartments.com/108-w-84th-st-los-angeles-ca/vs6vwqg/'},
+
+    {city:'Los Angeles, CA',name:'1102 S Mariposa Ave',
+     berthAddr:'1102 S Mariposa Ave, Los Angeles, CA 90006',
+     rent:'$1,050 / mo',quarters:'Studio \u00b7 1 ba',deck:'375 sq ft',
+     tolls:'Application fee $30 per applicant',
+     riggings:'Pool \u00b7 fitness center \u00b7 controlled access \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
+     catch:'Cheapest rent on the whole chart, and a pool besides. Koreatown edge (90006). Contact 805-870-8108.',
+     link:'https://www.apartments.com/1102-s-mariposa-ave-los-angeles-ca/t32zj8b/'},
+
+    {city:'Los Angeles, CA',name:'Landmark Towers',
+     berthAddr:'744 Beacon Ave, Los Angeles, CA 90017',
+     rent:'$1,195 \u2013 $1,795 / mo',quarters:'Studio\u20131 bd \u00b7 1 ba',deck:'300 \u2013 660 sq ft',
+     tolls:'Application fee $35 per applicant',
+     riggings:'Gated \u00b7 laundry facilities \u00b7 parking \u00b7 pet-friendly',
+     catch:'Widest spread on the chart \u2014 $1,195 buys a 300 sq ft studio, $1,795 a 660 sq ft 1 bd. Westlake, walkable to downtown. Office (949) 537-2122.',
+     link:'https://www.apartments.com/landmark-towers-los-angeles-ca/4pdhxbk/'},
+
+    {city:'Los Angeles, CA',name:'Commodore Regency Apartments',
+     berthAddr:'685 S Lucas Ave, Los Angeles, CA 90017',
+     rent:'$1,295 \u2013 $1,395 / mo',quarters:'Studio \u00b7 1 ba',deck:'288 \u2013 340 sq ft',
+     tolls:'Application fee $40 per applicant',
+     riggings:'Gated \u00b7 controlled access \u00b7 fitness center \u00b7 laundry facilities \u00b7 air conditioning \u00b7 parking \u00b7 pet-friendly',
+     catch:'Same Westlake block as Landmark Towers \u2014 worth touring both in one trip. Small quarters, but gated with controlled access. Office (323) 677-2638.',
+     link:'https://www.apartments.com/commodore-regency-apartments-los-angeles-ca/6n3zcpr/'},
+
+    {city:'Los Angeles, CA',name:'MH 1181 Rolland Curtis Pl',
+     berthAddr:'1181 Rolland Curtis Pl, Los Angeles, CA 90037',
+     rent:'$1,289 / mo',quarters:'PRIVATE ROOM in a 4 bd \u00b7 4 ba house',deck:'150 sq ft (the room)',
+     tolls:'Application fee $45 per applicant',
+     riggings:'Fully furnished \u00b7 in-unit washer/dryer \u00b7 air conditioning \u00b7 dishwasher \u00b7 pool \u00b7 fitness center \u00b7 controlled access \u00b7 parking \u00b7 pet-friendly',
+     catch:'NOT AN APARTMENT \u2014 this is co-living, a furnished private room in a 4B4B house with shared kitchen and living space. The listing\u2019s "1\u20134 bd" is the house, not yer quarters; 150 sq ft is the room. Five minutes from USC. Contact 213-463-3488.',
+     link:'https://www.apartments.com/mh-1181-rolland-curtis-pl-los-angeles-ca/hxc3602/'},
+
+    {city:'Los Angeles, CA',name:'Newly Renovated Apartments',
+     berthAddr:'974 S Gramercy Pl, Los Angeles, CA 90019',
+     rent:'$1,395 / mo',quarters:'Studio \u00b7 1 ba',deck:'450 sq ft',
+     tolls:'Application fee $15 per applicant \u00b7 administrative fee due at move-in',
+     riggings:'Controlled access \u00b7 balcony \u00b7 laundry facilities \u00b7 dishwasher \u00b7 pet-friendly',
+     catch:'Lowest application fee on the chart at $15, but an admin fee lands at move-in \u2014 ask what it is. Mid-Wilshire. Office (213) 816-0750.',
+     link:'https://www.apartments.com/newly-renovated-apartments-los-angeles-ca/g1e3rgy/'},
+
+    {city:'Los Angeles, CA',name:'La Chandelle',
+     berthAddr:'525 S Gramercy Pl, Los Angeles, CA 90020',
+     rent:'$1,445 \u2013 $1,850 / mo',quarters:'Studio\u20131 bd \u00b7 1 ba',deck:'400 \u2013 600 sq ft',
+     tolls:'Application fee $55 per applicant \u00b7 administrative fee due at move-in',
+     riggings:'Laundry facilities \u00b7 parking \u00b7 pet-friendly',
+     catch:'Dearest of the Koreatown lot and the thinnest riggings for the money. Same street as the Gramercy studio, forty blocks north. Office (424) 789-8472.',
+     link:'https://www.apartments.com/la-chandelle-los-angeles-ca/3hj4n5f/'},
+
+    {city:'Los Angeles, CA',name:'109 S Normandie Ave',
+     berthAddr:'109 S Normandie Ave, Los Angeles, CA 90004',
+     rent:'$1,350 / mo',quarters:'Studio \u00b7 1 ba',deck:'450 sq ft',
+     tolls:'Application fee $15 per applicant \u00b7 refundable security deposit at move-in',
+     riggings:'Gated \u00b7 controlled access \u00b7 laundry facilities \u00b7 pet-friendly',
+     catch:'Deposit is refundable, which is worth more than it sounds. Thin on riggings \u2014 no parking listed. East Hollywood/Koreatown line. Office (213) 329-4106.',
+     link:'https://www.apartments.com/109-s-normandie-ave-los-angeles-ca/b68gn48/'},
+
+    {city:'Los Angeles, CA',name:'Bright & Inviting Apartments',
+     berthAddr:'861 Fedora St, Los Angeles, CA 90005',
+     rent:'$1,350 \u2013 $1,395 / mo',quarters:'Studio \u00b7 1 ba',deck:'350 \u2013 500 sq ft',
+     tolls:'Application fee $35 per applicant \u00b7 administrative fee $0',
+     riggings:'Gated \u00b7 controlled access \u00b7 in-unit washer/dryer \u00b7 air conditioning \u00b7 dishwasher \u00b7 balcony \u00b7 laundry facilities \u00b7 pet-friendly',
+     catch:'Deepest riggings of any studio on the chart \u2014 in-unit laundry, A/C, dishwasher, balcony, gated \u2014 and the admin fee is stated as $0. Koreatown. Office (213) 376-5041.',
+     link:'https://www.apartments.com/bright-inviting-apartments-los-angeles-ca/74emwyx/'},
+
+    {city:'Los Angeles, CA',name:'Mardi Gras Apartments',
+     berthAddr:'720 W 27th St, Los Angeles, CA 90007 (leasing office 2707 Portland St)',
+     rent:'$1,325 \u2013 $2,650 / mo',quarters:'Studio\u20131 bd \u00b7 1\u20132 ba',deck:'325 \u2013 950 sq ft',
+     tolls:'Application fee $30 per applicant',
+     riggings:'Pool \u00b7 gated \u00b7 controlled access \u00b7 laundry facilities \u00b7 air conditioning \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
+     catch:'MIND THE LISTING \u2014 some units here are let as PRIVATE ROOMS, not whole flats, which is why the range runs to $2,650. Ask which ye are being quoted. USC village (90007), so it fills with students. Office (323) 917-8917.',
+     link:'https://www.apartments.com/mardi-gras-apartments-los-angeles-ca/9y41wl5/'}
   ];
 
   var DEFAULTS={schools:SCHOOLS,docks:DOCKS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],employment:SEEDEMP,ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};
@@ -695,12 +768,13 @@
   function clone(o){return JSON.parse(JSON.stringify(o));}
   function load(){try{var raw=localStorage.getItem(KEY);if(!raw)return clone(DEFAULTS);var d=JSON.parse(raw);
     ['schools','people','companies','opportunities','docks'].forEach(function(k){if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
-    if(!d.docksSeeded){
-      /* saved copies predate the Docks tab entirely \u2014 fold the seed moorings in
-         by listing link so a second run never doubles them up */
+    if((d.docksRev||0)<DOCKS_REV){
+      /* fold in any moorings the saved copy has not seen yet, keyed on listing
+         link so re-runs never double them up and hand-edits are left be */
       var _dl={};d.docks.forEach(function(x){if(x&&x.link)_dl[x.link]=1;});
       DEFAULTS.docks.forEach(function(x){if(!_dl[x.link])d.docks.push(clone(x));});
-      d.docksSeeded=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+      d.docksRev=DOCKS_REV;delete d.docksSeeded;
+      try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
     if(!d.ledger||typeof d.ledger.incomeMonthly!=='number'||!Array.isArray(d.ledger.expenses))d.ledger=clone(DEFAULTS.ledger);
     if(!d.ledgerProvisions){var _ex=d.ledger.expenses;

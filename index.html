@@ -569,6 +569,9 @@
     passage:{label:'Passage (delivery)',type:'select',opt:'passage'},toll:{label:'Toll / cost per credit',type:'area'},
     firstPapers:{label:'Cost to first papers',type:'area'},bond:{label:'Residency (bond)',type:'area'},
     catch:{label:'The catch',type:'area',wide:true},harbour:{label:'Location',type:'text'},
+    berthAddr:{label:'Address',type:'area'},rent:{label:'Rent / month',type:'area'},
+    quarters:{label:'Quarters (bd / ba)',type:'area'},deck:{label:'Deck space',type:'area'},
+    tolls:{label:'Tolls & fees',type:'area'},riggings:{label:'Riggings',type:'area',wide:true},
     _people:{label:'People at this company',type:'computed',wide:true},
     _company:{label:'Company (linked)',type:'computed'}
   };
@@ -584,13 +587,121 @@
       body:['_company','title','email','phone','website','address','city','state','zip','linkedin','description']}
   };
   var TABS=[{id:'dashboard',label:'Dashboard'},{id:'schools',label:'The Passage'},{id:'opportunities',label:'Opportunities'},
-    {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'employment',label:'Employment'},{id:'ledger',label:"Purser's Ledger"}];
+    {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'employment',label:'Employment'},{id:'docks',label:'The Docks'},{id:'ledger',label:"Purser's Ledger"}];
 
-  var DEFAULTS={schools:SCHOOLS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],employment:SEEDEMP,ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};
+  /* ---------- the docks: moorings ashore, grouped by port city ---------- */
+  var DOCK_ORDER=['Huntington Beach, CA','Fullerton, CA','Costa Mesa, CA','Anaheim, CA',
+    'Long Beach, CA','Hermosa Beach, CA','Hawthorne, CA','Inglewood, CA','Los Angeles, CA'];
+  var DOCKS=[
+    {city:'Huntington Beach, CA',name:'Huntington Continental',
+     berthAddr:'17101 Springdale St, Huntington Beach, CA 92649',
+     rent:'$2,635 \u2013 $3,305 / mo',quarters:'1\u20132 bd \u00b7 1\u20132 ba',deck:'780 \u2013 1,025 sq ft',
+     tolls:'Application fee $40 per applicant \u00b7 parking free for residents \u00b7 deposit not published',
+     riggings:'Pool \u00b7 fitness center \u00b7 laundry facilities \u00b7 balcony or patio \u00b7 dishwasher \u00b7 washer/dryer in select units \u00b7 pet-friendly',
+     catch:'Plan A1 \u2014 1 bd from $2,635, 3 units open. Plan B1 \u2014 2 bd from $2,955, 3 units open. Office (657) 214-3175. Dearest mooring on the list.',
+     link:'https://www.apartments.com/huntington-continental-huntington-beach-ca/qb3evwy/'},
+
+    {city:'Fullerton, CA',name:'Ambassador Inn Apartments',
+     berthAddr:'2100 W Commonwealth Ave, Fullerton, CA 92833',
+     rent:'$1,450 / mo',quarters:'Studio \u00b7 1 ba',deck:'288 sq ft',
+     tolls:'Application fee $45 per applicant',
+     riggings:'Pool \u00b7 fitness center \u00b7 laundry facilities \u00b7 air conditioning \u00b7 parking \u00b7 pet-friendly',
+     catch:'288 sq ft is tight \u2014 a true studio, no separate bedroom. Office (562) 600-7539.',
+     link:'https://www.apartments.com/ambassador-inn-apartments-fullerton-ca/b3ykfc8/'},
+
+    {city:'Fullerton, CA',name:'Hudson Ridge Apartments',
+     berthAddr:'1830\u20131840 W Commonwealth Ave, Fullerton, CA 92833',
+     rent:'$1,400 \u2013 $1,900 / mo',quarters:'Studio\u20131 bd \u00b7 1 ba',deck:'300 \u2013 500 sq ft',
+     tolls:'Application fee $40 per applicant',
+     riggings:'Laundry facilities \u00b7 air conditioning \u00b7 parking \u00b7 pet-friendly',
+     catch:'The 1 bd runs $1,900 \u2014 the $1,400 floor is a studio. Same stretch of Commonwealth as the Ambassador. Office (562) 600-7516.',
+     link:'https://www.apartments.com/hudson-ridge-apartments-fullerton-ca/zjpd7kz/'},
+
+    {city:'Fullerton, CA',name:'3062 Associated Rd \u2014 Unit 11',
+     berthAddr:'3062 Associated Rd Unit 11, Fullerton, CA 92835',
+     rent:'$1,400 / mo',quarters:'1 bd \u00b7 1 ba',deck:'not listed',
+     tolls:'No application fee published',
+     riggings:'Fitness center \u00b7 dishwasher \u00b7 pet-friendly',
+     catch:'Single unit, not a complex \u2014 available now. Square footage is not posted; ask before ye sail. Contact (332) 465-5726.',
+     link:'https://www.apartments.com/3062-associated-rd-fullerton-ca-unit-11/lfsv9ff/'},
+
+    {city:'Costa Mesa, CA',name:'Wallace Apartments',
+     berthAddr:'1915 Wallace Ave, Costa Mesa, CA 92627',
+     rent:'$1,050 / mo (last listed)',quarters:'1 bd \u00b7 1 ba',deck:'750 sq ft',
+     tolls:'Application fee $35 per applicant',
+     riggings:'Balcony \u00b7 patio \u00b7 picnic area \u00b7 laundry facilities \u00b7 air conditioning \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
+     catch:'TREAT WITH SUSPICION \u2014 the listing shows no floor plans available ("check back"), and $1,050 for 750 sq ft is far under the Costa Mesa market. No income restriction is stated. Ring (949) 810-3670 before ye believe the number.',
+     link:'https://www.apartments.com/wallace-apartments-costa-mesa-ca/hh64770/'},
+
+    {city:'Anaheim, CA',name:'Pradera Apartment Homes',
+     berthAddr:'130 N Citrus Ranch Rd, Anaheim, CA 92805',
+     rent:'$1,142 \u2013 $2,006 / mo',quarters:'2\u20133 bd \u00b7 1\u20132 ba',deck:'849 \u2013 979 sq ft',
+     tolls:'No application fee published',
+     riggings:'Balcony \u00b7 laundry facilities \u00b7 air conditioning \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
+     catch:'Most deck space per doubloon on the chart. The listing states no income restriction, but that rent for 2\u20133 bd in Anaheim is well under market \u2014 confirm with (657) 282-4979 whether it is an affordable-housing property.',
+     link:'https://www.apartments.com/pradera-apartment-homes-anaheim-ca/bx6tzlb/'},
+
+    {city:'Long Beach, CA',name:'169\u00bd E 67th St \u2014 Unit \u00bd',
+     berthAddr:'169 1/2 E 67th St Unit 1/2, Long Beach, CA 90805',
+     rent:'$1,350 / mo',quarters:'Studio \u00b7 1 ba',deck:'500 sq ft',
+     tolls:'No application fee published',
+     riggings:'Laundry facilities \u00b7 parking \u00b7 pet-friendly',
+     catch:'500 sq ft is roomy for a studio at this price \u2014 best deck-per-doubloon of the studios. Single unit, available now. No phone posted on the listing.',
+     link:'https://www.apartments.com/169-1-2-e-67th-st-long-beach-ca-unit-1-2/394x5dd/'},
+
+    {city:'Hermosa Beach, CA',name:'24 11th St. Apartments',
+     berthAddr:'24 11th St, Hermosa Beach, CA 90254',
+     rent:'$1,300 \u2013 $1,350 / mo',quarters:'Studio \u00b7 0.5 ba',deck:'100 \u2013 200 sq ft',
+     tolls:'No application fee published',
+     riggings:'Parking \u00b7 pet-friendly',
+     catch:'A half bath and 100\u2013200 sq ft \u2014 the smallest quarters on the chart by a wide margin, and no full bathroom. Ye are paying for Hermosa Beach itself. Office (424) 732-9993.',
+     link:'https://www.apartments.com/24-11th-st-apartments-hermosa-beach-ca/2jsx2g9/'},
+
+    {city:'Hawthorne, CA',name:'13501 S Inglewood Ave \u2014 Unit 135th-02',
+     berthAddr:'13501 S Inglewood Ave Unit 135th-02, Hawthorne, CA 90250',
+     rent:'$1,325 / mo',quarters:'Studio \u00b7 1 ba',deck:'not listed',
+     tolls:'No application fee published',
+     riggings:'Pool \u00b7 fitness center \u00b7 dishwasher \u00b7 pet-friendly',
+     catch:'Square footage is not posted \u2014 ask before ye sail. Available now. Contact 310-212-6660.',
+     link:'https://www.apartments.com/13501-s-inglewood-ave-hawthorne-ca-unit-135th-02/frfz0vs/'},
+
+    {city:'Inglewood, CA',name:'10112 Felton Ave',
+     berthAddr:'10112 Felton Ave, Inglewood, CA 90304',
+     rent:'$1,329 / mo',quarters:'Studio \u00b7 1 ba',deck:'325 sq ft',
+     tolls:'No application fee published',
+     riggings:'Pool \u00b7 gated \u00b7 laundry facilities \u00b7 parking \u00b7 pet-friendly',
+     catch:'Gated with a pool at studio price. 325 sq ft is snug. Office (562) 608-1665.',
+     link:'https://www.apartments.com/10112-felton-ave-inglewood-ca/n1ekp2m/'},
+
+    {city:'Los Angeles, CA',name:'507 N Broad Ave',
+     berthAddr:'507 N Broad Ave, Los Angeles, CA 90744',
+     rent:'$1,350 / mo',quarters:'Studio \u00b7 1 ba',deck:'564 sq ft',
+     tolls:'No application fee published',
+     riggings:'Pool \u00b7 fitness center \u00b7 laundry facilities \u00b7 balcony \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
+     catch:'Largest studio on the chart (564 sq ft) and the deepest amenity list at this price. Mind the chart: 90744 is Wilmington, down by the port \u2014 a long haul from most of the county. Contact 310-851-6700.',
+     link:'https://www.apartments.com/507-n-broad-ave-los-angeles-ca/e7lvkrq/'},
+
+    {city:'Los Angeles, CA',name:'108 W 84th St',
+     berthAddr:'108 W 84th St, Los Angeles, CA 90003',
+     rent:'$1,500 / mo',quarters:'1 bd \u00b7 1 ba',deck:'850 \u2013 1,350 sq ft',
+     tolls:'No application fee published',
+     riggings:'Pool \u00b7 fitness center \u00b7 gated \u00b7 in-unit washer/dryer \u00b7 dishwasher \u00b7 pet-friendly',
+     catch:'The standout on space \u2014 a true 1 bd at 850\u20131,350 sq ft for $1,500, with in-unit laundry. That is roughly half the rent of Huntington Continental for more room. South LA (90003); walk the block before ye sign. Contact 424-419-2592.',
+     link:'https://www.apartments.com/108-w-84th-st-los-angeles-ca/vs6vwqg/'}
+  ];
+
+  var DEFAULTS={schools:SCHOOLS,docks:DOCKS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],employment:SEEDEMP,ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};
 
   function clone(o){return JSON.parse(JSON.stringify(o));}
   function load(){try{var raw=localStorage.getItem(KEY);if(!raw)return clone(DEFAULTS);var d=JSON.parse(raw);
-    ['schools','people','companies','opportunities'].forEach(function(k){if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
+    ['schools','people','companies','opportunities','docks'].forEach(function(k){if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
+    if(!d.docksSeeded){
+      /* saved copies predate the Docks tab entirely \u2014 fold the seed moorings in
+         by listing link so a second run never doubles them up */
+      var _dl={};d.docks.forEach(function(x){if(x&&x.link)_dl[x.link]=1;});
+      DEFAULTS.docks.forEach(function(x){if(!_dl[x.link])d.docks.push(clone(x));});
+      d.docksSeeded=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
     if(!d.ledger||typeof d.ledger.incomeMonthly!=='number'||!Array.isArray(d.ledger.expenses))d.ledger=clone(DEFAULTS.ledger);
     if(!d.ledgerProvisions){var _ex=d.ledger.expenses;
       var _find=function(n){for(var i=0;i<_ex.length;i++){if((_ex[i].name||'')===n)return _ex[i];}return null;};
@@ -657,7 +768,7 @@
   var state=load(), active='dashboard', ledgerView='month', dashDim='status', saveTimer=null;
   if(Array.isArray(state.employment))state.employment.forEach(function(d){if(d&&typeof d.html!=='string')d.html=textToHtml(d.body||'');});
   var EXP={schools:{},opportunities:{},companies:{},people:{},employment:{}};
-  var EXPREG={};var EXPEMP={};
+  var EXPREG={};var EXPEMP={};var EXPDOCK={};
   var CATS=['Resumes','Cover Letters','Miscellaneous Notes','Credentials & Files'];
   var CAT_COLOR={'Resumes':'b-blue','Cover Letters':'b-teal','Miscellaneous Notes':'b-red','Credentials & Files':'b-purple'};
   var undoStack=[],redoStack=[],lastEditKey=null,lastEditTs=0,lastKind=null;
@@ -861,6 +972,31 @@
     return card('The Chart of Ports','Headings collapse — open the waters ye want. Passage is a tag-dropdown · ↗ opens each info page',tools,
       '<div class="scroller portscroll"><table class="ports">'+PORTCOLS+'<tbody>'+body+'</tbody></table></div>'+addbar('schools','port'),'portcard');
   }
+  /* ---------- the docks ---------- */
+  var DOCKCOLS='<colgroup>'+['19%','10%','9%','9%','15%','14%','14%','7%','3%']
+    .map(function(w){return '<col style="width:'+w+'">';}).join('')+'</colgroup>';
+  function renderDocks(){
+    var ds='docks',recs=state.docks;
+    var cols=[['rent','Rent / month'],['quarters','Quarters'],['deck','Deck space'],['tolls','Tolls & fees'],['riggings','Riggings'],['catch','The catch'],['link','Listing']];
+    var colhead='<tr class="colhead"><td class="pn">Mooring</td>'+cols.map(function(c){return '<td>'+esc(c[1])+'</td>';}).join('')+'<td class="act"></td></tr>';
+    var tools='<div class="toolbtns"><button class="tbtn" data-dkall="1">Open all</button><button class="tbtn" data-dkall="0">Collapse all</button></div>';
+    var order=DOCK_ORDER.slice();recs.forEach(function(r){if(order.indexOf(r.city)<0)order.push(r.city||'\u2014');});
+    var body='';
+    order.forEach(function(ct){var idxs=[];recs.forEach(function(r,i){if((r.city||'\u2014')===ct)idxs.push(i);});if(!idxs.length)return;
+      var op=EXPDOCK[ct]===true;
+      body+='<tr class="region"><td colspan="'+(cols.length+2)+'"><button class="chev'+(op?' open':'')+'" data-dktoggle="'+esc(ct)+'" type="button" aria-label="Toggle city">\u25b6</button> \u2693 '+esc(ct)+' <span class="rgcount">('+idxs.length+')</span></td></tr>';
+      if(op){
+        body+=colhead;
+        idxs.forEach(function(i){var rec=recs[i];
+          var namecell='<td class="pn"><textarea class="f ptitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="name">'+esc(rec.name||'')+'</textarea>'+
+            '<input class="f pharbour" data-ds="'+ds+'" data-i="'+i+'" data-k="berthAddr" value="'+esc(rec.berthAddr||'')+'" placeholder="street address"></td>';
+          body+='<tr class="drow">'+namecell+cols.map(function(c){var inner=(c[0]==='link')?linkMini(ds,i,'link'):field(ds,i,c[0]);return '<td data-label="'+esc(c[1])+'">'+inner+'</td>';}).join('')+'<td class="act"><button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></td></tr>';});
+      }
+    });
+    return card('The Docks','Moorings ashore, grouped by port city \u2014 collapse the ones ye have passed on \u00b7 \u2197 opens each listing',tools,
+      '<div class="scroller portscroll"><table class="ports">'+DOCKCOLS+'<tbody>'+body+'</tbody></table></div>'+addbar('docks','mooring'),'portcard');
+  }
+
   /* ---------- dashboard ---------- */
   function resolveMatch(arr,match){
     if(!match)return -1;
@@ -1093,9 +1229,10 @@
     schools:['name','harbour','region','papers','passage','toll','firstPapers','bond','catch','link','flagText'],
     opportunities:['name','company','stage','status','priority','source','lossReason','payHourly','paySalary','closeDate','description','link'],
     companies:['name','contactType','phone','emailDomain','website','address','city','state','zip','country','linkedin','description'],
-    people:['name','company','title','email','phone','website','address','city','state','zip','linkedin','description','contactType','tag']};
+    people:['name','company','title','email','phone','website','address','city','state','zip','linkedin','description','contactType','tag'],
+    docks:['name','berthAddr','city','rent','quarters','deck','tolls','riggings','catch','link']};
   var SLABEL={schools:'The Passage',opportunities:'Opportunities',companies:'Companies',
-    people:'People',employment:'Employment',ledger:"Purser's Ledger"};
+    people:'People',employment:'Employment',docks:'The Docks',ledger:"Purser's Ledger"};
   function snippet(v,q){var p=v.toLowerCase().indexOf(q);if(p<0)return '';
     var a=Math.max(0,p-45);return (a?'…':'')+v.slice(a,p+q.length+70).replace(/\s+/g,' ')+(p+q.length+70<v.length?'…':'');}
   function hilite(t,q){var out='',low=t.toLowerCase(),i=0,p;
@@ -1143,8 +1280,10 @@
     else if(active==='ledger')el.innerHTML=renderLedger();
     else if(active==='employment')el.innerHTML=renderEmployment();
     else if(active==='schools')el.innerHTML=renderPortsTable();
+    else if(active==='docks')el.innerHTML=renderDocks();
     else el.innerHTML=renderCards(active);
     autosizeAll();}
+  DOCK_ORDER.forEach(function(c,i){if(i===0)EXPDOCK[c]=true;});
   function render(){renderTabs();renderView();updateUndoBtns();}
 
   /* ---------- events ---------- */
@@ -1196,7 +1335,8 @@
     var gt=e.target.closest('[data-goto]');
     if(gt){var pp=gt.dataset.goto.split(':'),ds=pp[0],ix=+pp[1];
       clearSearch(true);
-      if(ds==='schools'){active='schools';EXPREG[(state.schools[ix]||{}).region||'—']=true;}
+      if(ds==='docks'){active='docks';EXPDOCK[(state.docks[ix]||{}).city||'—']=true;}
+      else if(ds==='schools'){active='schools';EXPREG[(state.schools[ix]||{}).region||'—']=true;}
       else if(ds==='ledger'){active='ledger';}
       else if(ds==='employment'){active='employment';
         EXPEMP[(state.employment[ix]||{}).category||'Miscellaneous Notes']=true;EXP.employment[ix]=true;}
@@ -1207,6 +1347,8 @@
       return;}
     var cq=e.target.closest('[data-cq-send]');if(cq){cqSend();return;}
     var rgt=e.target.closest('[data-rgtoggle]');if(rgt){EXPREG[rgt.dataset.rgtoggle]=!EXPREG[rgt.dataset.rgtoggle];renderView();return;}
+    var dkt=e.target.closest('[data-dktoggle]');if(dkt){EXPDOCK[dkt.dataset.dktoggle]=!EXPDOCK[dkt.dataset.dktoggle];renderView();return;}
+    var dka=e.target.closest('[data-dkall]');if(dka){var don=dka.dataset.dkall==='1';var dseen={};state.docks.forEach(function(x){dseen[x.city||'\u2014']=1;});DOCK_ORDER.forEach(function(c){dseen[c]=1;});Object.keys(dseen).forEach(function(c){EXPDOCK[c]=don;});renderView();return;}
     var rga=e.target.closest('[data-rgall]');if(rga){var onn=rga.dataset.rgall==='1';var seen={};state.schools.forEach(function(s){seen[s.region||'—']=1;});REGION_ORDER.forEach(function(r){seen[r]=1;});Object.keys(seen).forEach(function(r){EXPREG[r]=onn;});renderView();return;}
     var ea2=e.target.closest('[data-empall]');if(ea2){var onn2=ea2.dataset.empall==='1';
       CATS.forEach(function(c){EXPEMP[c]=onn2;});
@@ -1234,6 +1376,7 @@
     var add=e.target.closest('[data-add]');
     if(add){if(add.dataset.add==='schools'){openPortModal();return;}var d2=add.dataset.add,blank={};recordUndo('add');
       if(d2==='schools'){blank={region:REGION_ORDER[0],name:'',harbour:'',papers:'',passage:'Fully online',toll:'',firstPapers:'',bond:'',flag:'',flagText:'',catch:'',link:''};}
+      else if(d2==='docks'){blank={city:DOCK_ORDER[0],name:'',berthAddr:'',rent:'',quarters:'',deck:'',tolls:'',riggings:'',catch:'',link:''};EXPDOCK[DOCK_ORDER[0]]=true;}
       else{CARDS[d2].body.concat([CARDS[d2].title,CARDS[d2].sub]).forEach(function(k){blank[k]='';});}
       state[d2].push(blank);EXP[d2][state[d2].length-1]=true;save();renderView();return;}
     var lview=e.target.closest('[data-lview]');

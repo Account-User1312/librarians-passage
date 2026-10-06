@@ -1153,9 +1153,10 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
     {id:'companies',label:'Companies'},{id:'people',label:'People'},{id:'employment',label:'Employment'},{id:'docks',label:'The Docks'},{id:'ledger',label:"Purser's Ledger"}];
 
   /* ---------- the docks: moorings ashore, grouped by port city ---------- */
-  var DOCKS_REV=3;   /* bump whenever moorings are added to DOCKS */
+  var DOCKS_REV=4;   /* bump whenever moorings are added to DOCKS */
   var DOCK_ORDER=['Huntington Beach, CA','Fullerton, CA','Costa Mesa, CA','Anaheim, CA',
-    'Long Beach, CA','Hermosa Beach, CA','Hawthorne, CA','Inglewood, CA','Los Angeles, CA'];
+    'Long Beach, CA','Hermosa Beach, CA','Hawthorne, CA','Inglewood, CA','Los Angeles, CA',
+    'Vallejo, CA'];
   var DOCKS=[
     {city:'Huntington Beach, CA',name:'Huntington Continental',
      berthAddr:'17101 Springdale St, Huntington Beach, CA 92649',
@@ -1323,7 +1324,55 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
      tolls:'Application fee $30 per applicant',
      riggings:'Pool \u00b7 gated \u00b7 controlled access \u00b7 laundry facilities \u00b7 air conditioning \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
      catch:'MIND THE LISTING \u2014 some units here are let as PRIVATE ROOMS, not whole flats, which is why the range runs to $2,650. Ask which ye are being quoted. USC village (90007), so it fills with students. Office (323) 917-8917.',
-     link:'https://www.apartments.com/mardi-gras-apartments-los-angeles-ca/9y41wl5/'}
+     link:'https://www.apartments.com/mardi-gras-apartments-los-angeles-ca/9y41wl5/'},
+
+    {city:'Vallejo, CA',name:'142 Goldenrod St \u2014 Unit B',
+     berthAddr:'142 Goldenrod St Unit B, Vallejo, CA 94589',
+     rent:'$975 / mo \u2014 UTILITIES INCLUDED',quarters:'Studio \u00b7 1 ba',deck:'245 sq ft',
+     tolls:'No application fee published',
+     riggings:'Utilities included',
+     catch:'CHEAPEST MOORING ON THE WHOLE CHART. Utilities included is worth perhaps $120\u2013180 a month in the Bay, so the true gap to Gernard is slimmer than it looks. BUT 245 sq ft is smaller than the Hermosa Beach box ye passed on \u2014 walk it before ye believe it. Available now. Contact (707) 310-8558.',
+     link:'https://www.apartments.com/142-goldenrod-st-vallejo-ca-unit-b/jv2lfn5/'},
+
+    {city:'Vallejo, CA',name:'Gernard',
+     berthAddr:'807 Sutter St, Vallejo, CA 94590',
+     rent:'$1,199 \u2013 $1,349 / mo',quarters:'Studio \u00b7 1 ba',deck:'400 \u2013 600 sq ft',
+     tolls:'Application fee $50',
+     riggings:'Gated \u00b7 in-unit washer/dryer \u00b7 parking \u00b7 pet-friendly',
+     catch:'BEST STUDIO ON THE CHART. A 400\u2013600 sq ft studio with laundry IN THE UNIT, gated, under $1,350 \u2014 in the Bay Area. Nothing in Orange County came close to this per square foot. Office (707) 749-7490.',
+     link:'https://www.apartments.com/gernard-vallejo-ca/zswf5kw/'},
+
+    {city:'Vallejo, CA',name:'Bay Village',
+     berthAddr:'1107 Porter St, Vallejo, CA 94590',
+     rent:'$1,373 \u2013 $2,349 / mo',quarters:'1\u20132 bd \u00b7 1\u20132 ba',deck:'630 \u2013 873 sq ft',
+     tolls:'Application fee $49 per applicant',
+     riggings:'In-unit washer/dryer \u00b7 dishwasher \u00b7 parking \u00b7 pet-friendly',
+     catch:'CHEAPEST REAL ONE-BEDROOM IN A MANAGED COMPLEX \u2014 630 sq ft from $1,373, with laundry in the unit. That is roughly HALF Huntington Continental for comparable quarters. Office (707) 466-0343.',
+     link:'https://www.apartments.com/bay-village-vallejo-ca/mj77l4l/'},
+
+    {city:'Vallejo, CA',name:'825 Louisiana St \u2014 Unit B',
+     berthAddr:'825 Louisiana St Unit B, Vallejo, CA 94590',
+     rent:'$1,450 / mo',quarters:'1 bd \u00b7 1 ba',deck:'450 sq ft',
+     tolls:'No application fee published',
+     riggings:'None listed',
+     catch:'Single unit, not a complex. A true 1 bd at 450 sq ft \u2014 small for a one-bedroom, and the listing names no amenities at all, so ask what is actually included. Available now. Contact (707) 563-6413.',
+     link:'https://www.apartments.com/825-louisiana-st-vallejo-ca-unit-b/38hf29g/'},
+
+    {city:'Vallejo, CA',name:'235 Mayo Ave \u2014 Unit C',
+     berthAddr:'235 Mayo Ave Unit C, Vallejo, CA 94590',
+     rent:'$1,550 / mo',quarters:'1 bd \u00b7 1 ba',deck:'not listed',
+     tolls:'No application fee published',
+     riggings:'Parking',
+     catch:'Dearest of the budget lot and the thinnest listing \u2014 no square footage posted and parking is the only rigging named. Ask before ye sail. Available now. Contact (707) 809-0303.',
+     link:'https://www.apartments.com/235-mayo-ave-vallejo-ca-unit-c/nl9wzwq/'},
+
+    {city:'Vallejo, CA',name:'Blue Rock Village',
+     berthAddr:'2000 Ascot Pky, Vallejo, CA 94591',
+     rent:'$1,570 \u2013 $2,275 / mo',quarters:'1\u20132 bd \u00b7 1\u20132 ba',deck:'643 \u2013 1,034 sq ft',
+     tolls:'Application fee $40 per applicant \u2014 lowest in Vallejo',
+     riggings:'Pool \u00b7 fitness center \u00b7 gated \u00b7 controlled access \u00b7 balcony \u00b7 air conditioning \u00b7 in-unit washer/dryer \u00b7 parking \u00b7 pet-friendly',
+     catch:'DEEPEST RIGGINGS IN RANGE. Top of the budget at $1,570, but pool, gym, gated, A/C and in-unit laundry for a 643 sq ft 1 bd \u2014 and the cheapest application fee of the lot. Office (341) 444-2906.',
+     link:'https://www.apartments.com/blue-rock-village-vallejo-ca/vb4g3ge/'}
   ];
 
   var DEFAULTS={schools:SCHOOLS,docks:DOCKS,people:SEED.people||[],companies:SEED.companies||[],opportunities:SEED.opportunities||[],employment:SEEDEMP,ledger:JSON.parse(JSON.stringify(LEDGER_DEFAULTS))};

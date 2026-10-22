@@ -245,6 +245,10 @@
   .pharbour{font-style:italic;font-size:.72rem;color:#8a7250;margin-top:.28rem}
   .assoc{display:flex;flex-wrap:wrap;gap:.35rem}
   .assoc.empty{font-style:italic;color:#8a7250;font-size:.82rem}
+  .openpg{background:#efe2c2;border:1px solid #c7ab6d;border-radius:2px;color:#5a431a;
+    font-family:Lora,serif;font-size:.72rem;letter-spacing:.03em;cursor:pointer;
+    padding:.14rem .45rem;margin-left:.3rem;white-space:nowrap}
+  .openpg:hover{background:#e3d2a8;color:#2b1f08}
   .ptag.go{cursor:pointer}
   .ptag.go:hover{background:#b9d3ea;border-color:#3f6f9f}
   /* record pages */
@@ -252,13 +256,14 @@
     cursor:pointer;padding:.2rem 0;text-decoration:underline}
   .rp-back:hover{color:#3a2a0c}
   .rp-head{padding:.9rem 1.3rem .2rem}
+  .rp-sec,.rp-head{background:#fbf3df;color:#2b1f08}
   .rp-head h1{font-family:'IM Fell English',Lora,serif;font-size:1.5rem;margin:.15rem 0 .1rem;color:#2b1f08}
   .rp-sub{font-family:Lora,serif;font-size:.86rem;color:#6a583a}
   .rp-sec{border-top:1px solid #e2d2ab;padding:.75rem 1.3rem}
   .rp-sec h3{font-family:Lora,serif;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
     color:#6b4e1e;margin:0 0 .5rem}
   .rp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.45rem .9rem}
-  .rp-f{font-family:Lora,serif;font-size:.84rem}
+  .rp-f{font-family:Lora,serif;font-size:.84rem;color:#2b1f08;word-break:break-word}
   .rp-f b{display:block;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#8a7250;font-weight:600}
   .rp-log{list-style:none;margin:0;padding:0}
   .rp-log li{display:flex;gap:.6rem;align-items:baseline;padding:.4rem 0;border-bottom:1px dotted #e2d2ab;
@@ -1790,7 +1795,9 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
       return '<div class="card"><div class="chead">'+
         '<button class="chev'+(open?' open':'')+'" data-toggle="'+ds+':'+i+'" aria-label="Expand">▶</button>'+
         '<textarea class="ctitle" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.title+'" placeholder="(untitled)">'+esc(rec[cfg.title]||'')+'</textarea>'+
-        badge+dchip+'<button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></div>'+
+        badge+dchip+
+        ((ds==='companies'||ds==='people')?'<button class="openpg" data-rec="'+ds+':'+i+'" title="Open as a page" type="button">page \u2197</button>':'')+
+        '<button class="del" data-del="'+ds+':'+i+'" title="Strike">&times;</button></div>'+
         '<textarea class="csub" rows="1" data-ds="'+ds+'" data-i="'+i+'" data-k="'+cfg.sub+'" placeholder="—">'+esc(rec[cfg.sub]||'')+'</textarea>'+
         '<div class="cbody'+(open?' open':'')+'" id="cbody-'+ds+'-'+i+'">'+fields+'</div></div>';
     }
@@ -2343,7 +2350,6 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
     var gt=e.target.closest('[data-goto]');
     if(gt){var pp=gt.dataset.goto.split(':'),ds=pp[0],ix=+pp[1];
       clearSearch(true);
-      if(ds==='companies'||ds==='people'){focusRec={ds:ds,i:ix};active=ds;render();window.scrollTo(0,0);return;}
       if(ds==='docks'){active='docks';EXPDOCK[(state.docks[ix]||{}).city||'—']=true;}
       else if(ds==='schools'){active='schools';EXPREG[(state.schools[ix]||{}).region||'—']=true;}
       else if(ds==='ledger'){active='ledger';}

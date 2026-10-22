@@ -245,6 +245,29 @@
   .pharbour{font-style:italic;font-size:.72rem;color:#8a7250;margin-top:.28rem}
   .assoc{display:flex;flex-wrap:wrap;gap:.35rem}
   .assoc.empty{font-style:italic;color:#8a7250;font-size:.82rem}
+  .ptag.go{cursor:pointer}
+  .ptag.go:hover{background:#b9d3ea;border-color:#3f6f9f}
+  /* record pages */
+  .rp-back{background:none;border:0;color:#6b4e1e;font-family:Lora,serif;font-size:.84rem;
+    cursor:pointer;padding:.2rem 0;text-decoration:underline}
+  .rp-back:hover{color:#3a2a0c}
+  .rp-head{padding:.9rem 1.3rem .2rem}
+  .rp-head h1{font-family:'IM Fell English',Lora,serif;font-size:1.5rem;margin:.15rem 0 .1rem;color:#2b1f08}
+  .rp-sub{font-family:Lora,serif;font-size:.86rem;color:#6a583a}
+  .rp-sec{border-top:1px solid #e2d2ab;padding:.75rem 1.3rem}
+  .rp-sec h3{font-family:Lora,serif;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;
+    color:#6b4e1e;margin:0 0 .5rem}
+  .rp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.45rem .9rem}
+  .rp-f{font-family:Lora,serif;font-size:.84rem}
+  .rp-f b{display:block;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#8a7250;font-weight:600}
+  .rp-log{list-style:none;margin:0;padding:0}
+  .rp-log li{display:flex;gap:.6rem;align-items:baseline;padding:.4rem 0;border-bottom:1px dotted #e2d2ab;
+    font-family:Lora,serif;font-size:.85rem}
+  .rp-log li:last-child{border-bottom:0}
+  .rp-when{flex:0 0 7.2rem;color:#6a583a;font-size:.78rem}
+  .rp-what{flex:1}
+  .rp-what .lk{cursor:pointer;text-decoration:underline;color:#1c3a5e}
+  .rp-note{font-family:Lora,serif;font-size:.85rem;white-space:pre-wrap;color:#3a2e18;margin:0}
   .ptag{font-family:Lora,serif;font-size:.76rem;color:#1c3a5e;background:#cfe0f0;border:1px solid #6b93c0;border-radius:2px;padding:.15rem .45rem}
   .ptag em{font-style:italic;color:#3a5670}
   @media (max-width:700px){ table.ports .ptitle,table.ports .pharbour,table.ports .f{font-size:16px} }
@@ -1701,7 +1724,7 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
     if(k==='_company'){var cn=norm(state.people[i].company);if(!cn)return '<div class="assoc empty">— no company noted —</div>';
       var c=null;for(var j=0;j<state.companies.length;j++){var v=norm(state.companies[j].name);if(v&&(v.indexOf(cn)>=0||cn.indexOf(v)>=0)){c=state.companies[j];break;}}
       if(!c)return '<div class="assoc empty">— not in the Companies tab yet —</div>';
-      return '<div class="assoc"><span class="ptag">'+esc(c.name)+(c.contactType?' <em>· '+esc(c.contactType)+'</em>':'')+'</span></div>';}
+      return '<div class="assoc"><span class="ptag go" data-rec="companies:'+state.companies.indexOf(c)+'">'+esc(c.name)+(c.contactType?' <em>· '+esc(c.contactType)+'</em>':'')+'</span></div>';}
     if(k==='_docs'){var dl=(state.opportunities[i]||{}).docs||[];
       if(!dl.length)return '<div class="assoc empty">\u2014 no papers filed yet \u2014</div>';
       return '<div class="assoc">'+dl.map(function(d){
@@ -1710,7 +1733,7 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
                ic+' '+esc(d.label||d.title||'document')+' \u2197</a>';}).join('')+'</div>';}
     if(k==='_people'){var pl=assocPeople(state.companies[i].name);
     if(!pl.length)return '<div class="assoc empty">— none linked yet —</div>';
-    return '<div class="assoc">'+pl.map(function(p){return '<span class="ptag">'+esc(p.name)+(p.title?' <em>· '+esc(p.title)+'</em>':'')+'</span>';}).join('')+'</div>';}
+    return '<div class="assoc">'+pl.map(function(p){return '<span class="ptag go" data-rec="people:'+state.people.indexOf(p)+'">'+esc(p.name)+(p.title?' <em>· '+esc(p.title)+'</em>':'')+'</span>';}).join('')+'</div>';}
     return '';}
   /* ---------- card renderer (used by all data tabs) ---------- */
   /* Opportunities filtering. Dates are plain yyyy-mm-dd strings in the data, so
@@ -2169,8 +2192,88 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
     body+='</div>';
     return card('Search',hits.length+' record'+(hits.length===1?'':'s')+' matching “'+esc(q)+'”','',body);}
 
+  /* ---------- record pages: a company or a person on its own page ----------
+     The cards tab stays the place to edit. This is the read view: who is here,
+     what has passed between us, and what it connects to. */
+  var focusRec=null;   /* {ds, i} or null */
+
+  function oppsForCompany(cn){
+    cn=norm(cn); if(!cn)return [];
+    return state.opportunities.map(function(o,i){return {o:o,i:i};}).filter(function(r){
+      var c=norm(r.o.company); return c&&(c.indexOf(cn)>=0||cn.indexOf(c)>=0);});}
+
+  function submittedOn(o){
+    var m=(o.description||'').match(/SUBMITTED\s+(\d{1,2}\s+\w+\s+\d{4})/i);
+    return m?m[1]:'';}
+
+  function logLine(when,what){
+    return '<li><span class="rp-when">'+esc(when||'—')+'</span><span class="rp-what">'+what+'</span></li>';}
+
+  function fieldGrid(ds,i,keys){
+    var rec=state[ds][i],out=[];
+    keys.forEach(function(k){
+      var v=(rec[k]||'').toString().trim(); if(!v)return;
+      var m=FMETA[k]||{label:k};
+      var val=(m.type==='link')?'<a class="ext" href="'+esc(v)+'" target="_blank" rel="noopener">'+esc(v)+' ↗</a>':esc(v);
+      out.push('<div class="rp-f"><b>'+esc(m.label||k)+'</b>'+val+'</div>');});
+    return out.length?'<div class="rp-grid">'+out.join('')+'</div>':'<div class="assoc empty">— nothing recorded —</div>';}
+
+  function renderCompanyPage(i){
+    var c=state.companies[i]||{}, rows=oppsForCompany(c.name), folk=assocPeople(c.name);
+    var sent=rows.filter(function(r){return r.o.stage==='Application Sent'||/^(Application Recieved|Follow-up|Negotiation|Won)$/.test(r.o.stage||'');});
+    var log=rows.slice().sort(function(a,b){return (b.o.closeDate||'')<(a.o.closeDate||'')?-1:1;}).map(function(r){
+      var o=r.o, when=submittedOn(o)||(o.closeDate?'closes '+o.closeDate:'');
+      var docs=(o.docs||[]).map(function(d){
+        return '<a class="doctag" href="'+esc(d.file)+'" target="_blank" rel="noopener">📄 '+esc(d.label||'document')+' ↗</a>';}).join('');
+      return logLine(when,'<span class="lk" data-rec="opportunities:'+r.i+'">'+esc(o.name||'(untitled)')+'</span> '+
+        '<span class="badge '+badgeClass('stage',o.stage)+'">'+esc(o.stage||'')+'</span>'+
+        (docs?'<div class="assoc" style="margin-top:.3rem">'+docs+'</div>':''));}).join('');
+
+    return card(c.name||'(unnamed company)', [c.city,c.state].filter(Boolean).join(', ')||'',
+      '<button class="rp-back" data-back type="button">‹ back</button>',
+      '<div class="rp-head"><div class="rp-sub">'+esc(c.contactType||'')+
+        (rows.length?' · '+rows.length+' opportunit'+(rows.length===1?'y':'ies')+', '+sent.length+' applied':'')+'</div></div>'+
+      '<div class="rp-sec"><h3>Activity</h3>'+(log?'<ul class="rp-log">'+log+'</ul>':'<div class="assoc empty">— nothing logged against this company yet —</div>')+'</div>'+
+      '<div class="rp-sec"><h3>People here</h3>'+(folk.length?'<div class="assoc">'+folk.map(function(p){
+         return '<span class="ptag go" data-rec="people:'+state.people.indexOf(p)+'">'+esc(p.name)+(p.title?' <em>· '+esc(p.title)+'</em>':'')+'</span>';}).join('')+'</div>'
+         :'<div class="assoc empty">— nobody linked yet —</div>')+'</div>'+
+      '<div class="rp-sec"><h3>Details</h3>'+fieldGrid('companies',i,['phone','emailDomain','website','address','city','state','zip','country','linkedin'])+'</div>'+
+      (((c.description||'').trim())?'<div class="rp-sec"><h3>Notes</h3><p class="rp-note">'+esc(c.description)+'</p></div>':''));}
+
+  function renderPersonPage(i){
+    var p=state.people[i]||{}, cn=norm(p.company), ci=-1;
+    for(var j=0;j<state.companies.length;j++){var v=norm(state.companies[j].name);
+      if(v&&cn&&(v.indexOf(cn)>=0||cn.indexOf(v)>=0)){ci=j;break;}}
+    var rows=oppsForCompany(p.company);
+    var log=rows.slice().sort(function(a,b){return (b.o.closeDate||'')<(a.o.closeDate||'')?-1:1;}).map(function(r){
+      var o=r.o,when=submittedOn(o)||(o.closeDate?'closes '+o.closeDate:'');
+      var docs=(o.docs||[]).map(function(d){
+        return '<a class="doctag" href="'+esc(d.file)+'" target="_blank" rel="noopener">\ud83d\udcc4 '+esc(d.label||'document')+' \u2197</a>';}).join('');
+      return logLine(when,'<span class="lk" data-rec="opportunities:'+r.i+'">'+esc(o.name||'(untitled)')+'</span> '+
+        '<span class="badge '+badgeClass('stage',o.stage)+'">'+esc(o.stage||'')+'</span>'+
+        (docs?'<div class="assoc" style="margin-top:.3rem">'+docs+'</div>':''));}).join('');
+
+    return card(p.name||'(unnamed)', p.title||'',
+      '<button class="rp-back" data-back type="button">‹ back</button>',
+      '<div class="rp-head"><div class="rp-sub">'+esc(p.contactType||'')+(p.company?' · '+esc(p.company):'')+'</div></div>'+
+      '<div class="rp-sec"><h3>Correspondence</h3>'+
+        (((p.description||'').trim())?'<p class="rp-note">'+esc(p.description)+'</p>'
+          :'<div class="assoc empty">— nothing recorded yet. Notes typed on this person in the People tab show here. —</div>')+'</div>'+
+      '<div class="rp-sec"><h3>Company</h3>'+(ci>=0
+         ?'<div class="assoc"><span class="ptag go" data-rec="companies:'+ci+'">'+esc(state.companies[ci].name)+'</span></div>'
+         :'<div class="assoc empty">— '+(p.company?esc(p.company)+' is not in the Companies tab yet':'no company noted')+' —</div>')+'</div>'+
+      '<div class="rp-sec"><h3>Activity at '+esc(p.company||'this company')+'</h3>'+
+        (log?'<ul class="rp-log">'+log+'</ul>':'<div class="assoc empty">— nothing logged —</div>')+'</div>'+
+      '<div class="rp-sec"><h3>Details</h3>'+fieldGrid('people',i,['email','phone','website','address','city','state','zip','linkedin'])+'</div>');}
+
+  function renderRecordPage(){
+    var f=focusRec;
+    if(!f||!state[f.ds]||!state[f.ds][f.i]){focusRec=null;return renderCards('companies');}
+    return f.ds==='companies'?renderCompanyPage(f.i):renderPersonPage(f.i);}
+
   function renderView(){var el=document.getElementById('view');
     if(query.trim()){el.innerHTML=renderSearch();autosizeAll();return;}
+    if(focusRec){el.innerHTML=renderRecordPage();autosizeAll();return;}
     if(active==='dashboard')el.innerHTML=renderDashboard();
     else if(active==='ledger')el.innerHTML=renderLedger();
     else if(active==='employment')el.innerHTML=renderEmployment();
@@ -2182,7 +2285,7 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
   function render(){renderTabs();renderView();updateUndoBtns();}
 
   /* ---------- events ---------- */
-  document.getElementById('tabs').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(!b)return;active=b.dataset.tab;render();});
+  document.getElementById('tabs').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(!b)return;active=b.dataset.tab;focusRec=null;render();});
   var view=document.getElementById('view');
   view.addEventListener('input',function(e){var t=e.target;
     var fk=t.dataset.ledger?('L:'+(t.dataset.ledger==='income'?'income':(t.dataset.i+':'+t.dataset.k))):(t.dataset.k?(t.dataset.ds+':'+t.dataset.i+':'+t.dataset.k):null);
@@ -2227,9 +2330,20 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
     docSync(ed);
   });
   view.addEventListener('click',function(e){
+    var rc=e.target.closest('[data-rec]');
+    if(rc){var rp=rc.dataset.rec.split(':'),rds=rp[0],ri=+rp[1];
+      clearSearch(true);
+      if(rds==='companies'||rds==='people'){focusRec={ds:rds,i:ri};active=rds;}
+      else{focusRec=null;active=rds;if(EXP[rds])EXP[rds][ri]=true;}
+      render();
+      if(rds!=='companies'&&rds!=='people'){var el=document.getElementById('card-'+rds+'-'+ri);if(el)el.scrollIntoView({block:'center'});}
+      else window.scrollTo(0,0);
+      return;}
+    if(e.target.closest('[data-back]')){focusRec=null;render();window.scrollTo(0,0);return;}
     var gt=e.target.closest('[data-goto]');
     if(gt){var pp=gt.dataset.goto.split(':'),ds=pp[0],ix=+pp[1];
       clearSearch(true);
+      if(ds==='companies'||ds==='people'){focusRec={ds:ds,i:ix};active=ds;render();window.scrollTo(0,0);return;}
       if(ds==='docks'){active='docks';EXPDOCK[(state.docks[ix]||{}).city||'—']=true;}
       else if(ds==='schools'){active='schools';EXPREG[(state.schools[ix]||{}).region||'—']=true;}
       else if(ds==='ledger'){active='ledger';}

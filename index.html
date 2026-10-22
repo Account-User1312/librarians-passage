@@ -124,7 +124,7 @@
     padding:.2rem .55rem;border-radius:2px;border:1px solid;white-space:nowrap}
   .b-lost{color:#7a2f16;background:#f0d6c4;border-color:var(--rust)}
   .b-won{color:#1f4d38;background:#d3ecc2;border-color:var(--seafoam)}
-  .b-neutral{color:#5a4410;background:#efe1ad;border-color:var(--brass-dark)}
+  .b-neutral{color:#4a3a0d;background:#e6d49a;border-color:var(--brass-dark)}
   .b-blue{color:#1c3a5e;background:#cfe0f0;border-color:#6b93c0}
   .b-purple{color:#422a5e;background:#e2d5f2;border-color:#8a6fb0}
   .b-green{color:#1f4d38;background:#d3ecc2;border-color:#57a074}
@@ -1721,7 +1721,23 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
     return '<input class="f" '+a+' value="'+esc(v)+'">';
   }
   var CT_COLOR={'Reference':'b-blue','Potential Employer':'b-purple','Current Employer':'b-green','Career Help':'b-teal','Mover':'b-amber','Personal':'b-rose','Job Listing':'b-slate','Other':'b-neutral'};
-  function badgeClass(k,v){if(k==='stage')return v==='Won'?'b-won':(v==='Lost'?'b-lost':'b-neutral');if(k==='contactType')return CT_COLOR[v]||'b-neutral';return 'b-neutral';}
+  /* Stage and status carry the state of a hunt, so they get their own colours
+     rather than all sharing the parchment-coloured neutral, which disappeared
+     against the card behind it. The stage ramp runs cool to warm as a thing
+     progresses: slate while researching, blue once sent, teal when answered,
+     amber when it needs chasing, purple in negotiation, then won or lost. */
+  var STAGE_COLOR={'Researching':'b-slate','Application Sent':'b-blue',
+    'Application Recieved':'b-teal','Follow-up':'b-amber','Negotiation':'b-purple',
+    'Won':'b-won','Lost':'b-lost'};
+  var STATUS_COLOR={'Open':'b-green','Researching':'b-slate','Negotiation':'b-purple',
+    'Abandoned':'b-slate','Closed: Won':'b-won','Closed: Lost':'b-lost'};
+  var PRIO_COLOR={'Very High':'b-red','High':'b-amber','Medium':'b-slate','Low':'b-neutral','None':'b-neutral'};
+  function badgeClass(k,v){
+    if(k==='stage')return STAGE_COLOR[v]||'b-neutral';
+    if(k==='status')return STATUS_COLOR[v]||'b-neutral';
+    if(k==='priority')return PRIO_COLOR[v]||'b-neutral';
+    if(k==='contactType')return CT_COLOR[v]||'b-neutral';
+    return 'b-neutral';}
 
   function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
   function assocPeople(cn){cn=norm(cn);if(!cn)return [];return state.people.filter(function(p){var pc=norm(p.company);return pc&&(cn.indexOf(pc)>=0||pc.indexOf(cn)>=0);});}

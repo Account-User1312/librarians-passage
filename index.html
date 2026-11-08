@@ -523,18 +523,18 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
   {
    "tag": "Past",
    "name": "Dan Taylor",
-   "company": "Y.A.L",
+   "company": "American Majority",
    "email": "dan.taylor@yaliberty.org",
-   "title": "Developement Director",
+   "title": "Chief Operating Officer",
    "contactType": "Reference",
    "phone": "260-442-2013",
-   "website": "yaliberty.org",
+   "website": "americanmajority.org",
    "address": "500 N Capital of TX HWY\nBldg 5 Ste 100",
    "city": "Austin",
    "state": "Texas",
    "zip": "78746",
    "linkedin": "https://www.linkedin.com/in/daniel-taylor-828561164/",
-   "description": "Boss at Y.A.L"
+   "description": "Boss at Y.A.L; now Chief Operating Officer at American Majority. The yaliberty.org address is likely dead, so confirm a current one before listing him as a reference."
   },
   {
    "tag": "Current",
@@ -617,7 +617,7 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
    "description": ""
   },
   {
-   "tag": "Past",
+   "tag": "Active",
    "name": "Sean Themea",
    "company": "Y.A.L",
    "email": "sean.themea@yaliberty.org",
@@ -630,7 +630,7 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
    "state": "Texas",
    "zip": "78701",
    "linkedin": "https://www.linkedin.com/in/seanthemea/",
-   "description": ""
+   "description": "Current supervisor at Young Americans for Liberty."
   },
   {
    "tag": "Current",
@@ -685,7 +685,7 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
    "name": "Rachel Alajian",
    "company": "Atlas Society",
    "email": "rachel@atlassociety.org",
-   "title": "MGO",
+   "title": "Major Gifts Officer",
    "contactType": "Reference",
    "phone": "310-403-5837",
    "website": "https://www.atlassociety.org",
@@ -4360,6 +4360,29 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
         if((o.description||'').indexOf(u.note)<0)o.description=((o.description||'').replace(/\s+$/,'')+' '+u.note).replace(/^\s+/,'');
       });
       d.rancho20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
+    if(!d.alajian20261108){
+      /* Rachel Alajian is Major Gifts Officer at the Atlas Society. */
+      (d.people||[]).forEach(function(p){
+        if(p&&p.name==='Rachel Alajian'&&(p.title==='MGO'||p.title==='Development Manager'))
+          p.title='Major Gifts Officer';});
+      d.alajian20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
+    if(!d.dantaylor20261108){
+      /* Dan Taylor has left Young Americans for Liberty; he is COO at American
+         Majority now. The old title was also misspelt. */
+      (d.people||[]).forEach(function(p){
+        if(!p||p.name!=='Dan Taylor'||p.company!=='Y.A.L')return;
+        p.company='American Majority';p.title='Chief Operating Officer';
+        p.website='americanmajority.org';p.description="Boss at Y.A.L; now Chief Operating Officer at American Majority. The yaliberty.org address is likely dead, so confirm a current one before listing him as a reference.";});
+      d.dantaylor20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
+    if(!d.themea20261108){
+      /* Sean Themea is the current supervisor, not a past contact. */
+      (d.people||[]).forEach(function(p){
+        if(p&&p.name==='Sean Themea'&&p.tag==='Past'){p.tag='Active';
+          p.description='Current supervisor at Young Americans for Liberty.';}});
+      d.themea20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
     if(Array.isArray(d.schools)&&!d.portsMerged){var _hn={};d.schools.forEach(function(s){_hn[(s.name||'').toLowerCase()]=1;});DEFAULTS.schools.forEach(function(s){if(!_hn[(s.name||'').toLowerCase()])d.schools.push(clone(s));});d.portsMerged=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     return d;}

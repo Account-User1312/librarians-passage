@@ -1615,6 +1615,20 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
    "country": "US",
    "linkedin": "",
    "description": "Hires through its Personnel Commission. Nancy Pic in Human Resources."
+  },
+  {
+   "name": "The University of Texas at Austin",
+   "contactType": "Potential Employer",
+   "phone": "(512) 471-4772",
+   "emailDomain": "hrsc@austin.utexas.edu",
+   "website": "utaustin.wd1.myworkdayjobs.com/UTstaff",
+   "address": "300 W. 21st Street",
+   "city": "Austin",
+   "state": "Texas",
+   "zip": "78712",
+   "country": "US",
+   "linkedin": "",
+   "description": "Harry Ransom Center, the humanities research library and museum. Hires through Workday, not NeoGov, so nothing carries over from the governmentjobs profile."
   }
  ],
  "opportunities": [
@@ -3027,6 +3041,21 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
    "submitted": "2026-11-08",
    "description": "Applied 8 Nov 2026. Full time at the Archibald Library, the best paid and only full time post of the search. Qualifies under any combination of training and experience. Both supplemental questions ask about children and there is no third, so the whole screen is a gap: no storytime or early childhood experience, and the answers say so. Screening by 8 Dec, panel 15 Dec. Needs degree verification and a California licence.",
    "link": "https://www.governmentjobs.com/jobs/5540779-0/full-time-library-assistant-i-childrens-and-family-services"
+  },
+  {
+   "name": "Library Assistant II (Harry Ransom Center)",
+   "company": "The University of Texas at Austin",
+   "stage": "Application Sent",
+   "payHourly": "",
+   "paySalary": "$45,000",
+   "closeDate": "",
+   "status": "Open",
+   "lossReason": "N/A",
+   "priority": "Very High",
+   "source": "Job Board",
+   "submitted": "2026-11-08",
+   "description": "Applied 8 Nov 2026, 3:25 PM; UT confirmed receipt for R_00049224. Full time, 40 hours, Tuesday to Saturday 8:00 to 5:00, in Austin, so no move. Reading room of a closed stack special collections library: paging, circulation, duplication orders, basic preservation, and training student assistants. Qualified on the second route, a degree plus a year of library and collections work. Sent a letter of interest, an Austin specific resume and three references. The confirmation email says to log back in and clear any incomplete tasks.",
+   "link": "https://utaustin.wd1.myworkdayjobs.com/UTstaff/job/UT-MAIN-CAMPUS/Library-Assistant-II_R_00049224"
   }
  ],
  "options": {
@@ -4383,6 +4412,17 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
         if(p&&p.name==='Sean Themea'&&p.tag==='Past'){p.tag='Active';
           p.description='Current supervisor at Young Americans for Liberty.';}});
       d.themea20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
+    if(!d.ransom20261108){
+      /* Harry Ransom Center, Library Assistant II, applied 8 Nov 2026 and confirmed
+         by UT. First Workday application of the search, so it never appears on the
+         governmentjobs Submitted list. */
+      var _u={"co":{"name":"The University of Texas at Austin","contactType":"Potential Employer","phone":"(512) 471-4772","emailDomain":"hrsc@austin.utexas.edu","website":"utaustin.wd1.myworkdayjobs.com/UTstaff","address":"300 W. 21st Street","city":"Austin","state":"Texas","zip":"78712","country":"US","linkedin":"","description":"Harry Ransom Center, the humanities research library and museum. Hires through Workday, not NeoGov, so nothing carries over from the governmentjobs profile."},"opp":{"name":"Library Assistant II (Harry Ransom Center)","company":"The University of Texas at Austin","stage":"Application Sent","payHourly":"","paySalary":"$45,000","closeDate":"","status":"Open","lossReason":"N/A","priority":"Very High","source":"Job Board","submitted":"2026-11-08","description":"Applied 8 Nov 2026, 3:25 PM; UT confirmed receipt for R_00049224. Full time, 40 hours, Tuesday to Saturday 8:00 to 5:00, in Austin, so no move. Reading room of a closed stack special collections library: paging, circulation, duplication orders, basic preservation, and training student assistants. Qualified on the second route, a degree plus a year of library and collections work. Sent a letter of interest, an Austin specific resume and three references. The confirmation email says to log back in and clear any incomplete tasks.","link":"https://utaustin.wd1.myworkdayjobs.com/UTstaff/job/UT-MAIN-CAMPUS/Library-Assistant-II_R_00049224"}};
+      var _uc={};(d.companies||[]).forEach(function(c){_uc[(c.name||'').toLowerCase()]=1;});
+      if(!_uc[_u.co.name.toLowerCase()])d.companies.push(clone(_u.co));
+      var _uo={};(d.opportunities||[]).forEach(function(o){_uo[((o.company||'')+'|'+(o.name||'')).toLowerCase()]=1;});
+      if(!_uo[(_u.opp.company+'|'+_u.opp.name).toLowerCase()])d.opportunities.push(clone(_u.opp));
+      d.ransom20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
     if(Array.isArray(d.schools)&&!d.portsMerged){var _hn={};d.schools.forEach(function(s){_hn[(s.name||'').toLowerCase()]=1;});DEFAULTS.schools.forEach(function(s){if(!_hn[(s.name||'').toLowerCase()])d.schools.push(clone(s));});d.portsMerged=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     return d;}

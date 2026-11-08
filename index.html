@@ -2765,16 +2765,17 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
   {
    "name": "Library Assistant I (PT)",
    "company": "City of Rancho Cucamonga",
-   "stage": "Lost",
+   "stage": "Application Sent",
    "payHourly": "$3,752.67 - $5,160.13/mo",
    "paySalary": "",
    "closeDate": "2026-11-12",
-   "status": "Closed: Lost",
-   "lossReason": "Lack o' Experience",
+   "status": "Open",
+   "lossReason": "N/A",
    "priority": "Low",
    "source": "Job Board",
-   "description": "Not pursued. Needs a bachelor degree plus six units of college level library coursework plus a year, or five years of library experience. The six units do not arrive until the Central Community College certificate in spring 2027.",
-   "link": "https://www.governmentjobs.com/jobs/5523266-0/library-assistant-i"
+   "description": "Not pursued. Needs a bachelor degree plus six units of college level library coursework plus a year, or five years of library experience. The six units do not arrive until the Central Community College certificate in spring 2027. CORRECTION: this was closed as out of reach on the six units of library coursework, but that is the Examples of Acceptable Substitutions block, not the requirement. The governing line reads \"or any combination of training and experience that provides the desired knowledge and abilities\". Applied 8 Nov 2026 for Adult, Teen and Technology Services first and Museum Services second. Biane Library, closes 12 Nov. Screening by 1 Dec, panel 10 to 11 Dec, department 17 to 18 Dec.",
+   "link": "https://www.governmentjobs.com/jobs/5523266-0/library-assistant-i",
+   "submitted": "2026-11-08"
   },
   {
    "name": "Digital Collection Librarian (FT)",
@@ -3011,6 +3012,21 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
    "description": "Submitted 16 Nov 2025. Chased twice, 14 and 17 Dec 2025, to Nancy Pic and Nersidalia in Human Resources; an out of office was the only reply.",
    "link": "",
    "submitted": "2025-11-16"
+  },
+  {
+   "name": "Library Assistant I, Children’s and Family Services (FT)",
+   "company": "City of Rancho Cucamonga",
+   "stage": "Application Sent",
+   "payHourly": "",
+   "paySalary": "$3,753.37 - $5,160.88/mo",
+   "closeDate": "2026-11-30",
+   "status": "Open",
+   "lossReason": "N/A",
+   "priority": "High",
+   "source": "Job Board",
+   "submitted": "2026-11-08",
+   "description": "Applied 8 Nov 2026. Full time at the Archibald Library, the best paid and only full time post of the search. Qualifies under any combination of training and experience. Both supplemental questions ask about children and there is no third, so the whole screen is a gap: no storytime or early childhood experience, and the answers say so. Screening by 8 Dec, panel 15 Dec. Needs degree verification and a California licence.",
+   "link": "https://www.governmentjobs.com/jobs/5540779-0/full-time-library-assistant-i-childrens-and-family-services"
   }
  ],
  "options": {
@@ -4327,6 +4343,23 @@ table.ports tr.colhead td{position:sticky;top:var(--navh,64px);z-index:3;color:#
         if((o.description||'').indexOf(u.note)<0)o.description=((o.description||'').replace(/\s+$/,'')+' '+u.note).replace(/^\s+/,'');
       });
       d.sent20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
+    }
+    if(!d.rancho20261108){
+      /* The two Rancho Cucamonga applications of 8 Nov 2026. The part time Library
+         Assistant I had been closed as out of reach on a requirement that was really
+         only an example substitution; it is reopened and sent. The full time post was
+         never tracked. Both confirmed on the governmentjobs Submitted list. */
+      var _r={"opp":{"name":"Library Assistant I, Children’s and Family Services (FT)","company":"City of Rancho Cucamonga","stage":"Application Sent","payHourly":"","paySalary":"$3,753.37 - $5,160.88/mo","closeDate":"2026-11-30","status":"Open","lossReason":"N/A","priority":"High","source":"Job Board","submitted":"2026-11-08","description":"Applied 8 Nov 2026. Full time at the Archibald Library, the best paid and only full time post of the search. Qualifies under any combination of training and experience. Both supplemental questions ask about children and there is no third, so the whole screen is a gap: no storytime or early childhood experience, and the answers say so. Screening by 8 Dec, panel 15 Dec. Needs degree verification and a California licence.","link":"https://www.governmentjobs.com/jobs/5540779-0/full-time-library-assistant-i-childrens-and-family-services"},"updates":{"City of Rancho Cucamonga|Library Assistant I (PT)":{"from":"Lost","stage":"Application Sent","status":"Open","lossReason":"N/A","submitted":"2026-11-08","note":"CORRECTION: this was closed as out of reach on the six units of library coursework, but that is the Examples of Acceptable Substitutions block, not the requirement. The governing line reads \"or any combination of training and experience that provides the desired knowledge and abilities\". Applied 8 Nov 2026 for Adult, Teen and Technology Services first and Museum Services second. Biane Library, closes 12 Nov. Screening by 1 Dec, panel 10 to 11 Dec, department 17 to 18 Dec."}}};
+      var _rk={};(d.opportunities||[]).forEach(function(o){_rk[((o.company||'')+'|'+(o.name||'')).toLowerCase()]=1;});
+      if(!_rk[(_r.opp.company+'|'+_r.opp.name).toLowerCase()])d.opportunities.push(clone(_r.opp));
+      (d.opportunities||[]).forEach(function(o){
+        if(!o)return; var u=_r.updates[(o.company||'')+'|'+(o.name||'')];
+        if(!u||o.stage!==u.from)return;
+        o.stage=u.stage;o.status=u.status;o.lossReason=u.lossReason;
+        if(!o.submitted)o.submitted=u.submitted;
+        if((o.description||'').indexOf(u.note)<0)o.description=((o.description||'').replace(/\s+$/,'')+' '+u.note).replace(/^\s+/,'');
+      });
+      d.rancho20261108=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}
     }
     if(Array.isArray(d.schools)&&!d.portsMerged){var _hn={};d.schools.forEach(function(s){_hn[(s.name||'').toLowerCase()]=1;});DEFAULTS.schools.forEach(function(s){if(!_hn[(s.name||'').toLowerCase()])d.schools.push(clone(s));});d.portsMerged=true;try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
     return d;}
